@@ -1,4 +1,4 @@
-import random
+import random, csv, numpy
 
 def voting_order(score_board, countries):
     # select feasible solution and set xnow and xbest to it
@@ -6,26 +6,29 @@ def voting_order(score_board, countries):
     i = 0
     xNow = getInitialSolution(countries)
     xBest = xNow
-    entertainmentXBest = getEntertainment(xBest)
+    entertainmentXBest = getEntertainment(xBest, countries, score_board)
     
     # while stopping criteria is not met:
     while i < max_iterations:
         # select a neighbour and set xNow to it
         xNow = getNeighbour(xNow)
         # if cost of xnow < cost of best then set xbest to xnow
-        entertainmentXNow = getCost(xNow)
-        if entertainmentXNow > entertainmentXBest:
+        entertainmentXNow = getEntertainment(xNow, countries, score_board)
+        # print "entertainmentXNow", entertainmentXNow
+        if entertainmentXNow < entertainmentXBest:
+            # print "new solution"
             xBest = xNow
             entertainmentXBest = entertainmentXNow
         i = i+1
-    return xBest
+    return "xBest:", xBest, entertainmentXBest
 
 def getInitialSolution(countries):
+    performing_countries = countries[:]
     order = []
-    while len(countries) > 0:
-        nextCountry = countries[0]
+    while len(performing_countries) > 0:
+        nextCountry = performing_countries[0]
         order.insert(0, nextCountry)
-        countries.remove(nextCountry)
+        performing_countries.remove(nextCountry)
     return order
     
 def getNeighbour(xNow):
@@ -36,21 +39,91 @@ def getNeighbour(xNow):
     
     return neighbour
     
-def getEntertainment(solution):
-    # entertainment value
-    # distance between first and last country (who can still win)
+def getEntertainment(solution, countries, score_board):
+    print len(countries)
+    print len(solution)
+    entertainmentValue = 0
+    performing_countries = countries[:]
+    distances = [] # keep distances between min and max every round (len = 37)
+    # index of country = countries.index(solution[i]) + 1
+    scores = [0] * 25
+    for j in range(37):
+        for i in range(len(solution) - 1):
+            print solution[i], countries.index(solution[i]), score_board[countries.index(solution[i])][j]
+            # print i, j, scores[i], score_board[countries.index(solution[i]) + 1][j]
+            scores[i] = score_board[countries.index(solution[i])][j] + scores[i]
+        # exit()
+        distance = max(scores) - min(scores)
+        distances.append(distance)
+    # print distances
+    # exit()
     
-    # keep list of teams that can still win (initially all countries)
-    # reveal the countries votes according to given order (one iteration through that countries column)
-    # after each voting round remove teams that can't win
-    # ?? no. rounds remaining * 12 < first place score = team can't win 
-    # find distance between first and last team's scores (now only teams that can win)
-    # sum distances (minimise) / keep average distance over all rounds (minimise)
-    
-    return entertainment
+    entertainmentValue = (sum(distances) / len(distances))
+ 
+    return entertainmentValue
+
+# def printScoreboard(board, voting, performing):
+#     print ' ', ' '.join(voting)
+#     for i in range(len(board)):
+#         print performing[i]
+#         for j in range(board[i]):
+#             if (board[i][j] == 0):
+#                 print '-'
+#             else:
+#                 print board[i][j]
+                
+#         print
 
 if __name__ == '__main__':
-    #Eurovision 2014 scoreboard. 1st column is Albania's vote, 2nd column is Armenia's vote, etc.
+    # PERFORMING_COUNTRIES = ['Ukraine','Belarus','Azerbaijan','Iceland','Norway','Romania','Montenegro','Poland','Greece','Austria','Germany',
+    #                     'Sweden','France','Russia','Italy','Slovenia','Finland','Spain','Switzerland','Hungary','Malta','Denmark',
+    #                     'The Netherlands','San Marino','United Kingdom']
+    # PERFORMING_COUNTRIES_SHORT = ['UA','BY','AZ','IS','NO','RO','ME','PL','GR','AT','DE',
+    #                     'SE','FR','RU','IT','SI','FI','ES','CH','HU','MT','DK',
+    #                     'NL','SM','UK']
+    # # Eurovision 2014 scoreboard. 1st column is Albania's vote, 2nd column is Armenia's vote, etc.
+    # VOTING_COUNTRIES = ['Albania', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', 'Denmark', 'Estonia', 'FYR Macedonia', 'Finland', 'France',
+    #                      'Georgia', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Italy', 'Latvia', 'Lithuania', 'Malta', 'Moldova',
+    #                      'Montenegro', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Slovenia', 'Spain', 'Sweden', 'Switzerland',
+    #                      'Netherlands', 'Ukraine', 'United Kingdom']
+    # VOTING_COUNTRIES_SHORT = ['AL', 'AM', 'AT', 'AZ', 'BY', 'BE', 'DK', 'EE', 'MK', 'FI', 'FR',
+    #                      'GE', 'DE', 'GR', 'HU', 'IS', 'IE', 'IL', 'IT', 'LV', 'LT', 'MT', 'MD',
+    #                      'ME', 'NO', 'PL', 'PT', 'RO', 'RU', 'SM', 'SI', 'ES', 'SE', 'CH',
+    #                      'NL', 'UA', 'UK']
+    
+    # scoreboard = numpy.zeros((26, 37), dtype=numpy.int)
+    # with open('ESC-2014-grand_final-full_results.csv', 'rbU') as csvfile:
+    #     results = csv.reader(csvfile)
+    #     results.next() # skip the first two lines
+    #     results.next()
+    #     j = 0
+    #     currentRow = []
+    #     emptyScoreboard = []
+        
+    #     for i, row in enumerate(results):
+    #         points = 0
+    #         if row[-1] != '\n':
+    #             points = row[-1]
+    #         # print row[0], row[1], points, i
+    #         currentRow.append(int(points))
+    #         # print 'cr', row[0], row[1], points, currentRow
+    #         # if i % 26 == 0:
+    #         #     print i
+    #         #     print len(currentRow)
+    #         #     print currentRow
+    #         #     emptyScoreboard.append(currentRow)
+    #         #     j = j + 1
+    #         #     currentRow = []
+    # printScoreboard(currentRow, VOTING_COUNTRIES_SHORT, PERFORMING_COUNTRIES_SHORT)
+    # # final = [currentRow[i:i + 26] for i in xrange(0, len(currentRow), 26)]
+
+    # # print 'scoreboard', final
+    # exit()
+            
+    PERFORMING_COUNTRIES = ['Ukraine','Belarus','Azerbaijan','Iceland','Norway','Romania','Armenia','Montenegro','Poland','Greece','Austria',
+    'Germany','Sweden','France','Russia','Italy','Slovenia','Finland','Spain','Switzerland','Hungary','Malta','Denmark','The Netherlands',
+    'San Marino','United Kingdom']
+    # Eurovision 2014 scoreboard. 1st column is Albania's vote, 2nd column is Armenia's vote, etc.
     VOTING_COUNTRIES = ['Albania', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', 'Denmark', 'Estonia', 'FYR Macedonia', 'Finland', 'France',
                         'Georgia', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Italy', 'Latvia', 'Lithuania', 'Malta', 'Moldova',
                         'Montenegro', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Slovenia', 'Spain', 'Sweden', 'Switzerland',
@@ -84,4 +157,4 @@ if __name__ == '__main__':
         [ 0,  0,  0,  0,  0,  1,  7,  0,  0,  0,  0,  3,  0,  0,  0,  4,  8,  0,  0,  0,  0,  4,  0,  0,  3,  0,  0,  0,  0,  5,  0,  5,  0,  0,  0,  0,  0]
     ]
 
-    print(voting_order(SCOREBOARD, VOTING_COUNTRIES))
+    print(voting_order(SCOREBOARD, PERFORMING_COUNTRIES))

@@ -1,3 +1,5 @@
-InitialPlan/*.pptx
+*.pptx
+*.xls
 InitialPlan/*.xlsx
 .DS_Store
+.vscode
