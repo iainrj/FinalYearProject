@@ -1,22 +1,22 @@
 import random, csv, numpy
 
-def voting_order(score_board, countries):
+def voting_order(score_board, countries, voters):
     # select feasible solution and set xnow and xbest to it
     max_iterations = 100
     i = 0
-    xNow = getInitialSolution(countries)
+    xNow = getInitialSolution(voters)
     xBest = xNow
-    entertainmentXBest = getEntertainment(xBest, countries, score_board)
+    entertainmentXBest = getEntertainment(xBest, countries, score_board, voters)
     
     # while stopping criteria is not met:
     while i < max_iterations:
         # select a neighbour and set xNow to it
         xNow = getNeighbour(xNow)
         # if cost of xnow < cost of best then set xbest to xnow
-        entertainmentXNow = getEntertainment(xNow, countries, score_board)
+        entertainmentXNow = getEntertainment(xNow, countries, score_board, voters)
         # print "entertainmentXNow", entertainmentXNow
         if entertainmentXNow < entertainmentXBest:
-            # print "new solution"
+            print "new solution", entertainmentXNow
             xBest = xNow
             entertainmentXBest = entertainmentXNow
         i = i+1
@@ -39,24 +39,29 @@ def getNeighbour(xNow):
     
     return neighbour
     
-def getEntertainment(solution, countries, score_board):
-    print len(countries)
-    print len(solution)
+def getEntertainment(solution, countries, score_board, voters):
     entertainmentValue = 0
     performing_countries = countries[:]
+    current_solution = solution[:]
+    # print 'solution: ', current_solution
+    # print 'performers: ', performing_countries
+    # print 'voters: ', voters
     distances = [] # keep distances between min and max every round (len = 37)
-    # index of country = countries.index(solution[i]) + 1
-    scores = [0] * 25
+    # index of country = countries.index(current_solution[i])
+    scores = [0] * 26
     for j in range(37):
-        for i in range(len(solution) - 1):
-            print solution[i], countries.index(solution[i]), score_board[countries.index(solution[i])][j]
-            # print i, j, scores[i], score_board[countries.index(solution[i]) + 1][j]
-            scores[i] = score_board[countries.index(solution[i])][j] + scores[i]
-        # exit()
+        for i in range(26):
+            # print i, j
+            # print voters.index(solution[j])
+            # print current_solution[j], performing_countries[i], score_board[i][voters.index(solution[j])]
+            # print current_solution[i], countries.index(current_solution[i]), score_board[countries.index(current_solution[i])][j]
+            # print i, j, scores[i], score_board[countries.index(current_solution[i]) + 1][j]
+            scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
         distance = max(scores) - min(scores)
+        # print distance
         distances.append(distance)
-    # print distances
-    # exit()
+    # print scores, len(scores)
+# remove the first and last distances as they will always be the same (12and 288)??
     
     entertainmentValue = (sum(distances) / len(distances))
  
@@ -127,7 +132,7 @@ if __name__ == '__main__':
     VOTING_COUNTRIES = ['Albania', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', 'Denmark', 'Estonia', 'FYR Macedonia', 'Finland', 'France',
                         'Georgia', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Italy', 'Latvia', 'Lithuania', 'Malta', 'Moldova',
                         'Montenegro', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Slovenia', 'Spain', 'Sweden', 'Switzerland',
-                        'Netherlands', 'Ukraine', 'United Kingdom']
+                        'The Netherlands', 'Ukraine', 'United Kingdom']
     SCOREBOARD = [
         [ 0,  0,  5, 10,  8,  4,  1,  8,  0,  2,  0,  6,  0,  5,  2,  0,  0,  5, 10,  7,  5,  0, 10,  7,  0,  5,  0,  0,  7,  0,  0,  6,  0,  0,  0,  0,  0],
         [ 0,  8,  0,  7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  3,  0,  5,  1,  0,  0,  0,  0, 12,  0,  0,  0,  0,  0,  0,  6,  0],
@@ -157,4 +162,4 @@ if __name__ == '__main__':
         [ 0,  0,  0,  0,  0,  1,  7,  0,  0,  0,  0,  3,  0,  0,  0,  4,  8,  0,  0,  0,  0,  4,  0,  0,  3,  0,  0,  0,  0,  5,  0,  5,  0,  0,  0,  0,  0]
     ]
 
-    print(voting_order(SCOREBOARD, PERFORMING_COUNTRIES))
+    print(voting_order(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
