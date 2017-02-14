@@ -11,22 +11,24 @@ export default class Home extends Component {
 	}
 
 	incrementRound() {
-		this.setState({round: this.state.round + 1});
+		if (this.state.round < 37) {
+			this.setState((prevState) => ({
+				round: prevState.round + 1
+			}));
+		}
 	}
 
 	render() {
 		return (
 			<div class={style.home}>
-
-				<h1>Round in order: {this.state.round}</h1>
-
 				<center>
+					<h1>Round in order: {this.state.round}</h1>
 					<button class={style.round_incrementer} onClick={e => this.incrementRound()}>Next Round</button>
 				</center>
 
-				<Order float='left' title='Algorithms order'/>
+				<Order float='left' title='Algorithms order' round={this.state.round}/>
 
-				<Order float='right' title='Real world order'/>
+				<Order float='right' title='Real world order' round={this.state.round}/>
 			</div>
 		);
 	}
