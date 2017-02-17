@@ -1,8 +1,8 @@
-import random, csv, numpy, itertools
+import random, csv, numpy, itertools, math
 
 def voting_order(score_board, countries, voters):
     # select feasible solution and set xnow and xbest to it
-    max_iterations = 100
+    max_iterations = 100000
     i = 0
     xNow = getInitialSolution(voters)
     xBest = xNow
@@ -16,7 +16,7 @@ def voting_order(score_board, countries, voters):
         entertainmentXNow = getEntertainment(xNow, countries, score_board, voters)
         # print "entertainmentXNow", entertainmentXNow
         if entertainmentXNow < entertainmentXBest:
-            print "new solution", entertainmentXNow
+            print("new solution", entertainmentXNow)
             xBest = xNow[:]
             entertainmentXBest = entertainmentXNow
         i = i+1
@@ -43,27 +43,17 @@ def getEntertainment(solution, countries, score_board, voters):
     entertainmentValue = 0
     performing_countries = countries[:]
     current_solution = solution[:]
-    # print 'solution: ', current_solution
-    # print 'performers: ', performing_countries
-    # print 'voters: ', voters
     distances = [] # keep distances between min and max every round (len = 37)
     # index of country = countries.index(current_solution[i])
     scores = [0] * 26
     for j in range(len(solution)):
         for i in range(len(countries)):
-            # print i, j
-            # print voters.index(solution[j])
-            # print current_solution[j], performing_countries[i], score_board[i][voters.index(solution[j])]
-            # print current_solution[i], countries.index(current_solution[i]), score_board[countries.index(current_solution[i])][j]
-            # print i, j, scores[i], score_board[countries.index(current_solution[i]) + 1][j]
             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
         distance = max(scores) - min(scores)
-        # print distance
         distances.append(distance)
-    # print scores, len(scores)
-# remove the first and last distances as they will always be the same (12and 288)??
+    # remove the first and last distances as they will always be the same (12 and 288)??
     
-    entertainmentValue = (sum(distances) / len(distances))
+    entertainmentValue = sum(distances)
  
     return entertainmentValue
 
@@ -75,11 +65,51 @@ def bruteForce(score_board, countries, voters):
         currentCost = getEntertainment(numpy.asarray(solution), countries, score_board, voters)
 
         if currentCost < bestCost:
-            print 'New Solution: ', currentCost
+            print('New Solution: ', currentCost)
             best = solution[:]
             bestCost = currentCost
 
     return best, bestCost
+    
+def simulated_annealing(score_board, countries, voters):
+    # select feasible solution and set xnow and xbest to it
+    num_iterations = 100000
+    ti = 1000
+    tl = 25
+    cr_coefficient = 0.85
+    
+    t = ti
+    
+    xNow = getInitialSolution(voters)
+    entertainmentXNow = getEntertainment(xNow, countries, score_board, voters)
+    
+    xBest = xNow[:]
+    entertainmentXBest = entertainmentXNow
+
+    for i in range(num_iterations):
+        for j in range(tl):
+            xPrime = getNeighbour(xNow)
+            entertainmentXPrime = getEntertainment(xPrime, countries, score_board, voters)
+
+            deltaC = entertainmentXPrime - entertainmentXNow
+
+            if deltaC <= 0:
+                # print("new solution", entertainmentXPrime)
+                xNow = xPrime[:]
+                entertainmentXNow = entertainmentXPrime
+            else:
+                q = random.randint(0, 1)
+
+                if q < math.exp(-(deltaC)/t):
+                    xNow = xPrime[:]
+                    entertainmentXNow = entertainmentXPrime
+
+            if entertainmentXNow < entertainmentXBest:
+                xBest = xNow[:]
+                entertainmentXBest = entertainmentXNow
+
+        t = t * cr_coefficient
+    return "xBest:", xBest, entertainmentXBest
 
 
 # def printScoreboard(board, voting, performing):
@@ -177,5 +207,6 @@ if __name__ == '__main__':
         [ 0,  0,  0,  0,  0,  1,  7,  0,  0,  0,  0,  3,  0,  0,  0,  4,  8,  0,  0,  0,  0,  4,  0,  0,  3,  0,  0,  0,  0,  5,  0,  5,  0,  0,  0,  0,  0]
     ]
 
-    print(bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+    # print(bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
     # print(voting_order(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+    print(simulated_annealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
