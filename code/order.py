@@ -1,7 +1,6 @@
 import random, csv, numpy, itertools, math
 
 def voting_order(score_board, countries, voters):
-    # select feasible solution and set xnow and xbest to it
     max_iterations = 100000
     i = 0
     xNow = getInitialSolution(voters)
@@ -44,14 +43,13 @@ def getEntertainment(solution, countries, score_board, voters):
     performing_countries = countries[:]
     current_solution = solution[:]
     distances = [] # keep distances between min and max every round (len = 37)
-    # index of country = countries.index(current_solution[i])
+    
     scores = [0] * 26
     for j in range(len(solution)):
         for i in range(len(countries)):
             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
         distance = max(scores) - min(scores)
         distances.append(distance)
-    # remove the first and last distances as they will always be the same (12 and 288)??
     
     entertainmentValue = sum(distances)
  
@@ -72,7 +70,6 @@ def bruteForce(score_board, countries, voters):
     return best, bestCost
     
 def simulated_annealing(score_board, countries, voters):
-    # select feasible solution and set xnow and xbest to it
     num_iterations = 100000
     ti = 1000
     tl = 25
@@ -94,7 +91,6 @@ def simulated_annealing(score_board, countries, voters):
             deltaC = entertainmentXPrime - entertainmentXNow
 
             if deltaC <= 0:
-                # print("new solution", entertainmentXPrime)
                 xNow = xPrime[:]
                 entertainmentXNow = entertainmentXPrime
             else:
