@@ -1,4 +1,4 @@
-import random, csv, numpy
+import random, csv, numpy, itertools
 
 def voting_order(score_board, countries, voters):
     # select feasible solution and set xnow and xbest to it
@@ -17,7 +17,7 @@ def voting_order(score_board, countries, voters):
         # print "entertainmentXNow", entertainmentXNow
         if entertainmentXNow < entertainmentXBest:
             print "new solution", entertainmentXNow
-            xBest = xNow
+            xBest = xNow[:]
             entertainmentXBest = entertainmentXNow
         i = i+1
     return "xBest:", xBest, entertainmentXBest
@@ -49,8 +49,8 @@ def getEntertainment(solution, countries, score_board, voters):
     distances = [] # keep distances between min and max every round (len = 37)
     # index of country = countries.index(current_solution[i])
     scores = [0] * 26
-    for j in range(37):
-        for i in range(26):
+    for j in range(len(solution)):
+        for i in range(len(countries)):
             # print i, j
             # print voters.index(solution[j])
             # print current_solution[j], performing_countries[i], score_board[i][voters.index(solution[j])]
@@ -66,6 +66,21 @@ def getEntertainment(solution, countries, score_board, voters):
     entertainmentValue = (sum(distances) / len(distances))
  
     return entertainmentValue
+
+def bruteForce(score_board, countries, voters):
+    best = voters[:]
+    bestCost = getEntertainment(numpy.asarray(voters), countries, score_board, voters)
+
+    for solution in itertools.permutations(voters):
+        currentCost = getEntertainment(numpy.asarray(solution), countries, score_board, voters)
+
+        if currentCost < bestCost:
+            print 'New Solution: ', currentCost
+            best = solution[:]
+            bestCost = currentCost
+
+    return best, bestCost
+
 
 # def printScoreboard(board, voting, performing):
 #     print ' ', ' '.join(voting)
@@ -162,4 +177,5 @@ if __name__ == '__main__':
         [ 0,  0,  0,  0,  0,  1,  7,  0,  0,  0,  0,  3,  0,  0,  0,  4,  8,  0,  0,  0,  0,  4,  0,  0,  3,  0,  0,  0,  0,  5,  0,  5,  0,  0,  0,  0,  0]
     ]
 
-    print(voting_order(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+    print(bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+    # print(voting_order(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
