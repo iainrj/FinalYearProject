@@ -4,36 +4,42 @@ def stepByStepSolution(countries, score_board, voters):
     solution = []
     voting_countries = voters[:]
     distances = [] # keep distances between min and max every round (len = 37)
-    bestScores = [0] * 26
+    best = voting_countries[0]
+    ignoredIndexes = []
     # scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
-    scores = [row[0] for row in score_board]
-    initial_scores = scores[:]
+    bestScores = [row[0] for row in score_board]
     solution.append(voting_countries[0])
+    distances.append(12)
 
-    for x in range(len(voting_countries)):
-        scores = [x + y for x, y in zip(scores, bestScores)]
-        ignoredIndexes = []
+    for k in range(len(voting_countries) - 1):
+        scores = bestScores[:]
+        # if k == 3:
+        #     print('scores', scores)
+        #     exit()
         countries_tried = []
         bestDistance = -1
-        ignoredIndexes.append(0)
-        # initial_scores = [rowinitial_scores ]
+        ignoredIndexes.append(voting_countries.index(best))
+        
         for j in range(len(voting_countries)):
-            scores = initial_scores[:]
+            local_scores = scores[:]
             current_country = voting_countries[j]
+            print('ii', ignoredIndexes)
+            print('curr', current_country)
             if j in ignoredIndexes:
-                print('ignore me')
+                print('ignore me', j)
                 continue
             for i in range(len(performing_countries)):
-                scores[i] = score_board[i][j] + scores[i]
-                ignoredIndexes.append(j)
-            distance = max(scores) - min(scores)
+                local_scores[i] = score_board[i][j] + local_scores[i]
+            distance = max(local_scores) - min(local_scores)
             
             if distance < bestDistance or bestDistance < 0:
                 bestDistance = distance
                 best = current_country
-                bestScores = scores[:]
+                bestScores = local_scores[:]
             countries_tried.append(current_country)
+        distances.append(bestDistance)
         solution.append(best)
+    print(solution, distances)
     entertainmentValue = sum(distances)
  
     return entertainmentValue
