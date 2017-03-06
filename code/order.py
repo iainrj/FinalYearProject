@@ -4,7 +4,7 @@ def voting_order(score_board, countries, voters):
     max_iterations = 100000
     i = 0
     xNow = getInitialSolution(voters)
-    xBest = xNow
+    xBest = xNow[:]
     entertainmentXBest = getEntertainment(xBest, countries, score_board, voters)
     
     # while stopping criteria is not met:
@@ -22,6 +22,10 @@ def voting_order(score_board, countries, voters):
     return "xBest:", xBest, entertainmentXBest
 
 def getInitialSolution(countries):
+    # order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Lithuania', 'Norway', 'Sweden', 'Belgium', 'Greece', 'Ireland', 'Portugal', 'Slovenia', 'Spain', 'Switzerland', 'The Netherlands', 'United Kingdom']
+    # return order
+    # real_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia']
+    # return real_order
     performing_countries = countries[:]
     order = []
     while len(performing_countries) > 0:
@@ -70,7 +74,7 @@ def bruteForce(score_board, countries, voters):
     return best, bestCost
     
 def simulated_annealing(score_board, countries, voters):
-    num_iterations = 100000
+    num_iterations = 1000
     ti = 1000
     tl = 25
     cr_coefficient = 0.85
@@ -204,5 +208,5 @@ if __name__ == '__main__':
     ]
 
     # print(bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
-    # print(voting_order(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
-    print(simulated_annealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+    print(voting_order(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+    # print(simulated_annealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
