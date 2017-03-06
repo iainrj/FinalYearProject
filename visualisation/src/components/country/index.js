@@ -9,7 +9,7 @@ export default class Country extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({score: nextProps.round});
+		this.setState({score: this.state.score + nextProps.newScore});
 	}
 
 	componentWillUnmount() {
