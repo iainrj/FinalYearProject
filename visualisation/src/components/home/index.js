@@ -12,7 +12,6 @@ export default class Home extends Component {
 
 	incrementRound(sim = false) {
 		if (this.state.round < 37) {
-			console.log(this._interval);
 			if (sim && !this._interval || this._interval !== 0) {
 				this._interval = setInterval(() => (
 					this.setState({round: this.state.round + 1})
