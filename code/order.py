@@ -3,23 +3,25 @@ import random, csv, numpy, itertools, math
 def voting_order(score_board, countries, voters):
     max_iterations = 100000
     i = 0
+    iters = 0
     xNow = getInitialSolution(voters)
     xBest = xNow[:]
-    entertainmentXBest = getEntertainment(xBest, countries, score_board, voters)
+    entertainmentXBest, iters1= getEntertainment(xBest, countries, score_board, voters)
     
     # while stopping criteria is not met:
     while i < max_iterations:
         # select a neighbour and set xNow to it
         xNow = getNeighbour(xNow)
         # if cost of xnow < cost of best then set xbest to xnow
-        entertainmentXNow = getEntertainment(xNow, countries, score_board, voters)
+        entertainmentXNow, iters2 = getEntertainment(xNow, countries, score_board, voters)
         # print "entertainmentXNow", entertainmentXNow
         if entertainmentXNow < entertainmentXBest:
             print("new solution", entertainmentXNow)
             xBest = xNow[:]
             entertainmentXBest = entertainmentXNow
+            iters = iters2
         i = i+1
-    return "xBest:", xBest, entertainmentXBest
+    return "xBest:", xBest, entertainmentXBest, iters
 
 def getInitialSolution(countries):
     # order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Lithuania', 'Norway', 'Sweden', 'Belgium', 'Greece', 'Ireland', 'Portugal', 'Slovenia', 'Spain', 'Switzerland', 'The Netherlands', 'United Kingdom']
@@ -46,18 +48,54 @@ def getEntertainment(solution, countries, score_board, voters):
     entertainmentValue = 0
     performing_countries = countries[:]
     current_solution = solution[:]
-    distances = [] # keep distances between min and max every round (len = 37)
+    # solution = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia']
+    # solution = ['Belarus', 'Malta', 'Montenegro', 'Norway', 'Albania', 'Azerbaijan', 'Denmark', 'Germany', 'Lithuania', 'Estonia', 'Russia', 'The Netherlands', 'Armenia', 'Poland', 'San Marino', 'Moldova', 'Georgia', 'France', 'Switzerland', 'Austria', 'Greece', 'Latvia', 'Israel', 'Ukraine', 'Sweden', 'FYR Macedonia', 'Slovenia', 'Iceland', 'Spain', 'Romania', 'Ireland', 'Italy', 'United Kingdom', 'Belgium', 'Hungary', 'Finland', 'Portugal']
     
+    distances = [] # keep distances between min and max every round (len = 37)
+    iters = 37
     scores = [0] * 26
     for j in range(len(solution)):
         for i in range(len(countries)):
             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
+        # sorted_scores = sorted(scores)
+        # print(iters)
+        # iters = iterationsBeforeStop(sorted_scores, solution, j, iters)
+        otherMin = maxMinWithRemoval(scores, solution, j)
+        print(min(scores), otherMin)
         distance = max(scores) - min(scores)
         distances.append(distance)
-    
     entertainmentValue = sum(distances)
  
-    return entertainmentValue
+    return entertainmentValue, iters
+
+def maxMinWithRemoval(scores, solution, j):
+    sorted_scores = sorted(scores)
+    currentTop = sorted_scores[-1]
+    minScore = sorted_scores[0]
+    
+    # sorted_scores[0] is current minimum score
+    # reverse sorted list
+    # check whether second last score could still be greater than current top
+    # if score * (12 * rounds_remaining) < currentTop
+    
+    for score in reversed(sorted_scores):
+        # print(j, 'rounds remaining=', len(solution) - 1 - j)
+        # print('currentTop: ', currentTop)
+        # print('best case score: ', score * (12 * len(solution) - 1 - j))
+        
+        roundsRemaining = (len(solution) - 1 - j) 
+        if score * (12 * roundsRemaining) < currentTop:
+            print('heloo')
+            # print(score, j)
+            minScore = score
+    return minScore
+    
+def iterationsBeforeStop(sorted_scores, solution, j, iters):
+    # print(sorted_scores[-1] - sorted_scores[-2] > 12 * (len(solution) - 1 - j), j+1 < iters)
+    if sorted_scores[-1] - sorted_scores[-2] > 12 * (len(solution) - 1 - j) and j+1 < iters:
+        print('Winner cannot be caught after: ', j + 1, 'iterations', sorted_scores[-1], sorted_scores[-2], (12 * (len(solution) - 1 - j)))
+        return j+1
+    return iters
 
 def bruteForce(score_board, countries, voters):
     best = voters[:]
@@ -110,7 +148,6 @@ def simulated_annealing(score_board, countries, voters):
 
         t = t * cr_coefficient
     return "xBest:", xBest, entertainmentXBest
-
 
 # def printScoreboard(board, voting, performing):
 #     print ' ', ' '.join(voting)
