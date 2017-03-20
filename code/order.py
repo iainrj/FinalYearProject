@@ -60,33 +60,25 @@ def getEntertainment(solution, countries, score_board, voters):
         # sorted_scores = sorted(scores)
         # print(iters)
         # iters = iterationsBeforeStop(sorted_scores, solution, j, iters)
-        otherMin = maxMinWithRemoval(scores, solution, j)
+        otherMin = refinedMaxMin(scores, solution, j)
         print(min(scores), otherMin)
         distance = max(scores) - min(scores)
         distances.append(distance)
+    exit()
     entertainmentValue = sum(distances)
  
     return entertainmentValue, iters
 
-def maxMinWithRemoval(scores, solution, j):
-    sorted_scores = sorted(scores)
+def refinedMaxMin(scores, solution, j):
+    sorted_scores = sorted(scores[:])
     currentTop = sorted_scores[-1]
     minScore = sorted_scores[0]
+    del sorted_scores[-1] # remove highest score
+    roundsRemaining = (len(solution) - 1 - j)
     
-    # sorted_scores[0] is current minimum score
-    # reverse sorted list
-    # check whether second last score could still be greater than current top
-    # if score * (12 * rounds_remaining) < currentTop
-    
-    for score in reversed(sorted_scores):
-        # print(j, 'rounds remaining=', len(solution) - 1 - j)
-        # print('currentTop: ', currentTop)
-        # print('best case score: ', score * (12 * len(solution) - 1 - j))
-        
-        roundsRemaining = (len(solution) - 1 - j) 
-        if score * (12 * roundsRemaining) < currentTop:
-            print('heloo')
-            # print(score, j)
+    for score in sorted_scores:
+        if score + (12 * roundsRemaining) < currentTop:
+            # print('heloo')
             minScore = score
     return minScore
     
