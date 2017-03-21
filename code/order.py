@@ -6,12 +6,13 @@ def voting_order(score_board, countries, voters):
     iters = 0
     xNow = getInitialSolution(voters)
     xBest = xNow[:]
-    entertainmentXBest, iters1= getEntertainment(xBest, countries, score_board, voters)
+    entertainmentXBest, iters1 = getEntertainment(xBest, countries, score_board, voters)
     
     # while stopping criteria is not met:
     while i < max_iterations:
         # select a neighbour and set xNow to it
-        xNow = getNeighbour(xNow)
+        # xNow = getNeighbour(xNow) # swap two random indexes
+        xNow = getAdjacentNeighbour(xNow) # swap two adjacent indexes
         # if cost of xnow < cost of best then set xbest to xnow
         entertainmentXNow, iters2 = getEntertainment(xNow, countries, score_board, voters)
         # print "entertainmentXNow", entertainmentXNow
@@ -41,6 +42,14 @@ def getNeighbour(xNow):
     key1, key2 = random.sample(list(neighbour), 2)
     index1, index2 = neighbour.index(key1), neighbour.index(key2)
     neighbour[index2], neighbour[index1] = neighbour[index1], neighbour[index2]
+    
+    return neighbour
+
+def getAdjacentNeighbour(xNow):
+    neighbour = xNow[:]
+    key1 = random.randint(0, len(neighbour) - 2)
+    key2 = key1 + 1
+    neighbour[key2], neighbour[key1] = neighbour[key1], neighbour[key2]
     
     return neighbour
     
@@ -74,10 +83,9 @@ def refinedMaxMin(scores, solution, j):
     minScore = sorted_scores[0]
     del sorted_scores[-1] # remove highest score
     roundsRemaining = (len(solution) - 1 - j)
-    
+
     for score in sorted_scores:
         if score + (12 * roundsRemaining) < currentTop:
-            # print('heloo')
             minScore = score
     return minScore
     
