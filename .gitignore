@@ -3,3 +3,4 @@
 InitialPlan/*.xlsx
 .DS_Store
 .vscode
+*.pyc
