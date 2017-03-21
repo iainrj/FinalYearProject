@@ -61,10 +61,9 @@ def getEntertainment(solution, countries, score_board, voters):
         # print(iters)
         # iters = iterationsBeforeStop(sorted_scores, solution, j, iters)
         otherMin = refinedMaxMin(scores, solution, j)
-        print(min(scores), otherMin)
-        distance = max(scores) - min(scores)
+        distance = max(scores) - otherMin
         distances.append(distance)
-    exit()
+    # exit()
     entertainmentValue = sum(distances)
  
     return entertainmentValue, iters
@@ -104,10 +103,10 @@ def bruteForce(score_board, countries, voters):
     return best, bestCost
     
 def simulated_annealing(score_board, countries, voters):
-    num_iterations = 1000
-    ti = 1000
-    tl = 25
-    cr_coefficient = 0.85
+    num_iterations = 10000
+    ti = 5000
+    tl = 50
+    cr_coefficient = 0.8
     
     t = ti
     
