@@ -9,3 +9,16 @@ The two main questions that this project will aim to answer are:
 
 - How can we define the concept of ''entertainment'' in the context of an optimisation problem, and hence try to maximise it.
 - In which order should the votes be revealed in order to maximise that entertainment value?
+
+# Running the code
+Will run either Greedy Search, Simulated Annealing or Brute Force algorithm and return an order of voting and a value for entertainment
+``` bash
+> cd code
+> python order.py
+```
+
+# Running the tests
+``` bash
+> cd code
+> python orderTest.py
+```

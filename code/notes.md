@@ -10,3 +10,10 @@
 - Simulated Annealing
     - Finds a better solution than greedy search, every time
     - Takes longer to run and come up with a solution
+    
+## refinedMaxMin
+- gives a lower value by virtue of the fact that it only calculates with minimum score that can still win
+    - need another way of comparing algorithms?
+- chart of difference between just minimum and refinedMin below
+
+![difference](https://raw.githubusercontent.com/iainrj/FinalYearProject/master/code/difference_MinvsRefinedMin.png)
