@@ -1,4 +1,5 @@
 import random, csv, numpy, itertools, math
+from timeit import default_timer as timer
 
 def voting_order(score_board, countries, voters):
     max_iterations = 100000
@@ -13,18 +14,17 @@ def voting_order(score_board, countries, voters):
     while i < max_iterations:
         xNow, key1 = getAdjacentNeighbour(xNow)
         # entertainmentXNow = getEntertainment(xNow, countries, score_board, voters, key1)
+        
+        start = timer()
         otherE , otherD = getEntertainment(xNow, countries, score_board, voters, key1)
+        end = timer()
+        print('full: ', end - start)
+        
+        start = timer()
         entertainmentXNow, distances = offsetGetEntertainment(xNow, countries, score_board, voters, key1, oldEntertainment, oldDistances)
+        end = timer()
+        print('reduced: ', end - start)
         
-        print('old E value: ', oldEntertainment)
-        print('new E: old method: ', otherE)
-        print('new E: new method:', entertainmentXNow)
-        print('same = ', otherE == entertainmentXNow)
-        
-        # print('old E dist:', oldDistances)
-        # print('new E dist:', distances)
-        exit()
-
         if entertainmentXNow < entertainmentXBest:
             print("new solution", entertainmentXNow)
             xBest = xNow[:]
@@ -82,18 +82,8 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
     distances = oldDistances[:]
     key2 = key1 + 1
     
-    print('keys', key1, key1+1)
+    # print('keys', key1, key1+1)
     oldDistance1, oldDistance2 = oldDistances[key1], oldDistances[key1 + 1]
-    
-    p_dist = []
-    scores = [0] * 26
-    for j in range(key2):
-        for i in range(len(countries)):
-            scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
-        otherMin = refinedMaxMin(scores, solution, j)
-        # print('for1 scores: ', scores)
-        p_dist.append(max(scores) - otherMin)
-    print(p_dist)
 
     l_dist = []
     scores = [0] * 26
@@ -102,10 +92,9 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
         otherMin = refinedMaxMin(scores, solution, j)
         l_dist.append(max(scores) - otherMin)
-    print(l_dist)
+    # print(l_dist)
     
-    newDistance1, newDistance2 = p_dist[-1], l_dist[-1]
-    print('new: ', newDistance1, newDistance2)
+    newDistance1, newDistance2 = l_dist[-1], l_dist[-2]
     
     # print('old E:', oldEntertainment)
     # print('oldDistances: ', oldDistance1, oldDistance2)
@@ -142,7 +131,7 @@ def getEntertainment(solution, countries, score_board, voters, key1):
         # print('getE scores: ', scores)
         distance = max(scores) - otherMin
         distances.append(distance)
-    print('otherE distances', distances)
+    # print('otherE distances', distances)
     entertainmentValue = sum(distances)
     
     return entertainmentValue, distances
