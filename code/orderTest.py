@@ -26,5 +26,20 @@ class MyTest(unittest.TestCase):
         j3 = 5
         self.assertEqual(order.refinedMaxMin(scores3, solution, j3), 85)
         
+    def testOffsetGetEntertainment(self):
+        xNow = ['albania','russia','finland','france','italy','spain','romania','germany']
+        countries = ['albania','russia','finland']
+        score_board = [
+            [ 0,  0,  5, 10,  8,  4,  1,  8],
+            [ 0,  8,  0,  7,  0,  0,  0,  0],
+            [ 0,  0,  0,  0,  3,  0,  0,  0]
+        ]
+        voters = ['albania','russia','finland', 'france', 'italy', 'spain', 'romania', 'germany'],
+        key1 = 4,
+        oldEntertainment = ,
+        oldDistances = []
+        
+        self.assertEqual(order.offsetGetEntertainment(), 4124)
+        
 if __name__ == '__main__':
     unittest.main()
