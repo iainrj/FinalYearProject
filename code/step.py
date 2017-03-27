@@ -1,3 +1,5 @@
+import order
+
 def stepByStepSolution(countries, score_board, voters):
     entertainmentValue = 0
     performing_countries = countries[:]
@@ -23,14 +25,15 @@ def stepByStepSolution(countries, score_board, voters):
         for j in range(len(voting_countries)):
             local_scores = scores[:]
             current_country = voting_countries[j]
-            print('ii', ignoredIndexes)
-            print('curr', current_country)
+            # print('ii', ignoredIndexes)
+            # print('curr', current_country)
             if j in ignoredIndexes:
-                print('ignore me', j)
+                # print('ignore me', j)
                 continue
             for i in range(len(performing_countries)):
                 local_scores[i] = score_board[i][j] + local_scores[i]
-            distance = max(local_scores) - min(local_scores)
+            otherMin = order.refinedMaxMin(local_scores, voting_countries, j)
+            distance = max(local_scores) - otherMin
             
             if distance < bestDistance or bestDistance < 0:
                 bestDistance = distance
@@ -39,10 +42,10 @@ def stepByStepSolution(countries, score_board, voters):
             countries_tried.append(current_country)
         distances.append(bestDistance)
         solution.append(best)
-    print(solution, distances)
+    # print(solution, distances)
     entertainmentValue = sum(distances)
  
-    return entertainmentValue
+    return solution, entertainmentValue
     
 if __name__ == '__main__':
     
