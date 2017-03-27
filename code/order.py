@@ -74,6 +74,21 @@ def refinedMaxMin(scores, solution, j):
         if score + (12 * roundsRemaining) < currentTop:
             minScore = score
     return minScore
+
+# Returns an array of distances 
+def calculateDistances(solution, voters, no_performers, score_board):
+    distances = []
+    num_rows = len(voters)
+    num_columns = no_performers
+    scores = [0] * num_rows
+    
+    for j in range(num_rows):
+        for i in range(num_columns):
+            scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
+        minimumScore = refinedMaxMin(scores, solution, j)
+        distances.append(max(scores) - minimumScore)
+    
+    return distances
     
 def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances):
     entertainmentValue = 0
@@ -83,7 +98,7 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
     key2 = key1 + 1
     
     # print('keys', key1, key1+1)
-    oldDistance1, oldDistance2 = oldDistances[key1], oldDistances[key1 + 1]
+    oldDistance1, oldDistance2 = oldDistances[key1], oldDistances[key2]
 
     l_dist = []
     scores = [0] * 26
@@ -102,7 +117,7 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
     entertainmentValue = oldEntertainment - (oldDistance1 + oldDistance2) + (newDistance1 + newDistance2)
     
     distances[key1] = newDistance1
-    distances[key1 + 1] = newDistance2
+    distances[key2] = newDistance2
     
     return entertainmentValue, distances
 
