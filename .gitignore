@@ -4,3 +4,14 @@ InitialPlan/*.xlsx
 .DS_Store
 .vscode
 *.pyc
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
