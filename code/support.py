@@ -1,5 +1,6 @@
 import random
 
+# List<String> -> List<String>
 def getInitialSolution(countries):
     # order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Lithuania', 'Norway', 'Sweden', 'Belgium', 'Greece', 'Ireland', 'Portugal', 'Slovenia', 'Spain', 'Switzerland', 'The Netherlands', 'United Kingdom']
     # return order
@@ -14,7 +15,8 @@ def getInitialSolution(countries):
         order.insert(0, nextCountry)
         performing_countries.remove(nextCountry)
     return order
-    
+
+# List<String> -> List<String>
 def getNeighbour(xNow):
     neighbour = xNow[:]
     key1, key2 = random.sample(list(neighbour), 2)
@@ -23,6 +25,7 @@ def getNeighbour(xNow):
     
     return neighbour
 
+# List<String> -> List<String>
 def getAdjacentNeighbour(xNow):
     neighbour = xNow[:]
     key1 = random.randint(0, len(neighbour) - 2)
@@ -30,7 +33,8 @@ def getAdjacentNeighbour(xNow):
     neighbour[key2], neighbour[key1] = neighbour[key1], neighbour[key2]
     
     return neighbour, key1
-    
+
+# List<Integer> -> List<String> -> Integer -> Integer
 def refinedMaxMin(scores, solution, j):
     sorted_scores = sorted(scores[:])
     currentTop = sorted_scores[-1]
@@ -43,7 +47,7 @@ def refinedMaxMin(scores, solution, j):
             minScore = score
     return minScore
 
-# Returns an array of distances 
+# List<String> -> List<String> -> Integer -> List<List<Integers>> -> Integer
 def calculateDistances(solution, voters, no_performers, score_board):
     distances = []
     num_rows = len(voters)
@@ -57,15 +61,15 @@ def calculateDistances(solution, voters, no_performers, score_board):
         distances.append(max(scores) - minimumScore)
     
     return distances
-    
+
+# List -> List -> List -> List -> Integer -> Integer -> List
 def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances):
     entertainmentValue = 0
     performing_countries = countries[:]
     current_solution = solution[:]
     distances = oldDistances[:]
     key2 = key1 + 1
-    
-    # print('keys', key1, key1+1)
+
     oldDistance1, oldDistance2 = oldDistances[key1], oldDistances[key2]
 
     l_dist = []
@@ -75,13 +79,8 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
         otherMin = refinedMaxMin(scores, solution, j)
         l_dist.append(max(scores) - otherMin)
-    # print(l_dist)
     
     newDistance1, newDistance2 = l_dist[-1], l_dist[-2]
-    
-    # print('old E:', oldEntertainment)
-    # print('oldDistances: ', oldDistance1, oldDistance2)
-    # print('newDistance: ', (newDistance1 + newDistance2))
     entertainmentValue = oldEntertainment - (oldDistance1 + oldDistance2) + (newDistance1 + newDistance2)
     
     distances[key1] = newDistance1
@@ -89,12 +88,14 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
     
     return entertainmentValue, distances
 
+# List<Integer> -> List<String -> Integer -> Integer -> Integer
 def iterationsBeforeStop(sorted_scores, solution, j, iters):
     if sorted_scores[-1] - sorted_scores[-2] > 12 * (len(solution) - 1 - j) and j+1 < iters:
         print('Winner cannot be caught after: ', j + 1, 'iterations', sorted_scores[-1], sorted_scores[-2], (12 * (len(solution) - 1 - j)))
         return j+1
     return iters
 
+# List<String> -> List<String> -> List<List<Integer>> -> List<String> -> Integer
 def getEntertainment(solution, countries, score_board, voters):
     entertainmentValue = 0
     performing_countries = countries[:]
@@ -113,6 +114,7 @@ def getEntertainment(solution, countries, score_board, voters):
     
     return entertainmentValue, distances
 
+# List<List<Integer>> -> List<String> -> List<String> -> null
 def printScoreboard(board, voting, performing):
     print(' ', ' '.join(voting))
     for i in range(len(board)):

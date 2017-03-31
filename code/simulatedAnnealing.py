@@ -38,7 +38,7 @@ def simulatedAnnealing(score_board, countries, voters):
                     entertainmentXNow = entertainmentXPrime
 
             if entertainmentXNow < entertainmentXBest:
-                print("new solution", entertainmentXNow)
+                # print("new solution", entertainmentXNow)
                 xBest = xNow[:]
                 entertainmentXBest = entertainmentXNow
                 i = 0
