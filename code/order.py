@@ -2,6 +2,7 @@ import sys
 import greedySearch as gs
 import bruteForce as bf
 import simulatedAnnealing as sa
+import step
 
 if __name__ == '__main__':            
     PERFORMING_COUNTRIES = ['Ukraine','Belarus','Azerbaijan','Iceland','Norway','Romania','Armenia','Montenegro','Poland','Greece','Austria',
@@ -51,6 +52,9 @@ if __name__ == '__main__':
         print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
     elif algo == 'simAnnealing':
         print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+    elif algo == 'step':
+        print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
     else:
-        print('Usage: python order.py <greedy|brute|simAnnealing>')
+        print('Available algorithms are:\n\nBrute Force (brute)\nGreedy search (greedy)\nSimulated annealing (simAnnealing)\nPiecemeal solution (step)') 
+        print('\nUsage: python order.py <greedy|brute|simAnnealing|step>')
 
