@@ -6,7 +6,7 @@ def getInitialSolution(countries):
     # return order
     # real_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia']
     # return real_order
-    # piecemeal_order = ['Albania', 'United Kingdom', 'Ukraine', 'Armenia', 'The Netherlands', 'Belarus', 'Switzerland', 'Austria', 'Sweden', 'Poland', 'San Marino', 'Spain', 'Slovenia', 'Azerbaijan', 'Montenegro', 'FYR Macedonia', 'Estonia', 'Russia', 'Moldova', 'Latvia','Romania', 'Portugal', 'Germany', 'Denmark', 'Norway', 'France', 'Georgia', 'Hungary', 'Malta', 'Lithuania', 'Iceland', 'Italy','Israel', 'Ireland', 'Finland', 'Belgium', 'Greece']
+    # piecemeal_order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino','Moldova','Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Ireland','Sweden', 'Lithuania', 'Greece', 'Spain', 'Belgium', 'Portugal', 'The Netherlands', 'United Kingdom', 'Norway', 'Slovenia', 'Switzerland']
     # return piecemeal_order
     performing_countries = countries[:]
     order = []
