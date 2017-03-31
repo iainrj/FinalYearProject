@@ -11,10 +11,10 @@ The two main questions that this project will aim to answer are:
 - In which order should the votes be revealed in order to maximise that entertainment value?
 
 # Running the code
-Will run either Greedy Search, Simulated Annealing or Brute Force algorithm and return an order of voting and a value for entertainment
+Will run either Greedy Search, Simulated Annealing, Brute Force or Step-by-step algorithm and return an order of voting and a value for entertainment
 ``` bash
 > cd code
-> python order.py
+> python order.py python <greedy|brute|simAnnealing|step>
 ```
 
 # Running the tests
