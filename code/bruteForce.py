@@ -9,7 +9,7 @@ def bruteForce(score_board, countries, voters):
         currentCost, dist = support.getEntertainment(numpy.asarray(solution), countries, score_board, voters)
 
         if currentCost < bestCost:
-            print('New Solution: ', currentCost)
+            # print('New Solution: ', currentCost)
             best = solution[:]
             bestCost = currentCost
 

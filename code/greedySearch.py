@@ -25,9 +25,9 @@ def greedySearch(score_board, countries, voters):
         # print('reduced: ', end - start)
         
         if entertainmentXNow < entertainmentXBest:
-            print("new solution", entertainmentXNow)
+            # print("new solution", entertainmentXNow)
             xBest = xNow[:]
             entertainmentXBest = entertainmentXNow
             i = 0
         i = i+1
-    return "xBest:", xBest, entertainmentXBest
+    return xBest, entertainmentXBest
