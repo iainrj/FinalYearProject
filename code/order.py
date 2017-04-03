@@ -42,19 +42,19 @@ if __name__ == '__main__':
         [ 0,  0,  0,  0,  0,  1,  7,  0,  0,  0,  0,  3,  0,  0,  0,  4,  8,  0,  0,  0,  0,  4,  0,  0,  3,  0,  0,  0,  0,  5,  0,  5,  0,  0,  0,  0,  0]
     ]
 
-    algo = None
-    if len(sys.argv) > 1:
-        algo = sys.argv[1]
-    
-    if algo == 'brute':
-        print(bf.bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
-    elif algo == 'greedy':
-        print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
-    elif algo == 'simAnnealing':
-        print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
-    elif algo == 'step':
-        print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
-    else:
-        print('Available algorithms are:\n\nBrute Force (brute)\nGreedy search (greedy)\nSimulated annealing (simAnnealing)\nPiecemeal solution (step)') 
-        print('\nUsage: python order.py <greedy|brute|simAnnealing|step>')
+    algo = sys.argv[1] if len(sys.argv) > 1 else None
+    num_loops = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+        
+    for i in range(num_loops):
+        if algo == 'brute':
+            print(bf.bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+        elif algo == 'greedy':
+            print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+        elif algo == 'simAnnealing':
+            print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+        elif algo == 'step':
+            print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+        else:
+            print('Available algorithms are:\n\nBrute Force (brute)\nGreedy search (greedy)\nSimulated annealing (simAnnealing)\nPiecemeal solution (step)') 
+            print('\nUsage: python order.py <greedy|brute|simAnnealing|step>')
 
