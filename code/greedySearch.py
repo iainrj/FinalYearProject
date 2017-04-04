@@ -2,7 +2,7 @@ from timeit import default_timer as timer
 import support
 
 def greedySearch(score_board, countries, voters):
-    max_iterations = 100000
+    max_iterations = 10000
     iters = 0
     xNow = support.getInitialSolution(voters)
     xBest = xNow[:]
