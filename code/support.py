@@ -1,11 +1,14 @@
-import random
+import random, numpy
 
 # List<String> -> List<String>
 def getInitialSolution(countries):
+    # order that this method returns normally
     # order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Lithuania', 'Norway', 'Sweden', 'Belgium', 'Greece', 'Ireland', 'Portugal', 'Slovenia', 'Spain', 'Switzerland', 'The Netherlands', 'United Kingdom']
     # return order
+    # 2014 order
     # real_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia']
     # return real_order
+    # solution piecemeal returns
     # piecemeal_order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino','Moldova','Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Ireland','Sweden', 'Lithuania', 'Greece', 'Spain', 'Belgium', 'Portugal', 'The Netherlands', 'United Kingdom', 'Norway', 'Slovenia', 'Switzerland']
     # return piecemeal_order
     performing_countries = countries[:]
@@ -129,32 +132,3 @@ def printScoreboard(board, voting, performing):
 
 # PERFORMING_COUNTRIES_SHORT = ['UA','BY','AZ','IS','NO','RO','ME','PL','GR','AT','DE', 'SE','FR','RU','IT','SI','FI','ES','CH','HU','MT','DK','NL','SM','UK']
 # VOTING_COUNTRIES_SHORT = ['AL', 'AM', 'AT', 'AZ', 'BY', 'BE', 'DK', 'EE', 'MK', 'FI', 'FR', 'GE', 'DE', 'GR', 'HU', 'IS', 'IE', 'IL', 'IT', 'LV', 'LT', 'MT', 'MD','ME', 'NO', 'PL', 'PT', 'RO', 'RU', 'SM', 'SI', 'ES', 'SE', 'CH','NL', 'UA', 'UK']
-
-# scoreboard = numpy.zeros((26, 37), dtype=numpy.int)
-    # with open('ESC-2014-grand_final-full_results.csv', 'rbU') as csvfile:
-    #     results = csv.reader(csvfile)
-    #     results.next() # skip the first two lines
-    #     results.next()
-    #     j = 0
-    #     currentRow = []
-    #     emptyScoreboard = []
-        
-    #     for i, row in enumerate(results):
-    #         points = 0
-    #         if row[-1] != '\n':
-    #             points = row[-1]
-    #         # print row[0], row[1], points, i
-    #         currentRow.append(int(points))
-    #         # print 'cr', row[0], row[1], points, currentRow
-    #         # if i % 26 == 0:
-    #         #     print i
-    #         #     print len(currentRow)
-    #         #     print currentRow
-    #         #     emptyScoreboard.append(currentRow)
-    #         #     j = j + 1
-    #         #     currentRow = []
-    # printScoreboard(currentRow, VOTING_COUNTRIES_SHORT, PERFORMING_COUNTRIES_SHORT)
-    # # final = [currentRow[i:i + 26] for i in xrange(0, len(currentRow), 26)]
-
-    # # print 'scoreboard', final
-    # exit()
