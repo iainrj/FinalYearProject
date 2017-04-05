@@ -1,6 +1,6 @@
 import support
 
-def stepByStepSolution(score_board, countries, voters):
+def stepByStepSolution(score_board, countries, voters, maxScorePerRound):
     entertainmentValue = 0
     performing_countries = countries[:]
     solution = []
@@ -25,7 +25,7 @@ def stepByStepSolution(score_board, countries, voters):
                 continue
             for i in range(len(performing_countries)):
                 local_scores[i] = score_board[i][j] + local_scores[i]
-            otherMin = support.refinedMaxMin(local_scores, voting_countries, k)
+            otherMin = support.refinedMaxMin(local_scores, voting_countries, k, maxScorePerRound)
             distance = max(local_scores) - otherMin
             
             if distance < bestDistance or bestDistance < 0:
