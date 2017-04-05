@@ -1,47 +1,49 @@
 import random, math
 import support
 
-def simulatedAnnealing(score_board, countries, voters):
-    num_iterations = 400
-    ti = 2000
+def simulatedAnnealing(score_board, performers, voters, maxScorePerRound):
+    num_iterations = 500
+    ti = 4000
     tl = 60
-    cr_coefficient = 0.8
-    
-    # num_iterations = 250
-    # ti = 2000
-    # tl = 60
-    # cr_coefficient = 0.85
+    cr_coefficient = 0.87
     
     t = ti
     
-    xNow = support.getInitialSolution(voters)
-    entertainmentXNow, distxNow = support.getEntertainment(xNow, countries, score_board, voters)
+    xNow = support.getInitialSolution(performers, score_board, voters, maxScorePerRound)
+    entertainmentXNow, distxNow = support.getEntertainment(xNow, performers, score_board, voters, maxScorePerRound)
     
     xBest = xNow[:]
     entertainmentXBest = entertainmentXNow
+    oldEntertainment = entertainmentXNow
+    oldDistances = distxNow
 
     for i in range(num_iterations):
         for j in range(tl):
-            xPrime = support.getNeighbour(xNow)
-            entertainmentXPrime, distXPrime = support.getEntertainment(xPrime, countries, score_board, voters)
-
+            xPrime, key1 = support.getAdjacentNeighbour(xNow)
+            
+            entertainmentXPrime, distXPrime = support.offsetGetEntertainment(xPrime, performers, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound)
+            
             deltaC = entertainmentXPrime - entertainmentXNow
 
             if deltaC <= 0:
                 xNow = xPrime[:]
                 entertainmentXNow = entertainmentXPrime
+                oldEntertainment = entertainmentXPrime
+                oldDistances = distXPrime
             else:
                 q = random.randint(0, 1)
 
                 if q < math.exp(-(deltaC)/t):
                     xNow = xPrime[:]
                     entertainmentXNow = entertainmentXPrime
+                    oldEntertainment = entertainmentXPrime
+                    oldDistances = distXPrime
 
             if entertainmentXNow < entertainmentXBest:
                 # print("new solution", entertainmentXNow)
                 xBest = xNow[:]
                 entertainmentXBest = entertainmentXNow
                 i = 0
-
+        
         t = t * cr_coefficient
     return xBest, entertainmentXBest
