@@ -1,26 +1,25 @@
 from timeit import default_timer as timer
 import support
 
-def greedySearch(score_board, countries, voters):
+def greedySearch(score_board, performers, voters, maxScorePerRound):
     max_iterations = 10000
     iters = 0
-    xNow = support.getInitialSolution(voters)
+    xNow = support.getInitialSolution(performers, score_board, voters, maxScorePerRound)
     xBest = xNow[:]
-    entertainmentXBest, distances = support.getEntertainment(xBest, countries, score_board, voters)
+    entertainmentXBest, distances = support.getEntertainment(xNow, performers, score_board, voters, maxScorePerRound)
     oldEntertainment = entertainmentXBest
     oldDistances = distances
     
     for i in range(max_iterations):
         xNow, key1 = support.getAdjacentNeighbour(xNow)
-        # entertainmentXNow = getEntertainment(xNow, countries, score_board, voters, key1)
         
         # start = timer()
-        # otherE , otherD = support.getEntertainment(xNow, countries, score_board, voters)
+        # otherE , otherD = support.getEntertainment(xNow, performers, score_board, voters)
         # end = timer()
         # print('full: ', end - start)
         
         # start = timer()
-        entertainmentXNow, distances = support.offsetGetEntertainment(xNow, countries, score_board, voters, key1, oldEntertainment, oldDistances)
+        entertainmentXNow, distancesXNow = support.offsetGetEntertainment(xNow, performers, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound)
         # end = timer()
         # print('reduced: ', end - start)
         
@@ -29,5 +28,8 @@ def greedySearch(score_board, countries, voters):
             xBest = xNow[:]
             entertainmentXBest = entertainmentXNow
             i = 0
+        
+        oldEntertainment = entertainmentXNow
+        oldDistances = distancesXNow
         i = i+1
     return xBest, entertainmentXBest
