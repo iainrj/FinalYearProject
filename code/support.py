@@ -1,7 +1,7 @@
 import random, numpy
 
 # List<String> -> List<String>
-def getInitialSolution(countries):
+def getInitialSolution(performers, score_board, voters, maxScorePerRound):
     # order that this method returns normally
     # order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Lithuania', 'Norway', 'Sweden', 'Belgium', 'Greece', 'Ireland', 'Portugal', 'Slovenia', 'Spain', 'Switzerland', 'The Netherlands', 'United Kingdom']
     # return order
@@ -11,12 +11,12 @@ def getInitialSolution(countries):
     # solution piecemeal returns
     # piecemeal_order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino','Moldova','Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Ireland','Sweden', 'Lithuania', 'Greece', 'Spain', 'Belgium', 'Portugal', 'The Netherlands', 'United Kingdom', 'Norway', 'Slovenia', 'Switzerland']
     # return piecemeal_order
-    performing_countries = countries[:]
+    v_countries = voters[:]
     order = []
-    while len(performing_countries) > 0:
-        nextCountry = performing_countries[0]
+    while len(v_countries) > 0:
+        nextCountry = v_countries[0]
         order.insert(0, nextCountry)
-        performing_countries.remove(nextCountry)
+        v_countries.remove(nextCountry)
     return order
 
 # List<String> -> List<String>
@@ -38,7 +38,7 @@ def getAdjacentNeighbour(xNow):
     return neighbour, key1
 
 # List<Integer> -> List<String> -> Integer -> Integer
-def refinedMaxMin(scores, solution, j):
+def refinedMaxMin(scores, solution, j, maxScorePerRound):
     sorted_scores = sorted(scores[:])
     currentTop = sorted_scores[-1]
     minScore = sorted_scores[0]
@@ -46,12 +46,12 @@ def refinedMaxMin(scores, solution, j):
     roundsRemaining = (len(solution) - 1 - j)
 
     for score in sorted_scores:
-        if score + (12 * roundsRemaining) < currentTop:
+        if score + (maxScorePerRound * roundsRemaining) < currentTop:
             minScore = score
     return minScore
 
 # List<String> -> List<String> -> Integer -> List<List<Integers>> -> Integer
-def calculateDistances(solution, voters, no_performers, score_board):
+def calculateDistances(solution, voters, no_performers, score_board, maxScorePerRound):
     distances = []
     num_rows = len(voters)
     num_columns = no_performers
@@ -60,13 +60,13 @@ def calculateDistances(solution, voters, no_performers, score_board):
     for j in range(num_rows):
         for i in range(num_columns):
             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
-        minimumScore = refinedMaxMin(scores, solution, j)
+        minimumScore = refinedMaxMin(scores, solution, j, maxScorePerRound)
         distances.append(max(scores) - minimumScore)
     
     return distances
 
 # List -> List -> List -> List -> Integer -> Integer -> List
-def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances):
+def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound):
     entertainmentValue = 0
     performing_countries = countries[:]
     current_solution = solution[:]
@@ -80,7 +80,7 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
     for j in range(key2 + 1):
         for i in range(len(countries)):
             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
-        otherMin = refinedMaxMin(scores, solution, j)
+        otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
         l_dist.append(max(scores) - otherMin)
     
     newDistance1, newDistance2 = l_dist[-1], l_dist[-2]
@@ -92,14 +92,14 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
     return entertainmentValue, distances
 
 # List<Integer> -> List<String -> Integer -> Integer -> Integer
-def iterationsBeforeStop(sorted_scores, solution, j, iters):
-    if sorted_scores[-1] - sorted_scores[-2] > 12 * (len(solution) - 1 - j) and j+1 < iters:
-        print('Winner cannot be caught after: ', j + 1, 'iterations', sorted_scores[-1], sorted_scores[-2], (12 * (len(solution) - 1 - j)))
+def iterationsBeforeStop(sorted_scores, solution, j, iters, maxScorePerRound):
+    if sorted_scores[-1] - sorted_scores[-2] > maxScorePerRound * (len(solution) - 1 - j) and j+1 < iters:
+        print('Winner cannot be caught after: ', j + 1, 'iterations', sorted_scores[-1], sorted_scores[-2], (maxScorePerRound * (len(solution) - 1 - j)))
         return j+1
     return iters
 
 # List<String> -> List<String> -> List<List<Integer>> -> List<String> -> Integer
-def getEntertainment(solution, countries, score_board, voters):
+def getEntertainment(solution, countries, score_board, voters, maxScorePerRound):
     entertainmentValue = 0
     performing_countries = countries[:]
     current_solution = solution[:]
@@ -110,7 +110,7 @@ def getEntertainment(solution, countries, score_board, voters):
     for j in range(len(solution)):
         for i in range(len(countries)):
             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
-        otherMin = refinedMaxMin(scores, solution, j)
+        otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
         distance = max(scores) - otherMin
         distances.append(distance)
     entertainmentValue = sum(distances)
