@@ -5,14 +5,9 @@ import simulatedAnnealing as sa
 import step
 
 if __name__ == '__main__':            
-    PERFORMING_COUNTRIES = ['Ukraine','Belarus','Azerbaijan','Iceland','Norway','Romania','Armenia','Montenegro','Poland','Greece','Austria',
-    'Germany','Sweden','France','Russia','Italy','Slovenia','Finland','Spain','Switzerland','Hungary','Malta','Denmark','The Netherlands',
-    'San Marino','United Kingdom']
+    PERFORMING_COUNTRIES = ['Ukraine','Belarus','Azerbaijan','Iceland','Norway','Romania','Armenia','Montenegro','Poland','Greece','Austria', 'Germany','Sweden','France','Russia', 'Italy','Slovenia','Finland','Spain','Switzerland','Hungary','Malta','Denmark','The Netherlands','San Marino','United Kingdom']
     # Eurovision 2014 scoreboard. 1st column is Albania's vote, 2nd column is Armenia's vote, etc.
-    VOTING_COUNTRIES = ['Albania', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', 'Denmark', 'Estonia', 'FYR Macedonia', 'Finland', 'France',
-                        'Georgia', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Italy', 'Latvia', 'Lithuania', 'Malta', 'Moldova',
-                        'Montenegro', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Slovenia', 'Spain', 'Sweden', 'Switzerland',
-                        'The Netherlands', 'Ukraine', 'United Kingdom']
+    VOTING_COUNTRIES = ['Albania', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', 'Denmark', 'Estonia', 'FYR Macedonia', 'Finland', 'France', 'Georgia', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Italy', 'Latvia', 'Lithuania', 'Malta', 'Moldova', 'Montenegro', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'The Netherlands', 'Ukraine', 'United Kingdom']
     SCOREBOARD = [
         [ 0,  0,  5, 10,  8,  4,  1,  8,  0,  2,  0,  6,  0,  5,  2,  0,  0,  5, 10,  7,  5,  0, 10,  7,  0,  5,  0,  0,  7,  0,  0,  6,  0,  0,  0,  0,  0],
         [ 0,  8,  0,  7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  3,  0,  5,  1,  0,  0,  0,  0, 12,  0,  0,  0,  0,  0,  0,  6,  0],
@@ -41,6 +36,12 @@ if __name__ == '__main__':
         [ 3,  3,  0,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         [ 0,  0,  0,  0,  0,  1,  7,  0,  0,  0,  0,  3,  0,  0,  0,  4,  8,  0,  0,  0,  0,  4,  0,  0,  3,  0,  0,  0,  0,  5,  0,  5,  0,  0,  0,  0,  0]
     ]
+    # PERFORMING_COUNTRIES = ['Federer', 'Murray']
+    # VOTING_COUNTRIES = ['Set 1', 'Set 2', 'Set 3', 'Set 4', 'Set 5']
+    # SCOREBOARD = [
+    #     [ 0, 0, 0, 0, 1],
+    #     [ 1, 1, 1, 1, 0]
+    # ]
 
     algo = sys.argv[1] if len(sys.argv) > 1 else None
     num_loops = int(sys.argv[2]) if len(sys.argv) > 2 else 1
@@ -49,11 +50,11 @@ if __name__ == '__main__':
         if algo == 'brute':
             print(bf.bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
         elif algo == 'greedy':
-            print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+            print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
         elif algo == 'simAnnealing':
-            print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+            print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
         elif algo == 'step':
-            print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+            print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
         else:
             print('Available algorithms are:\n\nBrute Force (brute)\nGreedy search (greedy)\nSimulated annealing (simAnnealing)\nPiecemeal solution (step)') 
             print('\nUsage: python order.py <greedy|brute|simAnnealing|step>')
