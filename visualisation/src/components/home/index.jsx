@@ -1,11 +1,11 @@
 import { h, Component } from 'preact';
 import style from './style';
 
-import Order from '../order';
+import Chart from '../chart';
 
 export default class Home extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 
 		this.state.round = 0;
 	}
@@ -45,15 +45,13 @@ export default class Home extends Component {
 		return (
 			<div class={style.home}>
 				<div class={style.sim_controls}>
-					<h2>Round in order: {this.state.round}</h2>
+					<h2>Round in voting: {this.state.round}</h2>
 					<button class={style.sim_controls__item} onClick={e => this.incrementRound(true)}>Start Sim</button>
 					<button class={style.sim_controls__item} onClick={e => this.stopSim()}>Stop Sim</button>
 					<button class={style.sim_controls__item} onClick={e => this.resetCounter()}>Reset</button>
 				</div>
 
-				<Order float='left' title='Algorithms order' round={this.state.round}/>
-
-				<Order float='right' title='Real world order' round={this.state.round}/>
+				<Chart {...this.state} />
 			</div>
 		);
 	}

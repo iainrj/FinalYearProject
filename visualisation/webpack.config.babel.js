@@ -108,8 +108,8 @@ module.exports = {
 	]).concat(ENV==='production' ? [
 		new V8LazyParseWebpackPlugin(),
 		new webpack.optimize.UglifyJsPlugin({
-		 	output: {
-		 		comments: false
+			output: {
+				comments: false
 			},
 			compress: {
 				warnings: false,
@@ -124,7 +124,7 @@ module.exports = {
 				negate_iife: false
 			}
 		}),
-		
+
 		// strip out babel-helper invariant checks
 		new ReplacePlugin([{
 			// this is actually the property name https://github.com/kimhou/replace-bundle-webpack-plugin/issues/1

@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import style from './style';
-import scoreboard from './scoreboard';
+// import scoreboard from './scoreboard';
 
 import Country from '../country';
 
