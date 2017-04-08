@@ -4,8 +4,8 @@ import ScoreBoard from './scoreboard';
 
 const styles = {
 	width   : 1000,
-	height  : 1000,
-	padding : 30
+	height  : 800,
+	padding : 25
 };
 
 export default class Chart extends Component {
