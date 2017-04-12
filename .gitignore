@@ -15,4 +15,6 @@ InitialPlan/*.xlsx
 *.fot
 *.cb
 *.cb2
+*.bbl
+*.blg
 *.synctex.gz
