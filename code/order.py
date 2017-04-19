@@ -1,4 +1,6 @@
 import sys
+from timeit import default_timer as timer
+
 import greedySearch as gs
 import bruteForce as bf
 import simulatedAnnealing as sa
@@ -42,17 +44,35 @@ if __name__ == '__main__':
     #     [ 0, 0, 0, 0, 1],
     #     [ 1, 1, 1, 1, 0]
     # ]
+    #     PERFORMING_COUNTRIES = ['Federer', 'Murray', 'Federer', 'Murray', 'Federer', 'Murray', 'Federer']
+    # VOTING_COUNTRIES = ['Set 1', 'Set 2', 'Set 3', 'Set 4', 'Set 5', 'Set 6', 'Set 7', 'Set 8', 'Set 9']
+    # SCOREBOARD = [
+    #     [ 0, 0, 2, 0, 6, 1, 0, 0, 0],
+    #     [ 1, 1, 3, 6, 5, 6, 2, 1, 1],
+    #     [ 2, 2, 4, 4, 4, 4, 1, 2, 2],
+    #     [ 3, 3, 5, 5, 3, 3, 3, 3, 3],
+    #     [ 4, 4, 6, 2, 2, 5, 6, 4, 4],
+    #     [ 5, 5, 1, 3, 1, 1, 4, 5, 5],
+    #     [ 6, 6, 0, 1, 0, 0, 5, 6, 6]
+    # ]
 
     algo = sys.argv[1] if len(sys.argv) > 1 else None
     num_loops = int(sys.argv[2]) if len(sys.argv) > 2 else 1
         
     for i in range(num_loops):
+        print('iterations', i, 'of', num_loops)
         if algo == 'brute':
             print(bf.bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
         elif algo == 'greedy':
+            start = timer()
             print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
+            end = timer()
+            print('greedy took: ', end - start)
         elif algo == 'simAnnealing':
+            start = timer()
             print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
+            end = timer()
+            print('simulated annealing took: ', end - start)
         elif algo == 'step':
             print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
         else:
