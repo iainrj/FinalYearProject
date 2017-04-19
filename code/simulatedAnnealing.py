@@ -4,8 +4,9 @@ import support
 def simulatedAnnealing(score_board, performers, voters, maxScorePerRound):
     num_iterations = 500
     ti = 4000
-    tl = 60
-    cr_coefficient = 0.87
+    tl = 40
+    cr_coefficient = 0.92
+    i = 0
     
     t = ti
     
@@ -17,7 +18,7 @@ def simulatedAnnealing(score_board, performers, voters, maxScorePerRound):
     oldEntertainment = entertainmentXNow
     oldDistances = distxNow
 
-    for i in range(num_iterations):
+    while i < num_iterations:
         for j in range(tl):
             xPrime, key1 = support.getAdjacentNeighbour(xNow)
             
@@ -46,4 +47,5 @@ def simulatedAnnealing(score_board, performers, voters, maxScorePerRound):
                 i = 0
         
         t = t * cr_coefficient
+        i = i + 1
     return xBest, entertainmentXBest
