@@ -2,15 +2,16 @@ from timeit import default_timer as timer
 import support
 
 def greedySearch(score_board, performers, voters, maxScorePerRound):
-    max_iterations = 10000
+    max_iterations = 5000
     iters = 0
     xNow = support.getInitialSolution(performers, score_board, voters, maxScorePerRound)
     xBest = xNow[:]
     entertainmentXBest, distances = support.getEntertainment(xNow, performers, score_board, voters, maxScorePerRound)
     oldEntertainment = entertainmentXBest
     oldDistances = distances
+    i = 0
     
-    for i in range(max_iterations):
+    while i < max_iterations:
         xNow, key1 = support.getAdjacentNeighbour(xNow)
         
         # start = timer()
@@ -32,4 +33,5 @@ def greedySearch(score_board, performers, voters, maxScorePerRound):
         oldEntertainment = entertainmentXNow
         oldDistances = distancesXNow
         i = i+1
+
     return xBest, entertainmentXBest
