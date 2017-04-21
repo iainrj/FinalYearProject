@@ -29,6 +29,30 @@
 \usepackage{algorithmic}
 \usepackage{algorithm}
 
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=5mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{red},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2
+}
+
 % Headers and Footers
 \usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
 \pagestyle{fancy} % options: empty , plain , fancy
@@ -178,7 +202,7 @@ Hence the problem that this project is trying to solve is about ordering who vot
 % Later in results and evaluations describe how to design experiments to test how well the algorithms solve the problem and present experimental results with an evaluation of your suggested solutions
 % big-O
 % reasoning behind writing each algorithm
-This section should give an understanding of the main computational parts that are needed to solve this problem, before implementation can be explained. This will include some pseudocode of the algorithms used, explanations of the neighbourhoods tried and the entertainment functions designed. It is intended to give an introduction to the why and how these parts of the project exists, before section \ref{Implementation} goes into implementation details with code and explanations using Python.
+This section should give an understanding of the main computational parts that are needed to solve this problem, before implementation can be explained. This will include some pseudocode of the algorithms used, explanations of the neighbourhoods tried and the entertainment functions designed. It is intended to give an introduction to the why and how these parts of the project exists, before Section \ref{Implementation} goes into implementation details with code and explanations using Python.
 
 Firstly to help clarify the problem it is easier to view a much smaller competition and then run through the main points of theory, that then are used in the full Eurovision system.
 
@@ -243,7 +267,7 @@ However there is one major drawback of the basic MaxMin method, which is that in
 \subsubsection{RefinedMaxMin}
 This leads to a second version of the entertainment function for this problem. As it is essentially a refinement of the first function and not a brand new method it is called \textbf{RefinedMaxMin}.
 
-Where \textbf{RefinedMaxMin} and \textbf{MaxMin} differ is how the $\min$ part of equation \ref{lambda} is calculated. As some of the countries cannot win the competition after some number of rounds, they should not be taken into account when seeing if a solution is entertaining or not.
+Equation \ref{epsilon} is the same across both functions, however where \textbf{RefinedMaxMin} and \textbf{MaxMin} differ is how the $\min$ part of equation \ref{lambda} is calculated. As some of the countries cannot win the competition after some number of rounds, they should not be taken into account when seeing if a solution is entertaining or not.
 
 To find whether a team can still win, the upper bound of points left available is found. This means that we assume for each team, and for the remaining rounds left to be revealed, that they gain the maximum (12) points and the hence we find the highest score they could ever attain. This method does not take into account whether the country has already given itself a vote (in which case they would not be allowed to get 12 points in that round). This was done to simplify the method and make testing it's improvements against MaxMin easier. Furthermore finding the upper bound is generally safe, especially when removing the low scoring teams in Eurovision as voting is generally quite uniform past a certain point in the voting; i.e countries that are given high points already generally get more, and countries that have received few points continue to get few.
 
@@ -283,7 +307,7 @@ The first idea and most simple for this problem, was to swap two random elements
 
 for two random indexes $i$ and $j$
 
-This means that we swap the elements at indexes i and j and swap the rest with themselves. The code for this will be explored in section \ref{Implementation}. This method give a large possible neighbourhood as theoretically for any single solution there are \{length of solution $\times$ length of solution - 1\} possible neighbours. In the 2014 Eurovision competition this would mean $\{37 \times 36 = 1332\}$ neighbours.
+This means that we swap the elements at indexes i and j and swap the rest with themselves. The code for this will be explored in Section \ref{Implementation}. This method give a large possible neighbourhood as theoretically for any single solution there are \{length of solution $\times$ length of solution - 1\} possible neighbours. In the 2014 Eurovision competition this would mean $\{37 \times 36 = 1332\}$ neighbours.
 
 This method may be simple however, when a closer look is taken at the $\varepsilon$ values of solutions that are very similar to each other i.e they have 3 or 4 elements swapped, it is clear that their $\varepsilon$ values only differ by a little. This calls into question if the method detailed above is actually going to help the optimisation algorithm reach an optimal solution.
 
@@ -307,7 +331,7 @@ As the previous solution and the new solution only differ by one position it is 
 
 The $\varepsilon_{new}$ and $\Lambda_{ij_{old}}$ values can be found by keeping them from the old solution and passing them into the $\varepsilon$ calculation function. The $\Lambda_{ij_{new}}$ must still be re-calculated however only up to the index of the higher of the two indexes.
 
-A deeper comparison and evaluation between the two methods can be found in section \ref{Results}
+A deeper comparison and evaluation between the two methods can be found in Section \ref{Results}
 
 \subsection{Optimisation Algorithms}\label{Algorithms}
 In the previous section the necessary steps to solve the problem were outlined. Namely calculate an entertainment value ($\varepsilon$) which can be optimised. To do this it is necessary to use a set of optimisation algorithms which maximise or minimise a value in order to settle on an optimal solution.
@@ -401,7 +425,7 @@ A discussion and comparison with the other algorithms can be found in Section \r
 \subsubsection{Brute force}
 After running the greedy algorithm and collecting some initial results it became clear that it would be difficult to know by just looking at the problem, what a good $\varepsilon$ value would be. This lead to the discussion about using a brute force algorithm and if it was possible. 
 
-The implementation is extremely simple, even more so than greedy. The reasons why are to do with Python and are explained in section \ref{Implementation}. Even though the pseudocode and the real code will differ, the pseudocode help understand the algorithm so is shown in Algorithm \ref{bruteForceCode}
+The implementation is extremely simple, even more so than greedy. The reasons why are to do with Python and are explained in Section \ref{Implementation}. Even though the pseudocode and the real code will differ, the pseudocode help understand the algorithm so is shown in Algorithm \ref{bruteForceCode}
 
 \begin{algorithm}
 \caption{Brute Force}
@@ -561,11 +585,11 @@ It does this over and over until it finds a full solution. Where population-base
 
 This method hopes that by picking the best possible next choice this will lead to a good approximation or globally optimal solution. It acts very much like Greedy Search that has been discussed, and the pseudocode supports that, however by working on partial solutions instead of full solutions, the idea is that it will at least approximate a good solution without having the need to check many full solutions, hence increasing performance, especially for large solution problems.
 
-The pseudocode for it is shown in Algorithm \ref{piecemealCode} and the implementation is discussed in more detail in section \ref{Implementation}.
+The pseudocode for it is shown in Algorithm \ref{piecemealCode} and the implementation is discussed in more detail in Section \ref{Implementation}.
 
 The main points of interest are that even though lines 7 - 9 look very similar to the three algorithms discussed before, there is a subtle difference. In this algorithm, the value that is being checked against the best is not entertainment ($\varepsilon$) but the distances ($\Lambda$).
 
-Another point of interest is a more academic one. It is how do you choose what voter is put at the start. The two most obvious choices are randomly choosing one, which complicates the code slightly, or picking the first from the given list of voters, making the code simpler. The choices and their effect on the $\varepsilon$ returned is explored more in section \ref{Results}
+Another point of interest is a more academic one. It is how do you choose what voter is put at the start. The two most obvious choices are randomly choosing one, which complicates the code slightly, or picking the first from the given list of voters, making the code simpler. The choices and their effect on the $\varepsilon$ returned is explored more in Section \ref{Results}
 
 \begin{algorithm}
 \caption{Piecemeal Search}
@@ -612,7 +636,7 @@ which can then be simplified for Big-O notation into equation \ref{bigOPiecemeal
 Looking at the Big-O complexity in equation \ref{bigOPiecemeal} and comparing it to the others is done it Section \ref{Results}.
 
 \clearpage
-\section{Implementation of Algorithms}\label{Implementation}
+\section{Implementation of System}\label{Implementation}
 % describes system but does so at finer level of detail, down to code level
 % realisation of concepts and ideas developed earlier
 % complete source code should be provided separately
@@ -625,12 +649,130 @@ Looking at the Big-O complexity in equation \ref{bigOPiecemeal} and comparing it
 % lack of suitable supporting framework
 % over ambitious project aims
 % A seemingly disproportionate amount of project time can be taken up in dealing with such problems. The Implementation section gives you the opportunity to show where that time has gone.
+In this section, the main important parts of the projects code will be explored. This will take the theory and pseudocode described in Section \ref{AlgorithmDesigns} and discuss the actual code implemented as part of the project. It will both discuss some specific code as well as a discussion as to why parts of the system were implemented in certain ways. All code referenced in this section can be found in the attached zip file, submitted along with this report.
 
-\subsection{Re-Use of Code}
-\subsection{Entertainment Functions}
-\subsection{Random and Adjacent Neighbourhood Functions}
-\subsection{Brute force and Python}
-\subsection{Piecemeal}
+\subsection{Entertainment Functions wrappers}\label{Imp-Ewrappers}
+The $\varepsilon$ functions form one of the most important parts of this project, however for them to be implemented they need some contextual data. The functions described below are larger functions that wrap around and allow the $\varepsilon$ functions to do their work. The $\varepsilon$ functions actually form just the $min(S)$ part of equation \ref{lambda}. 
+
+These wrapper functions share an important part, which is shown in \ref{findScores}.\footnote{Section of code from \textbf{getEntertainment} in \textit{support.py}. Full function can be found in attached source code}
+
+\begin{figure}[H]
+\caption{Calculating the cumulative scores per participant}
+\label{findScores}
+\begin{lstlisting}
+for j in range(len(solution)):
+  for i in range(len(countries)):
+    v = voters.index(solution[j])
+    scores[i] = scores[i] + score_board[i][v]
+    ...
+\end{lstlisting}
+\end{figure}
+
+The main point of interest is the two nested \textit{for} loops and specifically lines 3 and 4.
+
+As the distance ($\Lambda$) is found as the difference between max and min scores in each round, it is necessary to go through and cumulatively add the scores given to each \textit{participant} in every round. This is stored in the array $scores$ at the index for that \textit{participant}: $scores[i]$. The $score\_board$ is the matrix of all scores given, as discussed in Section \ref{Background}. 
+
+These lines are interesting to highlight as they are likely the most critical lines in all the system. Every algorithm must use them at some point and all $\varepsilon$ functions will need them to calculate the $\varepsilon$ value.
+
+As the score lookup is done against a matrix of scores, it is necessary to find the correct column to look in. The row is the current \textit{participant}: $i$, however finding the column is a little more complex. 
+
+The columns in the matrix are in a certain order, normally alphabetical in Eurovision datasets. This, along with the fact that each solution is a permutation of that order, means that the currently voting country in the solution, $solution[j]$, must be found in the original order to correctly retrieve the score it gives. By keeping track of the original order as it corresponds to the scoreboard, the system only ever has to keep one matrix in memory, along with 2 list of \textit{voters} and \textit{participants}. Any other method would include shuffling the scoreboard into the order of the current solution. As the scoreboard grows i.e in other, larger, problems, this method would become untenable and possibly begin adversely affecting the algorithm's runtimes and complexities.
+
+The method $array.index(element)$ returns the index in $array$ of the given $element$. In this case $solution[j]$, would be a country name such as "Germany", and the value of $v$ will be an integer corresponding to the column.
+
+Looking at the full code listings there are actually two methods that wrap around $\varepsilon$ calculation functions to provide them with context and data. These are called \textbf{offsetGetEntertainment} and \textbf{getEntertainment}, and they both share the code shown in Figure \ref{findScores}. They are also fully independent of the \textit{maxMin} and \textit{refinedMaxMin} functions which are the actual $\varepsilon$ functions. These methods differ because of when and why they can be used.
+
+The main reason for these differences is shown in Section \ref{Neighbours} as using different neighbourhood methods leads to different ways to calculate the entertainment. 
+
+\subsubsection{offsetGetEntertainment}
+Firstly the more complex \textbf{offsetGetEntertainment} is used in conjunction with adjacent neighbour swaps as it relies on using the previous $\varepsilon$ value. The theory behind why this works is explained in Section \ref{Neighbours}, specifically the Adjacent neighbours subsection and equations \ref{adjacent} and \ref{Recalc}.
+
+This function is shown in Figure \ref{getEntertainment}
+
+\begin{figure}[H]
+\caption{getEntertainment method}
+\label{offsetGetEntertainment}
+\begin{lstlisting}
+def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound):
+    
+    entertainmentValue = 0
+    performing_countries = countries[:]
+    current_solution = solution[:]
+    distances = oldDistances[:]
+    key2 = key1 + 1
+
+    oldDistance1, oldDistance2 = oldDistances[key1], oldDistances[key2]
+
+    l_dist = []
+    scores = [0] * 26
+    for j in range(key2 + 1):
+        for i in range(len(countries)):
+            v = voters.index(solution[j])
+            scores[i] = scores[i] + score_board[i][v]
+        otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
+        l_dist.append(max(scores) - otherMin)
+    
+    newDistance1, newDistance2 = l_dist[-2], l_dist[-1]
+    entertainmentValue = oldEntertainment - (oldDistance1 + oldDistance2) + (newDistance1 + newDistance2)
+    
+    distances[key1] = newDistance2
+    distances[key2] = newDistance1
+    
+    return entertainmentValue, distances
+\end{lstlisting}
+\end{figure}
+
+The important parts to understand about this implementation are that for it to work it must be given two keys that correspond to the indexes of the \textit{voters} that were swapped to get this solution; the $\varepsilon$ value of the old solution, and the array of the distances used to calculate that solution's $\varepsilon$ value.
+
+One obvious difference is between the \textit{for} loops in Figure \ref{offsetGetEntertainment} and Figure \ref{findScores}. In the \textbf{offsetGetEntertainment} method the \textit{for} loops only need to calculate the scores up the higher of the two keys as they scores after there are unchanged.
+
+There are some further parts that need explanations. The actual recalculation described in Equation \ref{Recalc} is implemented in line 21. On lines 3 and 4, a copy of $countries$ and $solution$ are taken using Pythons array copy syntax. This is most likely not really necessary but during implementation there was a couple of times where after amending one of the lists locally inside a method, the global version of that list that should have stayed the same, was also changed. This is a little hack that means that any local version of the lists that are amended will not override the original. 
+
+Line 20 gets the distances for the two keys, using Python's reverse array accessing. As the $l_dist$ variable is often a partial list of distances, the final element being the second key's distance, the new distances can be returned by accessing the last two elements.
+
+Lines 23 and 24 are necessary so that the new distance values can be passed to this function again, but this time as oldDistances and their distances will be in the correct positions. Essentially what this does is constantly pass around a list of distances, amending it by swapping values before passing it on.
+
+\textbf{offsetGetEntertainment} is certainly faster and more performant for most solutions. This does depend on where in the solution the swaps have taken place (explored in Section \ref{eCalc}.) The main drawback of this method is that is can only be used with adjacent neighbour swaps.
+
+\subsubsection{getEntertainment}
+The second entertainment function wrapper is a simpler version than the one shown in Figure \ref{offsetGetEntertainment}. \textbf{getEntertainment} is the general purpose wrapper for calculating the entertainment of a given solution. It can work with either of the two neighbourhoods described. This makes it more general purpose, however it also make it slower especially when the solution size is large.
+
+The points of interest here are found in lines 14, 15 and 16. These lines implement that which can be found in Equations\ref{lambda} and \ref{epsilon} exactly as described. Line 14 finds the difference between the max of the scores and the whatever min was returned by the current $\varepsilon$ function. Line 15 adds the $\Lambda$ value found to an array and then line 16 sums all the $\Lambda$ values found to finally get a $\varepsilon$ value. To allow it to interact with the \textbf{offsetGetEntertainment} method it also keeps track of the array of $\Lambda$ values and returns them so they can be passed to \textbf{offsetGetEntertainment} 
+% 7000
+\begin{figure}[H]
+\caption{getEntertainment method}
+\label{getEntertainment}
+\begin{lstlisting}
+def getEntertainment(solution, countries, score_board, voters, maxScorePerRound):
+  entertainmentValue = 0
+  performing_countries = countries[:]
+  current_solution = solution[:]
+    
+  distances = []
+  iters = 37
+  scores = [0] * 26
+  for j in range(len(solution)):
+    for i in range(len(countries)):
+      v = voters.index(solution[j])
+      scores[i] = scores[i] + score_board[i][v]
+    otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
+    distance = max(scores) - otherMin
+    distances.append(distance)
+  entertainmentValue = sum(distances)
+  
+return entertainmentValue, distances
+\end{lstlisting}
+\end{figure}
+
+% refer that testing is in results
+
+\subsection{$\varepsilon$ functions}
+
+\subsection{Random and Adjacent Neighbourhood Functions}\label{Imp-Neighbours}
+\subsection{Comparing solutions}\label{Imp-Solutions}
+\subsection{Python and brute force implementation}\label{Imp-Python}
+\subsection{Piecemeal algorithm}\label{Imp-Piecemeal}
+\subsection{Re-Use of Code for future work}\label{Imp-Reuse}
 
 \section{Results and Evaluation}\label{Results}
 % describe to what extent you achieved your goals
@@ -642,8 +784,10 @@ Looking at the Big-O complexity in equation \ref{bigOPiecemeal} and comparing it
 % eg. describe how you compare the performance of your algorithm to other algorithms to indicate better performance and why this is a sound approach. then summarise the results of the tests of experiments
 % critically evaluate your results in the light of these tests, describing its strengths and weaknesses. ideas for improvement can be carried over into Future work.
 % present a critical appraisal of the project as a whole, including why the programming language and methodology chosen were appropriate
+\subsection{Solutions}
+talk about solutions found
 
-\subsection{Partial and Full $\varepsilon$ calculation}
+\subsection{Partial and Full $\varepsilon$ calculation}\label{eCalc}
 A full calculation of the entertainment value, such as in the random swap method involves \{number of voters $\times$ number of participants\}; in the 2014 version of the problem this always involves: $37 * 26 = 962$ score calculations (37 = number of voters, 26 = number of participants).
 
 This means that the partial entertainment calculation will involve:
@@ -652,7 +796,18 @@ This means that the partial entertainment calculation will involve:
 \item Min = 2 * 26 = 52 score calculations
 \item Average = 18 * 26 = 468 score calculations
 \end{itemize}
+% generalise this in terms of V and P
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=17cm, height=10cm]{../code/misc/reducedvsFullDistanceCalc}
+\caption{Average time taken to perform full and partial $\varepsilon$ calculation on the same solution}
+\label{f_recalcComparison}
+\end{figure}
+% talk about how found these values
+% talk about testing full against partial by running them and comparing them
+
+\subsection{maxMin and refinedMaxMin}\label{maxMin}
 The effect this has on the minimum value that is used in Equation 1, is shown in Figure \ref{f_maxminDif}. The graph shows the minimum scores that are returned by the two methods as green and blue points, as well as the difference between the two values (red line and red numbers) over a single typical competition. From this graph it can be seen that the maxMin method stays relatively low as in this competition the lowest score at the end was only 2 points. On the other hand, the refinedMaxMin method diverges around round 22. This is when it can start ruling out \textit{performers} from winning the overall crown. By the last few round the difference is quite large as there are only a few countries that could still win so only their scores should be taken into account for entertainment.
 
 \begin{figure}[H]
@@ -662,8 +817,9 @@ The effect this has on the minimum value that is used in Equation 1, is shown in
 \label{f_maxminDif}
 \end{figure}
 
-% comparison of algorithms complexity
-Comparing Simluated Annealing to Greedy Search in equation \ref{greedyCompSimp}, we see that Simulated Annealing and Greedy Search are broadly similar. They are both polynomial time algorithms which when compared to Brute force explains why they can find solutions in a much shorter time. 
+
+\subsection{Comparison of Big-O Complexities}
+Comparing Simulated Annealing to Greedy Search in equation \ref{greedyCompSimp}, we see that Simulated Annealing and Greedy Search are broadly similar. They are both polynomial time algorithms which when compared to Brute force explains why they can find solutions in a much shorter time. 
 
 
 \section{Future Work}\label{FutureWork}
@@ -673,6 +829,7 @@ Comparing Simluated Annealing to Greedy Search in equation \ref{greedyCompSimp},
 % is the solution optimal
 % evaluating the entertainment function using real world people
 % more entertainment functions
+% enhance code for performance
 
 \section{Conclusions}\label{Conclusions}
 % summary of the aims of the project and a restatement of the main results, i.e. what has been learnt and acheived
@@ -682,7 +839,7 @@ Comparing Simluated Annealing to Greedy Search in equation \ref{greedyCompSimp},
 % identify the impact of what we have done on the assumptions, concepts and ideas we used to make decisions about our work
 % try to identify the characteristics of the problem that has been addressed , and consider whether assumptions of decisions about the relevant approach to solving the problem had been appropriate, in order to make a better decision in relation to problems that might be encountered in the future.
 
-\section*{Glossary}
+\section*{Glossary of Terms}
 \addcontentsline{toc}{section}{Glossary}
 \begin{enumerate}
 \item \textbf{Voters ($V$)}: All countries that are in the Eurovision song contest who vote in the final. The voters is a list of countries. It looks like ["Ukraine", "Austria", "France",....]
