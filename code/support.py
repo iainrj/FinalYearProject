@@ -51,19 +51,20 @@ def refinedMaxMin(scores, solution, j, maxScorePerRound):
     return minScore
 
 # List<String> -> List<String> -> Integer -> List<List<Integers>> -> Integer
-def calculateDistances(solution, voters, no_performers, score_board, maxScorePerRound):
-    distances = []
-    num_rows = len(voters)
-    num_columns = no_performers
-    scores = [0] * num_rows
+# UNUSED
+# def calculateDistances(solution, voters, no_performers, score_board, maxScorePerRound):
+#     distances = []
+#     num_rows = len(voters)
+#     num_columns = no_performers
+#     scores = [0] * num_rows
     
-    for j in range(num_rows):
-        for i in range(num_columns):
-            scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
-        minimumScore = refinedMaxMin(scores, solution, j, maxScorePerRound)
-        distances.append(max(scores) - minimumScore)
+#     for j in range(num_rows):
+#         for i in range(num_columns):
+#             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
+#         minimumScore = refinedMaxMin(scores, solution, j, maxScorePerRound)
+#         distances.append(max(scores) - minimumScore)
     
-    return distances
+#     return distances
 
 # List -> List -> List -> List -> Integer -> Integer -> List
 def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound):
@@ -79,7 +80,8 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
     scores = [0] * 26
     for j in range(key2 + 1):
         for i in range(len(countries)):
-            scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
+            v = voters.index(solution[j])
+            scores[i] = scores[i] + score_board[i][v]
         otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
         l_dist.append(max(scores) - otherMin)
     
@@ -109,7 +111,8 @@ def getEntertainment(solution, countries, score_board, voters, maxScorePerRound)
     scores = [0] * 26
     for j in range(len(solution)):
         for i in range(len(countries)):
-            scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
+            v = voters.index(solution[j])
+            scores[i] = scores[i] + score_board[i][v]
         otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
         distance = max(scores) - otherMin
         distances.append(distance)
