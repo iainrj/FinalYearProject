@@ -85,11 +85,11 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
         otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
         l_dist.append(max(scores) - otherMin)
     
-    newDistance1, newDistance2 = l_dist[-1], l_dist[-2]
+    newDistance1, newDistance2 = l_dist[-2], l_dist[-1]
     entertainmentValue = oldEntertainment - (oldDistance1 + oldDistance2) + (newDistance1 + newDistance2)
     
-    distances[key1] = newDistance1
-    distances[key2] = newDistance2
+    distances[key1] = newDistance2
+    distances[key2] = newDistance1
     
     return entertainmentValue, distances
 
