@@ -26,6 +26,8 @@
 \usepackage{url}
 \usepackage{wrapfig}
 \usepackage{amsmath}
+\usepackage{algorithmic}
+\usepackage{algorithm}
 
 % Headers and Footers
 \usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
@@ -176,9 +178,11 @@ Hence the problem that this project is trying to solve is about ordering who vot
 % Later in results and evaluations describe how to design experiments to test how well the algorithms solve the problem and present experimental results with an evaluation of your suggested solutions
 % big-O
 % reasoning behind writing each algorithm
-To clarify the problem it is easier to view a much smaller competition and then run through the main points of theory, that then are used in the full Eurovision system.
+This section should give an understanding of the main computational parts that are needed to solve this problem, before implementation can be explained. This will include some pseudocode of the algorithms used, explanations of the neighbourhoods tried and the entertainment functions designed. It is intended to give an introduction to the why and how these parts of the project exists, before section \ref{Implementation} goes into implementation details with code and explanations using Python.
 
-Firstly we design a competition that involves 3 teams total, of which 2 are \textit{participants}. The scoring system is even more simple than the one used by Eurovision. Here each voting team gives 1 point the team they prefer and 0 to the other. A team cannot give itself 1 point. This produces a matrix of scores similar to the one in Figure \ref{f_2014Scores}. It is shown in Table \ref{t_simpleMatrix}.
+Firstly to help clarify the problem it is easier to view a much smaller competition and then run through the main points of theory, that then are used in the full Eurovision system.
+
+Firstly we design a competition that involves 3 teams total, of which 2 are \textit{participants}. The scoring system is even more simple than the one used by Eurovision. Here each voting team gives 1 point the team they prefer and 0 to the other. A team cannot give itself 1 point. This produces a lot of scores similar to the one in Figure \ref{f_2014Scores}. It is shown in Table \ref{t_simpleMatrix}.
 
 \begin{table}[H]
 \centering
@@ -210,22 +214,23 @@ We can see that France wins this competition, with 2 points. This cumulative sco
 
 All that is needed to turn this simple example into Eurovision is to add all the \textit{voters} and \textit{participants} and change the scores given out to be $12, 10, 8-1$ instead of just 1 and 0.
 
-\subsection{Entertainment Function}\label{EntertainmentFunction}
+\subsection{Entertainment Functions}\label{EntertainmentFunction}
 From the small example, it is quite easy to think of some theoretical reasons why a given order is entertaining. This leads straight into the design of entertainment functions and how they model entertainment. 
 
 It is important to start with the design of the entertainment functions as they are the main workhorse part of finding solutions to the problem. The approach was to analyse the competition and try and identify things in a competition that lead to excitement. From those ideas, it was a case of trying to formalise that theory into a concrete piece of maths that could then be programmed. Furthermore the entertainment functions are quite problem specific and may not transfer well into other problems, whereas the algorithms are entirely agnostic to the problem at hand. This means the entertainment functions follow much more closely from the problem itself than any other part of the project.
 
 Any entertainment functions talked about in this section share some characteristics that need to be explained. The first is that they take a \textbf{solution ($\Phi$)} to the problem (see Glossary-3) as input and they return a single \textbf{entertainment value} ($\varepsilon$) (see Glossary-4). Moreover they calculate the \textbf{scores}($S$) (see Glossary-6) for each \textit{participant} country every \textbf{round} ($R$)(see Glossary-5).
 
+\subsubsection{MaxMin}
 The first entertainment function that was designed is named \textbf{MaxMin} and as it's name suggests it works by finding the difference between the highest score (max) and the lowest score (min) after each voting round. It then sums the value which is the $\varepsilon$ value for that solution. This function follows quite naturally from watching and analysing the Eurovision competition as the way roll-call style voting works, everything is building towards the later end of the voting order. Hence it seems to be a innate part of the competition that you would want every country to be in with a chance of winning for as many rounds as possible. Moreover as there is only one prize, for first place, it is even less important to worry about positioning other than the top.
 
 So each round the distance ($\Lambda$) is calculated as such:
-\begin{equation}
+\begin{equation}\label{lambda}
 	\Lambda = \max(S) - \min(S)
 \end{equation}
 
 Then keeping the distance per round $i$ as $\Lambda_i$, the entertainment value ($\varepsilon$) is found by:
-\begin{equation}
+\begin{equation}\label{epsilon}
 	\varepsilon = \sum_{i=0}^{n_R}  \Lambda_i
 \end{equation}
 
@@ -235,30 +240,378 @@ Over the course of a whole competition i.e: $n_R$ voting rounds, it is intuitive
 
 However there is one major drawback of the basic MaxMin method, which is that in some rounds, especially later in the competition, the last place country is actually mathematically eliminated from the race for first place.
 
+\subsubsection{RefinedMaxMin}
 This leads to a second version of the entertainment function for this problem. As it is essentially a refinement of the first function and not a brand new method it is called \textbf{RefinedMaxMin}.
 
-Where \textbf{RefinedMaxMin} and \textbf{MaxMin} differ is how the $\min$ part of equation 1 is calculated. As some of cannot win the competition, they should not be taken into account when seeing if a solution is entertaining or not.
+Where \textbf{RefinedMaxMin} and \textbf{MaxMin} differ is how the $\min$ part of equation \ref{lambda} is calculated. As some of the countries cannot win the competition after some number of rounds, they should not be taken into account when seeing if a solution is entertaining or not.
 
-To find whether a team can still win, the upper bound of points left available is found. This means that we assume for each team, and for the remaining rounds left to be revealed, that they gain the maximum (12) points and the hence we find the highest score they could ever attain. This method does not take into account whether the country has already given itself a vote (in which case they would not be allowed to get 12 points in that round). This was done to simplify the method and make testing it's improvements against MaxMin easier.
+To find whether a team can still win, the upper bound of points left available is found. This means that we assume for each team, and for the remaining rounds left to be revealed, that they gain the maximum (12) points and the hence we find the highest score they could ever attain. This method does not take into account whether the country has already given itself a vote (in which case they would not be allowed to get 12 points in that round). This was done to simplify the method and make testing it's improvements against MaxMin easier. Furthermore finding the upper bound is generally safe, especially when removing the low scoring teams in Eurovision as voting is generally quite uniform past a certain point in the voting; i.e countries that are given high points already generally get more, and countries that have received few points continue to get few.
 
-The method for finding if a team can still win is to first sort the scores for every country in round $i$ in ascending order. Then iterating through that list of scores from the start and for each round checking whether equation 3 is true.
-\begin{equation}
+The method for finding if a team can still win is to first sort the scores for every country in round $i$ in ascending order. Then iterating through that list of scores from the start and for each score checking whether equation \ref{stillWin} is true.
+\begin{equation}\label{stillWin}
 	countriesScore + (maxScorePerRound * roundsRemaining) < currentTopScore
 \end{equation}
 
-If equation 3 hold true then that country cannot win and it is the minimum score
+If equation \ref{stillWin} hold true then that country cannot win even if it received the maximum number of points (12 in Eurovision's case) and the leaders received the worst score possible (0), for the remaining voting rounds. As the scores are in ascending order the last minScore found for which Equation \ref{stillWin} held true is the minimum score to be returned.
 
+It is quite simple to justify this refinement when looking at the competition. Those teams who cannot win should will not be making a mark on the entertainment of the voting order as most viewers will not be paying attention to their scores. Moreover this refinement only works in competitions where there is only interest at the top of the table as opposed to competitions with relegations or play-offs, where more than just who is the overall winner is important.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=17cm, height=9cm]{../code/misc/difference_MinvsRefinedMin}
-\caption{Difference is $\Lambda$ found for MaxMin method and RefinedMaxMin}
-\label{f_maxminDif}
-\end{figure}
+\subsection{Neighbourhoods}\label{Neighbours}
+An important part of solving optimisation problems is designing and implementing neighbourhoods for given solutions. As a solution ($\Phi$) is a list of \textit{voters} in a certain order, then we define a neighbourhood a solution as any other solution that has two members swapped. This means that there are only two changes between a solution and any of it's neighbours.
+
+In this regard an order is a \textit{permutation} of the \textit{voters}. Using Cauchy's two line notation for permutations\cite{Cauchy}, we can show the basic theory for neighbourhoods.
+
+\begin{equation}\label{neighbourhood}
+\begin{pmatrix}
+x_{1} & x_{2} & x_{3} & \cdots & x_{n} \\
+\sigma(x_{1}) & \sigma(x_{2}) & \sigma(x_{3}) & \cdots & \sigma(x_{n}) \\
+\end{pmatrix}
+\end{equation}
+
+Equation \ref{neighbourhood} shows the first solution on the top row and a neighbour of that solution on the bottom row. The functions that map the elements of a solution to a neighbour ($\sigma$) are explained below.
+
+These methods are examples of cyclic permutations i.e a permutation of a set which maps a subset of elements to each other in a cyclic way, while mapping to themselves all other elements of the set. The cyclic parts of a permutation are called \textit{cycles}. A cycle with only two elements is called a \textit{transposition}\cite{cyclicPerm}. As both the methods following only contains two indexes, they are transpositions.
+
+\subsubsection{Random neighbour}
+The first idea and most simple for this problem, was to swap two random elements of the ordering. This means that the function $\sigma$ swaps the two elements at those indexes. This method can be described as such in equation \ref{random}.
+
+\begin{equation}\label{random}
+\begin{split}
+	\sigma_r = x_i \mapsto x_j,\\ x_j \mapsto x_i,\\ \forall x \neq i \lor \forall x \neq j: x \mapsto x
+\end{split}
+\end{equation}
+
+for two random indexes $i$ and $j$
+
+This means that we swap the elements at indexes i and j and swap the rest with themselves. The code for this will be explored in section \ref{Implementation}. This method give a large possible neighbourhood as theoretically for any single solution there are \{length of solution $\times$ length of solution - 1\} possible neighbours. In the 2014 Eurovision competition this would mean $\{37 \times 36 = 1332\}$ neighbours.
+
+This method may be simple however, when a closer look is taken at the $\varepsilon$ values of solutions that are very similar to each other i.e they have 3 or 4 elements swapped, it is clear that their $\varepsilon$ values only differ by a little. This calls into question if the method detailed above is actually going to help the optimisation algorithm reach an optimal solution.
+
+\subsubsection{Adjacent neighbour}
+Those questions about the efficacy of the random method leads to another method for finding a neighbour of a solution. As solutions that are close together are usually quite similar, it is intuitive that swapping adjacent elements may improve the performance.
+
+This method works by finding a random value between 0 and length of solution - 1. Then swapping the element at that index with its immediate neighbour to the right i.e. index + 1. It can be expressed in the same way as in equation \ref{random} in equation \ref{adjacent}, except that in this case index $i$ is a random number and index $j = i + 1$.
+
+\begin{equation}\label{adjacent}
+\begin{split}
+	\sigma_a = x_i \mapsto x_j,\\ x_j \mapsto x_i,\\ \forall x \neq i \lor \forall x \neq j: x \mapsto x
+\end{split}
+\end{equation}
+
+Another difference between this method and the random method is how it can actually be calculated. After finding a neighbour of a given solution, the $\varepsilon$ value of that solution must be found. By swapping 2 adjacent countries in the solution a \textit{partial re-calculation} of the entertainment value can be done using the entertainment value of the previous solution. 
+
+As the previous solution and the new solution only differ by one position it is possible to only partially re-calculate the $\varepsilon$ value. Re-calculation involves removing the distances for the two rounds of the swapped countries in the old solution and adding them back in their new positions in the new solution. The equation for this is shown in \ref{Recalc}
+\begin{equation}\label{Recalc}
+	\varepsilon_{new} = \varepsilon_{old} - \Lambda_{ij_{old}} + \Lambda_{ij_{new}}
+\end{equation}
+
+The $\varepsilon_{new}$ and $\Lambda_{ij_{old}}$ values can be found by keeping them from the old solution and passing them into the $\varepsilon$ calculation function. The $\Lambda_{ij_{new}}$ must still be re-calculated however only up to the index of the higher of the two indexes.
+
+A deeper comparison and evaluation between the two methods can be found in section \ref{Results}
 
 \subsection{Optimisation Algorithms}\label{Algorithms}
+In the previous section the necessary steps to solve the problem were outlined. Namely calculate an entertainment value ($\varepsilon$) which can be optimised. To do this it is necessary to use a set of optimisation algorithms which maximise or minimise a value in order to settle on an optimal solution.
+
+\subsubsection{Greedy Search}
+The first algorithm that was posited was a simple greedy search algorithm. Greedy search works on the idea that by selecting the optimal choice at every possible stage, it will lead to a globally optimal solution. 
+
+At first glance it is not obvious to see if the problem we are attempting is simple or complex. This lead to greedy search as a good first try as it is sufficiently simple to allow for easy writing of the code and will likely find the optimal solution if the solution space is relatively simple. If the solution space \textit{is} in fact too complex then greedy may instead find a good approximation for the problem.
+
+The pseudocode for greedy is shown in Algorithm \ref{greedyCode}
+
+\begin{algorithm}
+\caption{Greedy Search}
+\label{greedyCode}
+\begin{algorithmic}[1]
+\REQUIRE list of voters
+\REQUIRE scoreBoard
+\REQUIRE list of performers
+\STATE $xNow \leftarrow getInitialSolution()$
+\STATE $xBest \leftarrow getInitialSolution()$
+\STATE $entertainmentXBest \leftarrow getEntertainment(xBest)$
+
+\WHILE{$i < maxIterations$}
+\STATE $xNow = getNeighbour(xNow)$
+\STATE $entertainmentXNow = getEntertainment(xNow)$
+
+\IF{entertainmentXNow $<$ entertainmentXBest}
+\STATE $xBest = xNow$
+\STATE $entertainmentXBest = entertainmentXNow$
+\STATE $i = 0$
+\ENDIF
+\STATE $i = i + 1$
+\ENDWHILE
+\RETURN XBest, EntertainmentXBest
+\end{algorithmic}
+\end{algorithm}
+
+As can be seen, it is a very simple algorithm that takes possible solutions and compares them to the already found best solution. It's simplicity is, unfortunately, also it's downfall in this problem. Although it can find a good approximate solution it is not able to find optimal solutions that other algorithms do find.
+
+Looking at the pseudocode, and with some simplifying assumptions the time complexity for this greedy search implementation can be found.
+
+This is done by giving all the instructions that make a difference to complexity, a value $T_i$ from their line number. This means line 5 is $T_5$, then working out how many times that instruction will need to be run given an input. The input is the \textit{voters} and \textit{participants}, $V$ and $P$. Some lines can be ignored as they do very little to complexity.
+
+Firstly,
+
+$T_1$ = run once with $V$ steps
+
+$T_2$ = run once
+
+$T_3$ = run once with $V \times P$ steps
+
+The main loop (lines 6 - 15) is constant, given it comes from \textit{maxIterations}. It adds $m$ times to the instructions inside it. So:
+
+$T_5 = m$ times with constant steps
+
+$T_6 = m$ times with $V \times P$ steps; as worst case, assume that full re-calculation is needed
+
+$T_7 - T_{11}= m$ times as is worst case, so assume this block always run
+
+$T_{12}= m$
+
+$T_{14} = 1$
+
+Factoring this down into equation \ref{greedyComp} gives: 
+
+\begin{equation}\label{greedyComp}
+\begin{aligned}
+	f(n) ={} & \ (V \times T_1) + T_2 + (V \cdot P \times T_3) + (m \times T_5) + (m \times V \cdot P \times T_6) \\
+	 	& + (m \times T_{7 - 11}) + (m \times T_{12}) + T_{14}
+\end{aligned}
+\end{equation}
+
+From this we can safely ignore anything that is less than the highest order as it will dominate the complexity growth. Moreover we can see that the highest order is $T_6$, so we are left with equation \ref{greedyCompSimp}
+
+\begin{equation}\label{greedyCompSimp}
+\begin{aligned}
+	f(n) ={} & \ (m \times V \cdot P \times T_6) \approx m \times V \cdot P
+\end{aligned}
+\end{equation}
+
+where $P <= V \ll m$. This can be further simplified in terms of \textit{voters} ($V$), as $P$ is always less than or equal to $V$ and $m$ is always larger or equal to $V$, they can be equated to $V$. The coefficients of $m$ and $P$ compared to $V$ don't matter to the complexity, just that they are near the same size. This leaves us with a fair approximation of the complexity in equation \ref{greedyCompFinal}.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
+
+\begin{equation}\label{greedyCompFinal}
+\begin{aligned}
+	O(n) \approx{} & \ m \times V \cdot P \approx V \times V \times V \approx V^3
+\end{aligned}
+\end{equation}
+
+A discussion and comparison with the other algorithms can be found in Section \ref{Results}.
+
+\subsubsection{Brute force}
+After running the greedy algorithm and collecting some initial results it became clear that it would be difficult to know by just looking at the problem, what a good $\varepsilon$ value would be. This lead to the discussion about using a brute force algorithm and if it was possible. 
+
+The implementation is extremely simple, even more so than greedy. The reasons why are to do with Python and are explained in section \ref{Implementation}. Even though the pseudocode and the real code will differ, the pseudocode help understand the algorithm so is shown in Algorithm \ref{bruteForceCode}
+
+\begin{algorithm}
+\caption{Brute Force}
+\label{bruteForceCode}
+\begin{algorithmic}[1]
+\REQUIRE list of voters
+\REQUIRE scoreBoard
+\REQUIRE list of performers
+\STATE $xBest \leftarrow getInitialSolution()$
+\STATE $entertainmentXBest \leftarrow getEntertainment(xBest)$
+
+\FORALL{$S \in Solutions$}
+\STATE $entertainmentXNow = getEntertainment(S)$
+
+\IF{entertainmentXNow $<$ entertainmentXBest}
+\STATE $xBest = xNow$
+\STATE $entertainmentXBest = entertainmentXNow$
+\ENDIF
+\ENDFOR
+\RETURN XBest, EntertainmentXBest
+\end{algorithmic}
+\end{algorithm}
+
+When this code was left to run for around 8 hours it could only find one solution better than the initial solution. When some simple calculations are made about the solution space it is clear as to why the brute force method is not ever going to feasible for this problem. 
+
+Searching all solutions ($V!$), is not a simple task. For example in the 2014 running of Eurovision this would be $37!$ which, after approximating the time to look at one single solution, would take about $1.2\times10^{40}$ seconds, which is quite obviously computationally infeasible with the time and resources for this project.
+
+This means that in all cases brute force will run in $V!$ time. Comparison to the other algorithms used can be found in Section \ref{Results}.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
+
+\subsubsection{Simulated annealing}
+These results reveal the fact that this problem is not a simple one at all and hence another, more capable algorithm is needed to find more optimal solutions. 
+
+The pseudocode for Simulate Annealing can be found in Alorithm \ref{simAnnealingCode}. It is quite a lot more complex than either brute force or greedy search, but that is for good reason.
+
+\begin{algorithm}
+\caption{Simulated Annealing}
+\label{simAnnealingCode}
+\begin{algorithmic}[1]
+\REQUIRE list of voters
+\REQUIRE scoreBoard
+\REQUIRE list of performers
+\REQUIRE ti: Initial Temperature
+\REQUIRE tl: Temperature length
+\REQUIRE cr\_coefficient: cooling coefficient
+\STATE $xNow \leftarrow getInitialSolution()$
+\STATE $entertainmentXNow \leftarrow getEntertainment(xNow)$
+\STATE $xBest \leftarrow getInitialSolution()$
+\STATE $entertainmentXBest \leftarrow getEntertainment(xBest)$
+
+\WHILE{$i < maxIterations$}
+\FOR{$j$ \TO $tl$}
+\STATE $xPrime = getNeighbour(xNow)$
+\STATE $entertainmentXPrime = getEntertainment(xPrime)$
+\STATE $deltaC = entertainmentXPrime - entertainmentXNow$
+
+\IF{deltaC $<=$ 0}
+\STATE $xNow = xPrime$
+\STATE $entertainmentXNow = entertainmentXPrime$
+\ELSE
+\STATE$q = $ random int between 0 and 1
+\IF{$q < e^{-deltaC/t}$}
+\STATE $xNow = xPrime$
+\STATE $entertainmentXNow = entertainmentXPrime$
+\ENDIF
+\ENDIF
+\IF{entertainmentXNow $<$ entertainmentXBest}
+\STATE $xBest = xNow$
+\STATE $entertainmentXBest = entertainmentXNow$
+\STATE $i = 0$
+\ENDIF
+\ENDFOR
+\STATE $t = t $$\times$cr\_coefficient
+\STATE $i = i + 1$
+\ENDWHILE
+\RETURN XBest, EntertainmentXBest
+\end{algorithmic}
+\end{algorithm}
+
+The skeleton of the algorithm is shared with both the previous algorithms; that is, lines 22 - 25 in Algorithm \ref{simAnnealingCode} are the same as lines 5 - 7 in Algorithm \ref{bruteForceCode} (brute force) and lines 
+9 -12 in Algorithm \ref{greedyCode} (greedy).
+
+The important part where they differ is how they pick a solution to try. Brute force tries every solution one-by-one by permuting through the possible solutions. Greedy search picks a neighbour of the current solution and sees if that is better than the best it has seen. Where simulated annealing differs is that is also finds a neighbour of the current solution, however where greedy always takes that solution and compares it to the best, Simulated Annealing does two things before that comparison.
+
+Firstly as can be seen on lines 12- 14 of Algorithm \ref{simAnnealingCode}, it checks whether the new solution is better than the current one. If it is better, then it takes that solution for comparison to the best. However, if it is not better there is still a chance Simulated Annealing will take it for comparison. 
+
+In lines 16 - 19, a check is performed that allows worse solutions than the current to be checked against the best. This is usually named an \textit{"Uphill move"}. The reason for accepting a worse solution is because it allows for a more extensive search for the optimal solution. Line 17 is a feature that is designed to prevent the algorithm from becoming stuck at a local minimum that is worse than the global one.\cite{simAnnealing}. Moreover as it varies with the value of $t$, it allows the algorithm to take worse solutions at the start, but not take the worse solution nearer the end, meaning the \textit{"Uphill moves"} occur so that the algorithm does not get stuck in a local optima.
+
+To find an approximation for the worst case Big-O of Simulated Annealing:
+
+$T_1$ = run once with $V$ steps
+
+$T_2$ = run once with $V \times P$ steps
+
+$T_3$ = run once with constant steps
+
+$T_4$ = run once with $V \times P$ steps
+
+The main loop (lines 5 - 28) is constant, given it comes from \textit{maxIterations}. It adds $m$ times to the instructions inside it.
+
+The inside loop (lines 6 - 25) is also constant, given it comes from the temperature length, \textit{tl}. It adds $l$ times to the instructions inside it.
+
+$T_7 = m \times l$ times with constant steps
+
+$T_8 = m \times l$ times with $V \times P$ steps
+
+$T_8 = m \times l$ times with constant steps
+
+$T_{10} - T_{19} = m \times l$ times with constant steps, this if-else block can be treated as one because one of the two will always be run.
+
+$T_{20} - T_{23} = m \times l$ as it is the worst case, the assumption is that this block is always run
+
+$T_{26} = m$ times with constant steps
+
+$T_{27} = m$ times with constant steps
+
+$T_{29}$ = run once
+
+Factoring this down into equation \ref{simAnnComp} gives: 
+
+\begin{equation}\label{simAnnComp}
+\begin{aligned}
+	f(n) ={} & \ (V \times T_1) + (V \cdot P \times T_2) + T_3  + (m \times V \cdot P \times T_4) \\
+	 	& + (m \times l \times T_7) + (m \times l \times V \cdot P  \times T_8) + (m \times l \times T_9) \\
+		& + (m \times l \times t_{10 - 19}) \\
+		& + (m \times l \times T_{20 - 23}) \\
+		& + (m \times T_{26}) + (m \times T_{27}) + T_{29}
+\end{aligned}
+\end{equation}
+
+From this we can safely ignore anything that is less than the highest order as it will dominate the complexity growth. Moreover we can see that the highest order is $T_8$, so we are left with equation \ref{simAnnCompSimp}
+
+\begin{equation}\label{simAnnCompSimp}
+\begin{aligned}
+	f(n) ={} & \ (m \times l \times V \cdot P \times T_8) \approx m \times l \times V \cdot P
+\end{aligned}
+\end{equation}
+
+where $P <= V <= l <= m$. As before this can be further simplified in terms of \textit{voters} ($V$). In this case, there is an extra term with will be greater than or equal to $V$. This leaves us with a fair approximation of the complexity in equation \ref{simCompFinal}.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
+
+\begin{equation}\label{simCompFinal}
+\begin{aligned}
+	O(n) \approx{} & \ m \times l \times V \cdot P \approx V \times V \times V \times V \approx V^4
+\end{aligned}
+\end{equation}
+
+A full comparison between the algorithms and their complexities is undertaken in Section \ref{Results}.
 
 
+\subsubsection{Piecemeal}
+Part way through the project a slightly different approach to building a solution was suggested. The three algorithms discussed above all have a major thing in common, that they move from a \textbf{full} solution to another.
+
+It was suggested that another methodology for finding a solution could be used. This method moves slightly more towards population-based search methods such as Genetic Algorithms, but is actual really a more simplified version of them, that also uses a greedy search algorithm as it's base. 
+
+This method begins with just one \textit{voter} instead of a full solution. This \textit{voter} can be found randomly or just be the first in the list. Then to pick the next \textit{voter} to add to the solution, the algorithm looks at all the available \textit{voters} it could add and it picks the one that gives the lowest overall $\Lambda$ value. The $\Lambda$ value is the distance between the best and worst who can still win, which at the end is summed to get the solution's $\varepsilon$ value.
+
+It does this over and over until it finds a full solution. Where population-based search methods keep track of a \textit{population} of possible solutions, this method named the \textit{piecemeal} method, builds a solution by being doing a greedy search of the available next \textit{voters}.
+
+This method hopes that by picking the best possible next choice this will lead to a good approximation or globally optimal solution. It acts very much like Greedy Search that has been discussed, and the pseudocode supports that, however by working on partial solutions instead of full solutions, the idea is that it will at least approximate a good solution without having the need to check many full solutions, hence increasing performance, especially for large solution problems.
+
+The pseudocode for it is shown in Algorithm \ref{piecemealCode} and the implementation is discussed in more detail in section \ref{Implementation}.
+
+The main points of interest are that even though lines 7 - 9 look very similar to the three algorithms discussed before, there is a subtle difference. In this algorithm, the value that is being checked against the best is not entertainment ($\varepsilon$) but the distances ($\Lambda$).
+
+Another point of interest is a more academic one. It is how do you choose what voter is put at the start. The two most obvious choices are randomly choosing one, which complicates the code slightly, or picking the first from the given list of voters, making the code simpler. The choices and their effect on the $\varepsilon$ returned is explored more in section \ref{Results}
+
+\begin{algorithm}
+\caption{Piecemeal Search}
+\label{piecemealCode}
+\begin{algorithmic}[1]
+\REQUIRE list of voters
+\REQUIRE scoreBoard
+\REQUIRE list of performers
+
+\STATE $[solution] \leftarrow chooseFirstVoter()$
+\STATE $best \leftarrow chooseFirstVoter()$
+\STATE $[distances] \leftarrow 12$
+
+\FOR{$k=0$ \TO length(voters) -1}
+\FORALL{$Voter \in possibleNextVoters$}
+\STATE calculate $\Lambda$ with that voter as next in solution
+
+\IF{$\Lambda < bestDistance$}
+\STATE $bestDistance= \Lambda$
+\STATE $best = Voter$
+\ENDIF
+\ENDFOR
+\STATE $[solution] \leftarrow best$
+\STATE $[distances] \leftarrow bestDistance$
+\ENDFOR
+\STATE $entertainmentSolution \leftarrow sum(distances)$
+\RETURN solution, entertainmentSolution
+\end{algorithmic}
+\end{algorithm}
+
+To come to a solution, the algorithm must look at a descending number of possible next solutions from the length of the solution down to 1. In the 2014 Eurovision, this would be 37 choices in the first round, 36 in the second, 35 in the third etc. until all \textit{voters} are accounted for.
+
+The formula in equation \ref{infiniteSeries} describes the series that this algorithm will take.
+
+\begin{equation}\label{infiniteSeries}
+	\sum_{k=0}^{n} \frac{n(n+1)}{2}
+\end{equation}
+which can then be simplified for Big-O notation into equation \ref{bigOPiecemeal}. This is because for looking at the complexity of algorithms it is most interesting to look at the term that does the most to the complexity, so in this algorithms case it is the $n^2$ term.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
+
+\begin{equation}\label{bigOPiecemeal}
+	\frac{n(n+1)}{2} = \frac{n^2 + n}{2} \approx n^2 + n \approx O(n^2)
+\end{equation}
+
+Looking at the Big-O complexity in equation \ref{bigOPiecemeal} and comparing it to the others is done it Section \ref{Results}.
+
+\clearpage
 \section{Implementation of Algorithms}\label{Implementation}
 % describes system but does so at finer level of detail, down to code level
 % realisation of concepts and ideas developed earlier
@@ -273,6 +626,12 @@ If equation 3 hold true then that country cannot win and it is the minimum score
 % over ambitious project aims
 % A seemingly disproportionate amount of project time can be taken up in dealing with such problems. The Implementation section gives you the opportunity to show where that time has gone.
 
+\subsection{Re-Use of Code}
+\subsection{Entertainment Functions}
+\subsection{Random and Adjacent Neighbourhood Functions}
+\subsection{Brute force and Python}
+\subsection{Piecemeal}
+
 \section{Results and Evaluation}\label{Results}
 % describe to what extent you achieved your goals
 % describe how you demonstrate that the system works as intended (or not)
@@ -283,6 +642,29 @@ If equation 3 hold true then that country cannot win and it is the minimum score
 % eg. describe how you compare the performance of your algorithm to other algorithms to indicate better performance and why this is a sound approach. then summarise the results of the tests of experiments
 % critically evaluate your results in the light of these tests, describing its strengths and weaknesses. ideas for improvement can be carried over into Future work.
 % present a critical appraisal of the project as a whole, including why the programming language and methodology chosen were appropriate
+
+\subsection{Partial and Full $\varepsilon$ calculation}
+A full calculation of the entertainment value, such as in the random swap method involves \{number of voters $\times$ number of participants\}; in the 2014 version of the problem this always involves: $37 * 26 = 962$ score calculations (37 = number of voters, 26 = number of participants).
+
+This means that the partial entertainment calculation will involve:
+    - \begin{itemize}
+\item Max = 37 * 26 = 962 score calculations (same as full)
+\item Min = 2 * 26 = 52 score calculations
+\item Average = 18 * 26 = 468 score calculations
+\end{itemize}
+
+The effect this has on the minimum value that is used in Equation 1, is shown in Figure \ref{f_maxminDif}. The graph shows the minimum scores that are returned by the two methods as green and blue points, as well as the difference between the two values (red line and red numbers) over a single typical competition. From this graph it can be seen that the maxMin method stays relatively low as in this competition the lowest score at the end was only 2 points. On the other hand, the refinedMaxMin method diverges around round 22. This is when it can start ruling out \textit{performers} from winning the overall crown. By the last few round the difference is quite large as there are only a few countries that could still win so only their scores should be taken into account for entertainment.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=17cm, height=10cm]{../code/misc/difference_MinvsRefinedMin}
+\caption{Difference between $min(scores)$ value found for MaxMin method and RefinedMaxMin}
+\label{f_maxminDif}
+\end{figure}
+
+% comparison of algorithms complexity
+Comparing Simluated Annealing to Greedy Search in equation \ref{greedyCompSimp}, we see that Simulated Annealing and Greedy Search are broadly similar. They are both polynomial time algorithms which when compared to Brute force explains why they can find solutions in a much shorter time. 
+
 
 \section{Future Work}\label{FutureWork}
 % expressing unrealistic ideas, including what you would have liked to have done if only you had not run out of time
@@ -311,7 +693,7 @@ If equation 3 hold true then that country cannot win and it is the minimum score
 		\item An entertainment value found by an entertainment function
 	\end{itemize}
 \item \textbf{Entertainment Value ($\varepsilon$)}: A value given to a solution that describes how entertaining it is. Calculated using an entertainment function given a solution.
-\item \textbf{Round ($R$)}: One round is when one \textit{voter} has given all the \textit{participants} a score. The competition is made up of $n_R$ rounds where $n_R = V$.
+\item \textbf{Round ($R$)}: One round is when one \textit{voter} has given all the \textit{participants} a score. The competition is made up of $n_R$ rounds where $n_R = length of V$.
 \item \textbf{Scores ($S$)}: How many points each country has received per round. The scores are an array of the same length as the number of \textit{participants}. It looks like [0,0,2,12,7,4,0,0,3,2,10,....]. When referring to it in the report along with \textbf{rounds} it is most likely cumulative so that after the final round the scores are the total scores for each country.
 \end{enumerate}
 
@@ -320,10 +702,21 @@ If equation 3 hold true then that country cannot win and it is the minimum score
 
 \section*{Appendices}
 \addcontentsline{toc}{section}{Appendices}
-%\begin{landscape} 
-%\section*{Appendix}
-%\includegraphics[height=14.5cm, width=\linewidth]{InitialPlanGanttChart.png}
-%\end{landscape}
+
+\begin{table}[H]
+\centering
+\caption{Big-O complexities of algorithms used}
+\label{bigO}
+\begin{tabular}{|l|l|}
+\hline
+        & Big-O time complexity \\ \hline
+Greedy Search & $O(V^3)$ \\ \hline
+Brute Force & $O(V!)$ \\ \hline
+Simulated Annealing & $O(V^4)$ \\ \hline
+Piecemeal & $O(V^2)$ \\ \hline
+\end{tabular}
+\end{table}
+All algorithms are expressed in terms of $V$: \textit{voters} and $P$: \textit{participants}. More explanation and calculations can be found in Section \ref{AlgorithmDesigns}.
 
 \clearpage
 \renewcommand{\bibsection}{\section*{References}}
