@@ -1,12 +1,12 @@
-import numpy, itertools
+import itertools
 import support
 
-def bruteForce(score_board, countries, voters):
+def bruteForce(score_board, countries, voters, maxScorePerRound):
     best = voters[:]
-    bestCost = support.getEntertainment(numpy.asarray(voters), countries, score_board, voters)
+    bestCost = support.getEntertainment(voters, countries, score_board, voters, maxScorePerRound)
 
     for solution in itertools.permutations(voters):
-        currentCost, dist = support.getEntertainment(numpy.asarray(solution), countries, score_board, voters)
+        currentCost, dist = support.getEntertainment(solution, countries, score_board, voters, maxScorePerRound)
 
         if currentCost < bestCost:
             # print('New Solution: ', currentCost)
