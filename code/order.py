@@ -62,7 +62,7 @@ if __name__ == '__main__':
     for i in range(num_loops):
         print('iterations', i, 'of', num_loops)
         if algo == 'brute':
-            print(bf.bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES))
+            print(bf.bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
         elif algo == 'greedy':
             start = timer()
             print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
