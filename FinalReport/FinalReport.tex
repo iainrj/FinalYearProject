@@ -280,6 +280,20 @@ If equation \ref{stillWin} hold true then that country cannot win even if it rec
 
 It is quite simple to justify this refinement when looking at the competition. Those teams who cannot win should will not be making a mark on the entertainment of the voting order as most viewers will not be paying attention to their scores. Moreover this refinement only works in competitions where there is only interest at the top of the table as opposed to competitions with relegations or play-offs, where more than just who is the overall winner is important.
 
+An important part of the design of these two methods is taking into account the Big-O complexity. The complexities are shown in Table \ref{maxMinComp}. How these values where reached is explained more in Section \ref{Imp-eFunctions} as they are effected more by the implementation details discussed therein. The main point to recognise is that the methods are different in terms of complexity which can help in evaluation such as in Section \ref{Results}.
+
+\begin{table}[H]
+\centering
+\caption{Big-O of $\varepsilon$ methods}
+\label{maxMinComp}
+\begin{tabular}{|l|l|}
+\hline
+              & Big-O time complexity \\ \hline
+MaxMin        & O(n)                  \\ \hline
+refinedMaxMin & O(n log n)               \\ \hline
+\end{tabular}
+\end{table}
+
 \subsection{Neighbourhoods}\label{Neighbours}
 An important part of solving optimisation problems is designing and implementing neighbourhoods for given solutions. As a solution ($\Phi$) is a list of \textit{voters} in a certain order, then we define a neighbourhood a solution as any other solution that has two members swapped. This means that there are only two changes between a solution and any of it's neighbours.
 
@@ -449,11 +463,21 @@ The implementation is extremely simple, even more so than greedy. The reasons wh
 \end{algorithmic}
 \end{algorithm}
 
-When this code was left to run for around 8 hours it could only find one solution better than the initial solution. When some simple calculations are made about the solution space it is clear as to why the brute force method is not ever going to feasible for this problem. 
+When some simple calculations are made about the solution space it is clear as to why the brute force method is not ever going to feasible for this problem. 
 
-Searching all solutions ($V!$), is not a simple task. For example in the 2014 running of Eurovision this would be $37!$ which, after approximating the time to look at one single solution, would take about $1.2\times10^{40}$ seconds, which is quite obviously computationally infeasible with the time and resources for this project.
+Searching all solutions, is not a simple task. As it must look at all permutations of solutions which are of length $V$, the complexity of brute force follows the number of permutations for n distinct objects.\cite{Permutation}.
 
-This means that in all cases brute force will run in $V!$ time. Comparison to the other algorithms used can be found in Section \ref{Results}.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
+The Big-O complexity is shown in equation \ref{bruteComp}
+
+\begin{equation}\label{bruteComp}
+\begin{aligned}
+	O(n) \approx{} & \ V!
+\end{aligned}
+\end{equation}
+
+This means that in all cases brute force will run in $\approx V!$ time. Comparison to the other algorithms used can be found in Section \ref{Results}.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
+
+For example in the 2014 running of Eurovision this would be $37!$ which, after approximating the time to look at one single solution, would take about $1.2\times10^{40}$ seconds, which is quite obviously computationally infeasible with the time and resources for this project.
 
 \subsubsection{Simulated annealing}
 These results reveal the fact that this problem is not a simple one at all and hence another, more capable algorithm is needed to find more optimal solutions. 
@@ -738,7 +762,7 @@ Lines 23 and 24 are necessary so that the new distance values can be passed to t
 The second entertainment function wrapper is a simpler version than the one shown in Figure \ref{offsetGetEntertainment}. \textbf{getEntertainment} is the general purpose wrapper for calculating the entertainment of a given solution. It can work with either of the two neighbourhoods described. This makes it more general purpose, however it also make it slower especially when the solution size is large.
 
 The points of interest here are found in lines 14, 15 and 16. These lines implement that which can be found in Equations\ref{lambda} and \ref{epsilon} exactly as described. Line 14 finds the difference between the max of the scores and the whatever min was returned by the current $\varepsilon$ function. Line 15 adds the $\Lambda$ value found to an array and then line 16 sums all the $\Lambda$ values found to finally get a $\varepsilon$ value. To allow it to interact with the \textbf{offsetGetEntertainment} method it also keeps track of the array of $\Lambda$ values and returns them so they can be passed to \textbf{offsetGetEntertainment} 
-% 7000
+
 \begin{figure}[H]
 \caption{getEntertainment method}
 \label{getEntertainment}
@@ -766,12 +790,163 @@ return entertainmentValue, distances
 
 % refer that testing is in results
 
-\subsection{$\varepsilon$ functions}
+\subsection{$\varepsilon$ functions}\label{Imp-eFunctions}
+The \textbf{refinedMaxMin} method is the more interesting of the two $\varepsilon$ functions to look at in depth. The original \textbf{maxMin} method is very simple and uses the Python in-built \textit{min()} \cite{PythonMin} and \textit{max()} \cite{PythonMax} methods.
+
+As can be seen in Figure \ref{getEntertainment} on line 13, the \textbf{refinedMaxMin} method is invoked, with the current list of scores for all \textit{participants}, the current solution being tested and what round of voting the competition is at $j$. The $maxScorePerRound$ is used so that different competitions can define what it is instead of keeping it locally in the function.
+
+The function is shown in Figure \ref{refMaxMin}
+
+\begin{figure}[H]
+\caption{refinedMaxMin method}
+\label{refMaxMin}
+\begin{lstlisting}
+def refinedMaxMin(scores, solution, j, maxScorePerRound):
+  sorted_scores = sorted(scores[:])
+  currentTop = sorted_scores[-1]
+  minScore = sorted_scores[0]
+  del sorted_scores[-1] # remove highest score
+  roundsRemaining = (len(solution) - 1 - j)
+
+  for score in sorted_scores:
+    if score + (maxScorePerRound * roundsRemaining) < currentTop:
+      minScore = score
+  return minScore
+\end{lstlisting}
+\end{figure}
+
+The theory behind this method was described in Section \ref{EntertainmentFunction}. Some of the implementation points to pick up on are line 1 where the in-built Python function $sorted()$\cite{PythonSorted} is used to take the list of scores and sort them in ascending order. This does slow the method slightly, taking the method's complexity to $n \log n$ but it also simplifies the logic later on as the method does not need to keep track of anything other than the minimum found and only updates it.
+
+This implementation is likely not the most efficient way of finding the refined version of the minimum, however it is quite a simple method. More in depth comparisons between the two methods can be found in Section \ref{Results}, which take into account the complexity and the results that the methods produce.
 
 \subsection{Random and Adjacent Neighbourhood Functions}\label{Imp-Neighbours}
+The random and adjacent neighbourhood methods are very similar as can be understood from the theory in Section \ref{Neighbours}. This does mean they could be written as one single method which are supplied with the keys needed to perform the swaps. This was a thought during their implementation however in the end it was decided to favour duplication over complexity in the system. This means that there \textit{are} two methods that are for all intents and purposes exactly the same, but are named differently.
+
+The only difference occurs on lines 3 and 4 in both methods. Firstly in the adjacent neighbour method the first key is found by getting a random integer between 0 and 2 elements from the end of the list. It must be 2 elements from the end as the second key is taken as the first key + 1. In terms of a list this means the element directly to key1's right. The $len(neighbour)$ part is using Python's in-built length function to calculate the length of the list and hence the last index it can return for correct swapping.\cite{PythonLen}.
+
+The random neighbour method uses the Python \textit{random} library in line 3 to sample the given order and get two of the elements back.\cite{PythonSample}. As this method actually returns the elements and not indexes of those elements, like in the adjacent method, it is necessary to change them back into indexes (line 4) for efficient swapping in line 5.
+
+\begin{figure}[H]
+\caption{getAdjacentNeighbour method}
+\label{adjacentNeighbour}
+\begin{lstlisting}
+def getAdjacentNeighbour(xNow):
+  neighbour = xNow[:]
+  key1 = random.randint(0, len(neighbour) - 2)
+  key2 = key1 + 1
+  neighbour[key2], neighbour[key1] = neighbour[key1], neighbour[key2]
+    
+  return neighbour, key1
+\end{lstlisting}
+\end{figure}
+
+\begin{figure}[H]
+\caption{getRandomNeighbour method}
+\label{randomNeighbour}
+\begin{lstlisting}
+def getNeighbour(xNow):
+  neighbour = xNow[:]
+  key1, key2 = random.sample(list(neighbour), 2)
+  index1, index2 = neighbour.index(key1), neighbour.index(key2)
+  neighbour[index2], neighbour[index1] = neighbour[index1], neighbour[index2]
+    
+  return neighbour
+\end{lstlisting}
+\end{figure}
+
 \subsection{Comparing solutions}\label{Imp-Solutions}
-\subsection{Python and brute force implementation}\label{Imp-Python}
+Throughout the project the same problem kept appearing while trying to compare the intermediate or final $\Phi$. For my piece of mind I wanted to know if similar $\Phi$ were giving similar $\varepsilon$ values and have a quick way to compare two $\Phi$ without having to manually look at country names and compare in what position they were in. Moreover having a way to almost immediately know if two orders were the same was very helpful as separating orders based solely on their $\varepsilon$ values was not good enough as they could be shared by vastly different orders. It was also helpful to find a way to see if there were common groupings or positioning of \textit{voters} in given $\Phi$.
+
+To solve this problem a quick and simple Python script was written which can be see in Figure \ref{orderDiff}. In the full source code that is attached, the code differs slightly as this code is not meant for use during the running of any algorithms so the file has manually hard-coded values for the orders, $order1$ and $order2$.
+
+The idea behind it is very simple, if there are two orders that are different, sum up by how many places the same \textit{voters} are separated in each. This occurs on line 4, where the $dist$ variable is the total sum of the difference between the indexes of the same \textit{voter}. By using the $abs()$ method from the Python standard library it was possible to not worry about which index was higher and hence keep the code simple.
+
+\begin{figure}[H]
+\caption{Finding the difference between two orders}
+\label{orderDiff}
+\begin{lstlisting}
+dist = 0
+for country in (order1):
+  index1, index2 = order1.index(country), order2.index(country)
+  dist = dist + abs(index1 - index2)
+print(dist)
+\end{lstlisting}
+\end{figure}
+
+\subsection{Brute force}\label{Imp-Brute}
+The implementation for the brute force algorithm was one of the most simple, and this has much to do with the libraries that Python provides. The library in use for the brute force implementation is \textit{itertools}\cite{PythonItertools}, which provides a set of common methods such as \textit{permutations}\cite{PythonPermutations}.This makes this implementation extremely simple as I did not have to write any code to correctly permute through the possible solutions without repeating, as the library handled it for me. It can be seen on line 5 of Figure \ref{bruteForce}.
+
+\begin{figure}[H]
+\caption{Brute Force algorithm implementation in Python}
+\label{bruteForce}
+\begin{lstlisting}
+def bruteForce(score_board, countries, voters):
+  best = voters[:]
+  bestCost = support.getEntertainment(voters, countries, score_board, voters)
+
+  for solution in itertools.permutations(voters):
+    currentCost, dist = support.getEntertainment(solution, countries, score_board, voters)
+
+    if currentCost < bestCost:
+      best = solution[:]
+      bestCost = currentCost
+
+  return best, bestCost
+\end{lstlisting}
+\end{figure}
+
+It of course shares many similarities with the other algorithms described so far. Namely, the if block in line 8 - 10 that checks if the current solution is better than the best found so far. Furthermore it uses the same \textbf{getEntertainment} method that is used by both the other search algorithms described so far. One small but important point is that, in contrast to Greedy and Simulated Annealing, during the main for loop (lines 5 - 10) in Figure \ref{bruteForce}, brute force cannot use the \textbf{offsetGetEntertainment} method. This is the one drawback of using the \textit{itertools} library as it controls getting a new solution to try, the key needed for \textbf{offsetGetEntertainment} to work cannot be passed around. This further slows this brute force implementation however it is not highest order value in terms of the  complexity so doesn't make a large difference overall.
+
 \subsection{Piecemeal algorithm}\label{Imp-Piecemeal}
+The piecemeal algorithm is the only break from the traditional style of search algorithms that have so far been discussed. The theoretical differences were discussed in detail in Section \ref{Algorithms}. Moreover it is the most novel approach to solving this problem in this project. 
+
+% 8066
+
+\begin{figure}[H]
+\caption{Piecemeal algorithm}
+\label{bruteForce}
+\begin{lstlisting}
+def stepByStepSolution(score_board, countries, voters, maxScorePerRound):
+  entertainmentValue = 0
+  performing_countries = countries[:]
+  solution = []
+  voting_countries = voters[:]
+  distances = []
+  best = voting_countries[0]
+  ignoredIndexes = []
+  bestScores = [row[0] for row in score_board]
+  solution.append(voting_countries[0])
+  distances.append(12)
+
+  for k in range(len(voting_countries) - 1):
+    scores = bestScores[:]
+    countries_tried = []
+    bestDistance = -1
+    ignoredIndexes.append(voting_countries.index(best))
+        
+    for j in range(len(voting_countries)):
+      local_scores = scores[:]
+      current_country = voting_countries[j]
+      if j in ignoredIndexes:
+        continue
+      for i in range(len(performing_countries)):
+        local_scores[i] = score_board[i][j] + local_scores[i]
+        otherMin = support.refinedMaxMin(local_scores, voting_countries, k, maxScorePerRound)
+        distance = max(local_scores) - otherMin
+        
+        if distance < bestDistance or bestDistance < 0:
+          bestDistance = distance
+          best = current_country
+          bestScores = local_scores[:]
+        countries_tried.append(current_country)
+      distances.append(bestDistance)
+      solution.append(best)
+    entertainmentValue = sum(distances)
+ 
+  return solution, entertainmentValue
+\end{lstlisting}
+\end{figure}
+
 \subsection{Re-Use of Code for future work}\label{Imp-Reuse}
 
 \section{Results and Evaluation}\label{Results}
@@ -817,10 +992,14 @@ The effect this has on the minimum value that is used in Equation 1, is shown in
 \label{f_maxminDif}
 \end{figure}
 
+% do some timing tests for both maxMin methods
+% talk about how big-O complexities of both affect choice
+
 
 \subsection{Comparison of Big-O Complexities}
 Comparing Simulated Annealing to Greedy Search in equation \ref{greedyCompSimp}, we see that Simulated Annealing and Greedy Search are broadly similar. They are both polynomial time algorithms which when compared to Brute force explains why they can find solutions in a much shorter time. 
 
+% talk about Python as a choice
 
 \section{Future Work}\label{FutureWork}
 % expressing unrealistic ideas, including what you would have liked to have done if only you had not run out of time
