@@ -67,14 +67,17 @@ if __name__ == '__main__':
             start = timer()
             print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
             end = timer()
-            print('greedy took: ', end - start)
+            print('algorithm took: ', end - start)
         elif algo == 'simAnnealing':
             start = timer()
             print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
             end = timer()
-            print('simulated annealing took: ', end - start)
+            print('algorithm took: ', end - start)
         elif algo == 'step':
+            start = timer()
             print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
+            end = timer()
+            print('algorithm took: ', end - start)
         else:
             print('Available algorithms are:\n\nBrute Force (brute)\nGreedy search (greedy)\nSimulated annealing (simAnnealing)\nPiecemeal solution (step)') 
             print('\nUsage: python order.py <greedy|brute|simAnnealing|step>')
