@@ -74,7 +74,7 @@
 % The document content starts below
 
 \title{\textit{Final Report}\\\textbf{Maximising entertainment value in the vote-reveal problem}\\ Final Year Project (CM3203) - 40 Credits}
-\author{Author: Iain Johnston (1312579) \\ Supervisor: Richard Booth\\ Moderator: Xianfang Sun}
+\author{\textbf{Author: Iain Johnston (1312579)} \\ \\ Supervisor: Richard Booth\\ Moderator: Xianfang Sun}
 \date{} % Activate to display a given date or no date (if empty),  otherwise the current date is printed
 
 \begin{document}
@@ -82,6 +82,12 @@
 \clearpage
 
 \section*{Abstract}
+\textbf{Notes - remove at end}
+
+- put code is appendices and then refer to them in report or keep code in report?
+- clean up pseudocode (remove some lines that are too specific)
+- put big-O analyses of each line into a table
+
 
 \section*{Acknowledgements}
 
@@ -609,7 +615,7 @@ It does this over and over until it finds a full solution. Where population-base
 
 This method hopes that by picking the best possible next choice this will lead to a good approximation or globally optimal solution. It acts very much like Greedy Search that has been discussed, and the pseudocode supports that, however by working on partial solutions instead of full solutions, the idea is that it will at least approximate a good solution without having the need to check many full solutions, hence increasing performance, especially for large solution problems.
 
-The pseudocode for it is shown in Algorithm \ref{piecemealCode} and the implementation is discussed in more detail in Section \ref{Implementation}.
+The pseudocode for it is shown in Algorithm \ref{piecemealPseudoCode} and the implementation is discussed in more detail in Section \ref{Implementation}.
 
 The main points of interest are that even though lines 7 - 9 look very similar to the three algorithms discussed before, there is a subtle difference. In this algorithm, the value that is being checked against the best is not entertainment ($\varepsilon$) but the distances ($\Lambda$).
 
@@ -617,7 +623,7 @@ Another point of interest is a more academic one. It is how do you choose what v
 
 \begin{algorithm}
 \caption{Piecemeal Search}
-\label{piecemealCode}
+\label{piecemealPseudoCode}
 \begin{algorithmic}[1]
 \REQUIRE list of voters
 \REQUIRE scoreBoard
@@ -646,15 +652,15 @@ Another point of interest is a more academic one. It is how do you choose what v
 
 To come to a solution, the algorithm must look at a descending number of possible next solutions from the length of the solution down to 1. In the 2014 Eurovision, this would be 37 choices in the first round, 36 in the second, 35 in the third etc. until all \textit{voters} are accounted for.
 
-The formula in equation \ref{infiniteSeries} describes the series that this algorithm will take.
+The formula in equation \ref{infiniteSeries} describes the series that this algorithm will take, as it is a geometric series from the length of the \textit{voters} down to 1.
 
 \begin{equation}\label{infiniteSeries}
-	\sum_{k=0}^{n} \frac{n(n+1)}{2}
+	\sum_{k=0}^{V} \frac{V(V+1)}{2}
 \end{equation}
-which can then be simplified for Big-O notation into equation \ref{bigOPiecemeal}. This is because for looking at the complexity of algorithms it is most interesting to look at the term that does the most to the complexity, so in this algorithms case it is the $n^2$ term.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
+which can then be simplified for Big-O notation into equation \ref{bigOPiecemeal}. This is because for looking at the complexity of algorithms it is most interesting to look at the term that does the most to the complexity, so in this algorithms case it is the $V^2$ term.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
 
 \begin{equation}\label{bigOPiecemeal}
-	\frac{n(n+1)}{2} = \frac{n^2 + n}{2} \approx n^2 + n \approx O(n^2)
+	\frac{V(V+1)}{2} = \frac{V^2 + V}{2} \approx V^2 + V \approx O(V^2)
 \end{equation}
 
 Looking at the Big-O complexity in equation \ref{bigOPiecemeal} and comparing it to the others is done it Section \ref{Results}.
@@ -711,40 +717,7 @@ The main reason for these differences is shown in Section \ref{Neighbours} as us
 \subsubsection{offsetGetEntertainment}
 Firstly the more complex \textbf{offsetGetEntertainment} is used in conjunction with adjacent neighbour swaps as it relies on using the previous $\varepsilon$ value. The theory behind why this works is explained in Section \ref{Neighbours}, specifically the Adjacent neighbours subsection and equations \ref{adjacent} and \ref{Recalc}.
 
-This function is shown in Figure \ref{getEntertainment}
-
-\begin{figure}[H]
-\caption{getEntertainment method}
-\label{offsetGetEntertainment}
-\begin{lstlisting}
-def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound):
-    
-    entertainmentValue = 0
-    performing_countries = countries[:]
-    current_solution = solution[:]
-    distances = oldDistances[:]
-    key2 = key1 + 1
-
-    oldDistance1, oldDistance2 = oldDistances[key1], oldDistances[key2]
-
-    l_dist = []
-    scores = [0] * 26
-    for j in range(key2 + 1):
-        for i in range(len(countries)):
-            v = voters.index(solution[j])
-            scores[i] = scores[i] + score_board[i][v]
-        otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
-        l_dist.append(max(scores) - otherMin)
-    
-    newDistance1, newDistance2 = l_dist[-2], l_dist[-1]
-    entertainmentValue = oldEntertainment - (oldDistance1 + oldDistance2) + (newDistance1 + newDistance2)
-    
-    distances[key1] = newDistance2
-    distances[key2] = newDistance1
-    
-    return entertainmentValue, distances
-\end{lstlisting}
-\end{figure}
+This function is shown in Figure \ref{getEntertainment}.
 
 The important parts to understand about this implementation are that for it to work it must be given two keys that correspond to the indexes of the \textit{voters} that were swapped to get this solution; the $\varepsilon$ value of the old solution, and the array of the distances used to calculate that solution's $\varepsilon$ value.
 
@@ -762,31 +735,6 @@ Lines 23 and 24 are necessary so that the new distance values can be passed to t
 The second entertainment function wrapper is a simpler version than the one shown in Figure \ref{offsetGetEntertainment}. \textbf{getEntertainment} is the general purpose wrapper for calculating the entertainment of a given solution. It can work with either of the two neighbourhoods described. This makes it more general purpose, however it also make it slower especially when the solution size is large.
 
 The points of interest here are found in lines 14, 15 and 16. These lines implement that which can be found in Equations\ref{lambda} and \ref{epsilon} exactly as described. Line 14 finds the difference between the max of the scores and the whatever min was returned by the current $\varepsilon$ function. Line 15 adds the $\Lambda$ value found to an array and then line 16 sums all the $\Lambda$ values found to finally get a $\varepsilon$ value. To allow it to interact with the \textbf{offsetGetEntertainment} method it also keeps track of the array of $\Lambda$ values and returns them so they can be passed to \textbf{offsetGetEntertainment} 
-
-\begin{figure}[H]
-\caption{getEntertainment method}
-\label{getEntertainment}
-\begin{lstlisting}
-def getEntertainment(solution, countries, score_board, voters, maxScorePerRound):
-  entertainmentValue = 0
-  performing_countries = countries[:]
-  current_solution = solution[:]
-    
-  distances = []
-  iters = 37
-  scores = [0] * 26
-  for j in range(len(solution)):
-    for i in range(len(countries)):
-      v = voters.index(solution[j])
-      scores[i] = scores[i] + score_board[i][v]
-    otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
-    distance = max(scores) - otherMin
-    distances.append(distance)
-  entertainmentValue = sum(distances)
-  
-return entertainmentValue, distances
-\end{lstlisting}
-\end{figure}
 
 % refer that testing is in results
 
@@ -873,6 +821,19 @@ print(dist)
 \end{lstlisting}
 \end{figure}
 
+\subsection{Simulated Annealing and Greedy Search}\label{Imp-searchAlgos}
+The implementation of the search algorithms is not the most interesting part of this project and hence only a little time will be spent explaining their implementation. Both Simulated Annealing and Greedy Search can be found in the appendices, or completeness, and in the attached source code to be run.
+
+The main reason for not going into depth about their implementations is that both algorithms are essentially general search algorithms that receive the problem specific input from the other function such as \textbf{getEntertainment} and \textbf{getInitialSolution()}.
+
+A point that is shared across both implementations is the increasing while loop that gets reset to 0 when a new solution has been found. Using Greedy Search as an example, in Figure \ref{greedyCode}, the while loop start at line 11 with $i$ equal to 0. It is incremented on line 23 after on iteration and check of a new solution. On line 19, the value of $i$ is reset to 0. This allows the $num\_iterations$ loop to be the number of iterations since a new best solution was found. This minor implementation detail actually has a very measurable impact on the speed of the algorithms. Due to the nature of the problem space, it is likely that both Greedy search and Simulated Annealing reach local (possibly global) optima. When this happens, they are not going to choose a new solution. Furthermore having the $num_iterations$ variable set as a hard number of iterations would require a very deep knowledge of the problem space and how the algorithms are traversing it; so that there is little overhead after they have found the best solution they are going to find. This is not really possible so this method also allows for more wiggle-room.
+
+Another implementation point that is shared is the fact that both algorithms must pass the $oldEntertainment$ and $oldDistances$ into the \textbf{offsetGetEntertainment} method. The reason for this is explained in Section \ref{Imp-Ewrappers}. This also explains the need for the variable $key1$ to be returned from the \textbf{getAdjacentNeighbour} method. 
+
+A minor point that is related to Python as a language is the ability to return multiple values from a function in a tuple by default. This hugely simplifies the code as methods can then return, both a neighbour and the first key used to find it (\textbf{getAdjacentNeighbour}) or a possible solution and the individual distances that make up that solution (\textbf{offsetGetEntertainment}). In other languages there are ways to work around this problem, but this solution is one simple way in Python.
+
+Specifically looking at the Simulated Annealing code in Figure \ref{simAnnealingCode}, the main lines of interest in terms of implementation are line 32 and 34. Line 32 uses the Python \textit{random}\cite{PythonRandom} library to get a random number between 0 and 1. It then uses the Python \textit{math}\cite{PythonMath} library to do the $e^{-deltaC/t}$ part that is necessary for Simulated Annealing to work. These again, are two examples of the Python libraries making implementation very simple for this project. 
+
 \subsection{Brute force}\label{Imp-Brute}
 The implementation for the brute force algorithm was one of the most simple, and this has much to do with the libraries that Python provides. The library in use for the brute force implementation is \textit{itertools}\cite{PythonItertools}, which provides a set of common methods such as \textit{permutations}\cite{PythonPermutations}.This makes this implementation extremely simple as I did not have to write any code to correctly permute through the possible solutions without repeating, as the library handled it for me. It can be seen on line 5 of Figure \ref{bruteForce}.
 
@@ -898,56 +859,22 @@ def bruteForce(score_board, countries, voters):
 It of course shares many similarities with the other algorithms described so far. Namely, the if block in line 8 - 10 that checks if the current solution is better than the best found so far. Furthermore it uses the same \textbf{getEntertainment} method that is used by both the other search algorithms described so far. One small but important point is that, in contrast to Greedy and Simulated Annealing, during the main for loop (lines 5 - 10) in Figure \ref{bruteForce}, brute force cannot use the \textbf{offsetGetEntertainment} method. This is the one drawback of using the \textit{itertools} library as it controls getting a new solution to try, the key needed for \textbf{offsetGetEntertainment} to work cannot be passed around. This further slows this brute force implementation however it is not highest order value in terms of the  complexity so doesn't make a large difference overall.
 
 \subsection{Piecemeal algorithm}\label{Imp-Piecemeal}
-The piecemeal algorithm is the only break from the traditional style of search algorithms that have so far been discussed. The theoretical differences were discussed in detail in Section \ref{Algorithms}. Moreover it is the most novel approach to solving this problem in this project. 
+The \textbf{piecemeal} algorithm is the only break from the traditional style of search algorithms that have so far been discussed. Moreover it is the most novel approach to solving this problem in this project.
 
-% 8066
+The theoretical differences were discussed in detail in Section \ref{Algorithms}. The code for this algorithm is shown in Figure \ref{piecemealCode} in the appendix.
 
-\begin{figure}[H]
-\caption{Piecemeal algorithm}
-\label{bruteForce}
-\begin{lstlisting}
-def stepByStepSolution(score_board, countries, voters, maxScorePerRound):
-  entertainmentValue = 0
-  performing_countries = countries[:]
-  solution = []
-  voting_countries = voters[:]
-  distances = []
-  best = voting_countries[0]
-  ignoredIndexes = []
-  bestScores = [row[0] for row in score_board]
-  solution.append(voting_countries[0])
-  distances.append(12)
+Firstly looking at the similarities between this algorithm and the full-solution searches, piecemeal follows the method of checking if a value is less than the best value already seen. At first glance the code at lines 29 - 32 are exactly the same as before. The difference only becomes clear when looking at the larger for loop in which it sits (lines 19 - 35). Whereas the other search algorithms are comparing the $\varepsilon$ value of $\Phi$, the piecemeal method is comparing the distance that the current \textit{voter} would add to the current solutions $\varepsilon$ value.
 
-  for k in range(len(voting_countries) - 1):
-    scores = bestScores[:]
-    countries_tried = []
-    bestDistance = -1
-    ignoredIndexes.append(voting_countries.index(best))
-        
-    for j in range(len(voting_countries)):
-      local_scores = scores[:]
-      current_country = voting_countries[j]
-      if j in ignoredIndexes:
-        continue
-      for i in range(len(performing_countries)):
-        local_scores[i] = score_board[i][j] + local_scores[i]
-        otherMin = support.refinedMaxMin(local_scores, voting_countries, k, maxScorePerRound)
-        distance = max(local_scores) - otherMin
-        
-        if distance < bestDistance or bestDistance < 0:
-          bestDistance = distance
-          best = current_country
-          bestScores = local_scores[:]
-        countries_tried.append(current_country)
-      distances.append(bestDistance)
-      solution.append(best)
-    entertainmentValue = sum(distances)
- 
-  return solution, entertainmentValue
-\end{lstlisting}
-\end{figure}
+Secondly, the concept of $ignoreIndexes$ in lines 19, 22 and 23 is necessary so that the correct score is taken from the scoreboard. As the value of $j$ is used as an index in the scoreboard matrix, it is necessary to ignore those indexes of countries that have already been added to the solution. As was discussed in Section \ref{Imp-Brute}, in the brute force method Python took care of not having repeats, so in this method as the algorithm is slightly more complex and Python in0built methods cannot be used, this must be done manually.
 
 \subsection{Re-Use of Code for future work}\label{Imp-Reuse}
+One of the more general points that relates to how the project was implemented is the possibility of re-use of the work. Quite early in the project, when discussing other problems that are similar in type to Eurovision, it became clear that the code that was being written would be quite general to all problems. This lead to all the attempt to make all the implementations as re-usable as possible.
+
+This means that the loops have no knowledge of the problem baked into them. This can mainly be seen in that all loops have an upper bound that depends on the length of the lists given. For example Figure \ref{getEntertainment} on lines 9 and 10. 
+
+This is further obvious when looking at the controlling file \textit{order.py} in the attached source code, and what each algorithm needs to run. There are 4 inputs that all the algorithms need to run. These are a a list of \textit{participants}, a list of \textit{voters}, a scoreboard which is a matrix of scores that \textit{voters} give to \textit{participants} and finally the max score that can be given (12 in Eurovision). If a problem can be formalised into these 4 inputs then these methods and algorithms can quite easily be used for other problems, no matter their complexity or size.
+
+% 9008
 
 \section{Results and Evaluation}\label{Results}
 % describe to what extent you achieved your goals
@@ -1039,6 +966,7 @@ Comparing Simulated Annealing to Greedy Search in equation \ref{greedyCompSimp},
 \section*{Appendices}
 \addcontentsline{toc}{section}{Appendices}
 
+% big-O complexity table
 \begin{table}[H]
 \centering
 \caption{Big-O complexities of algorithms used}
@@ -1053,6 +981,200 @@ Piecemeal & $O(V^2)$ \\ \hline
 \end{tabular}
 \end{table}
 All algorithms are expressed in terms of $V$: \textit{voters} and $P$: \textit{participants}. More explanation and calculations can be found in Section \ref{AlgorithmDesigns}.
+
+% offsetGetEntertainment code
+\begin{figure}[H]
+\caption{offsetGetEntertainment method}
+\label{offsetGetEntertainment}
+\begin{lstlisting}
+def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound):
+    
+    entertainmentValue = 0
+    performing_countries = countries[:]
+    current_solution = solution[:]
+    distances = oldDistances[:]
+    key2 = key1 + 1
+
+    oldDistance1, oldDistance2 = oldDistances[key1], oldDistances[key2]
+
+    l_dist = []
+    scores = [0] * 26
+    for j in range(key2 + 1):
+        for i in range(len(countries)):
+            v = voters.index(solution[j])
+            scores[i] = scores[i] + score_board[i][v]
+        otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
+        l_dist.append(max(scores) - otherMin)
+    
+    newDistance1, newDistance2 = l_dist[-2], l_dist[-1]
+    entertainmentValue = oldEntertainment - (oldDistance1 + oldDistance2) + (newDistance1 + newDistance2)
+    
+    distances[key1] = newDistance2
+    distances[key2] = newDistance1
+    
+    return entertainmentValue, distances
+\end{lstlisting}
+\end{figure}
+
+% getEntertainment code
+\begin{figure}[H]
+\caption{getEntertainment method}
+\label{getEntertainment}
+\begin{lstlisting}
+def getEntertainment(solution, countries, score_board, voters, maxScorePerRound):
+  entertainmentValue = 0
+  performing_countries = countries[:]
+  current_solution = solution[:]
+    
+  distances = []
+  iters = 37
+  scores = [0] * 26
+  for j in range(len(solution)):
+    for i in range(len(countries)):
+      v = voters.index(solution[j])
+      scores[i] = scores[i] + score_board[i][v]
+    otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
+    distance = max(scores) - otherMin
+    distances.append(distance)
+  entertainmentValue = sum(distances)
+  
+return entertainmentValue, distances
+\end{lstlisting}
+\end{figure}
+
+% simulated annealing code
+\begin{figure}[H]
+\caption{Simulated Annealing code}
+\label{simAnnealingCode}
+\begin{lstlisting}
+def simulatedAnnealing(score_board, performers, voters, maxScorePerRound):
+  num_iterations = 500
+  ti = 4000
+  tl = 40
+  cr_coefficient = 0.92
+  i = 0
+    
+  t = ti
+    
+  xNow = support.getInitialSolution(performers, score_board, voters, maxScorePerRound)
+  entertainmentXNow, distxNow = support.getEntertainment(xNow, performers, score_board, voters, maxScorePerRound)
+    
+  xBest = xNow[:]
+  entertainmentXBest = entertainmentXNow
+  oldEntertainment = entertainmentXNow
+  oldDistances = distxNow
+
+  while i < num_iterations:
+    for j in range(tl):
+      xPrime, key1 = support.getAdjacentNeighbour(xNow)
+            
+      entertainmentXPrime, distXPrime = support.offsetGetEntertainment(xPrime, performers, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound)
+            
+      deltaC = entertainmentXPrime - entertainmentXNow
+
+      if deltaC <= 0:
+        xNow = xPrime[:]
+        entertainmentXNow = entertainmentXPrime
+        oldEntertainment = entertainmentXPrime
+        oldDistances = distXPrime
+      else:
+        q = random.randint(0, 1)
+
+        if q < math.exp(-(deltaC)/t):
+          xNow = xPrime[:]
+          entertainmentXNow = entertainmentXPrime
+          oldEntertainment = entertainmentXPrime
+          oldDistances = distXPrime
+
+        if entertainmentXNow < entertainmentXBest:
+          xBest = xNow[:]
+          entertainmentXBest = entertainmentXNow
+          i = 0
+        
+    t = t * cr_coefficient
+    i = i + 1
+  return xBest, entertainmentXBest
+\end{lstlisting}
+\end{figure}
+
+% greedy search code
+\begin{figure}[H]
+\caption{Greedy Search code}
+\label{greedyCode}
+\begin{lstlisting}
+def greedySearch(score_board, performers, voters, maxScorePerRound):
+  num_iterations = 500
+  iters = 0
+  xNow = support.getInitialSolution(performers, score_board, voters, maxScorePerRound)
+  xBest = xNow[:]
+  entertainmentXBest, distances = support.getEntertainment(xNow, performers, score_board, voters, maxScorePerRound)
+  oldEntertainment = entertainmentXBest
+  oldDistances = distances
+  i = 0
+    
+  while i < num_iterations:
+    xNow, key1 = support.getAdjacentNeighbour(xNow)
+
+    entertainmentXNow, distancesXNow = support.offsetGetEntertainment(xNow, performers, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound)
+        
+    if entertainmentXNow < entertainmentXBest:
+      xBest = xNow[:]
+      entertainmentXBest = entertainmentXNow
+      i = 0
+        
+    oldEntertainment = entertainmentXNow
+    oldDistances = distancesXNow
+    i = i+1
+
+  return xBest, entertainmentXBest
+\end{lstlisting}
+\end{figure}
+
+% piecemeal code
+\begin{figure}[H]
+\caption{Piecemeal algorithm}
+\label{piecemealCode}
+\begin{lstlisting}
+def stepByStepSolution(score_board, countries, voters, maxScorePerRound):
+    entertainmentValue = 0
+    performing_countries = countries[:]
+    solution = []
+    voting_countries = voters[:]
+    distances = []
+    best = voting_countries[0]
+    ignoredIndexes = []
+    bestScores = [row[0] for row in score_board]
+    solution.append(voting_countries[0])
+    distances.append(12)
+
+    for k in range(len(voting_countries) - 1):
+      scores = bestScores[:]
+      countries_tried = []
+      bestDistance = -1
+      ignoredIndexes.append(voting_countries.index(best))
+        
+      for j in range(len(voting_countries)):
+        local_scores = scores[:]
+        current_country = voting_countries[j]
+        if j in ignoredIndexes:
+          continue
+        for i in range(len(performing_countries)):
+          local_scores[i] = score_board[i][j] + local_scores[i]
+        otherMin = support.refinedMaxMin(local_scores, voting_countries, k, maxScorePerRound)
+        distance = max(local_scores) - otherMin
+        
+        if distance < bestDistance or bestDistance < 0:
+          bestDistance = distance
+          best = current_country
+          bestScores = local_scores[:]
+        countries_tried.append(current_country)
+      distances.append(bestDistance)
+      solution.append(best)
+    entertainmentValue = sum(distances)
+ 
+  return solution, entertainmentValue
+\end{lstlisting}
+\end{figure}
 
 \clearpage
 \renewcommand{\bibsection}{\section*{References}}
