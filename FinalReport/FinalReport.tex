@@ -28,6 +28,7 @@
 \usepackage{amsmath}
 \usepackage{algorithmic}
 \usepackage{algorithm}
+\usepackage{multirow}
 
 \usepackage{listings}
 \usepackage{color}
@@ -488,7 +489,7 @@ For example in the 2014 running of Eurovision this would be $37!$ which, after a
 \subsubsection{Simulated annealing}
 These results reveal the fact that this problem is not a simple one at all and hence another, more capable algorithm is needed to find more optimal solutions. 
 
-The pseudocode for Simulate Annealing can be found in Alorithm \ref{simAnnealingCode}. It is quite a lot more complex than either brute force or greedy search, but that is for good reason.
+The pseudocode for Simulate Annealing can be found in Algorithm \ref{simAnnealingCode}. It is quite a lot more complex than either brute force or greedy search, but that is for good reason.
 
 \begin{algorithm}
 \caption{Simulated Annealing}
@@ -802,25 +803,6 @@ def getNeighbour(xNow):
 \end{lstlisting}
 \end{figure}
 
-\subsection{Comparing solutions}\label{Imp-Solutions}
-Throughout the project the same problem kept appearing while trying to compare the intermediate or final $\Phi$. For my piece of mind I wanted to know if similar $\Phi$ were giving similar $\varepsilon$ values and have a quick way to compare two $\Phi$ without having to manually look at country names and compare in what position they were in. Moreover having a way to almost immediately know if two orders were the same was very helpful as separating orders based solely on their $\varepsilon$ values was not good enough as they could be shared by vastly different orders. It was also helpful to find a way to see if there were common groupings or positioning of \textit{voters} in given $\Phi$.
-
-To solve this problem a quick and simple Python script was written which can be see in Figure \ref{orderDiff}. In the full source code that is attached, the code differs slightly as this code is not meant for use during the running of any algorithms so the file has manually hard-coded values for the orders, $order1$ and $order2$.
-
-The idea behind it is very simple, if there are two orders that are different, sum up by how many places the same \textit{voters} are separated in each. This occurs on line 4, where the $dist$ variable is the total sum of the difference between the indexes of the same \textit{voter}. By using the $abs()$ method from the Python standard library it was possible to not worry about which index was higher and hence keep the code simple.
-
-\begin{figure}[H]
-\caption{Finding the difference between two orders}
-\label{orderDiff}
-\begin{lstlisting}
-dist = 0
-for country in (order1):
-  index1, index2 = order1.index(country), order2.index(country)
-  dist = dist + abs(index1 - index2)
-print(dist)
-\end{lstlisting}
-\end{figure}
-
 \subsection{Simulated Annealing and Greedy Search}\label{Imp-searchAlgos}
 The implementation of the search algorithms is not the most interesting part of this project and hence only a little time will be spent explaining their implementation. Both Simulated Annealing and Greedy Search can be found in the appendices, or completeness, and in the attached source code to be run.
 
@@ -832,7 +814,9 @@ Another implementation point that is shared is the fact that both algorithms mus
 
 A minor point that is related to Python as a language is the ability to return multiple values from a function in a tuple by default. This hugely simplifies the code as methods can then return, both a neighbour and the first key used to find it (\textbf{getAdjacentNeighbour}) or a possible solution and the individual distances that make up that solution (\textbf{offsetGetEntertainment}). In other languages there are ways to work around this problem, but this solution is one simple way in Python.
 
-Specifically looking at the Simulated Annealing code in Figure \ref{simAnnealingCode}, the main lines of interest in terms of implementation are line 32 and 34. Line 32 uses the Python \textit{random}\cite{PythonRandom} library to get a random number between 0 and 1. It then uses the Python \textit{math}\cite{PythonMath} library to do the $e^{-deltaC/t}$ part that is necessary for Simulated Annealing to work. These again, are two examples of the Python libraries making implementation very simple for this project. 
+Specifically looking at the Simulated Annealing code in Figure \ref{simAnnealingCode}, the main lines of interest in terms of implementation are line 32 and 34. Line 32 uses the Python \textit{random}\cite{PythonRandom} library to get a random number between 0 and 1. It then uses the Python \textit{math}\cite{PythonMath} library to do the $e^{-deltaC/t}$ part that is necessary for Simulated Annealing to work. These again, are two examples of the Python libraries making implementation very simple for this project.
+
+The general cooling ration values which were explained in Section \ref{Algorithms} on Simulated Annealing, were experimented with throughout the project. The final values are shown in Section \ref{solutions} as it forms part of the experimental methodology and the implementation details are quite self explanatory.
 
 \subsection{Brute force}\label{Imp-Brute}
 The implementation for the brute force algorithm was one of the most simple, and this has much to do with the libraries that Python provides. The library in use for the brute force implementation is \textit{itertools}\cite{PythonItertools}, which provides a set of common methods such as \textit{permutations}\cite{PythonPermutations}.This makes this implementation extremely simple as I did not have to write any code to correctly permute through the possible solutions without repeating, as the library handled it for me. It can be seen on line 5 of Figure \ref{bruteForce}.
@@ -874,7 +858,27 @@ This means that the loops have no knowledge of the problem baked into them. This
 
 This is further obvious when looking at the controlling file \textit{order.py} in the attached source code, and what each algorithm needs to run. There are 4 inputs that all the algorithms need to run. These are a a list of \textit{participants}, a list of \textit{voters}, a scoreboard which is a matrix of scores that \textit{voters} give to \textit{participants} and finally the max score that can be given (12 in Eurovision). If a problem can be formalised into these 4 inputs then these methods and algorithms can quite easily be used for other problems, no matter their complexity or size.
 
-% 9008
+\subsection{Visualisation}\label{Imp-Vis}
+A part of this project that was within scope, but not directly part of solving the problem, was creating a way to visualise the solutions that the algorithms produced. The main reason for doing this was to have a way to compare solutions that more closely correlates with how the real solutions would be viewed.
+
+My idea for this was to produce a simple web application that could be given a competition and the solution found by one of the algorithms and then "play out" the competition for a viewer. A screenshot of the application is shown in Figure \ref{visScreenshot}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=15cm, height=7cm]{./visualisation}
+\caption{Visualisation of solution to 2014 competition}
+\label{visScreenshot}
+\end{figure}
+
+The application is a Node.js application that uses two main libraries for rendering the chart seen in Figure \ref{visScreenshot}. The first is \textit{d3.js} which is needed to scale the bars to the correct proportions as the scores are calculated. This uses the \textit{d3-scale} library\cite{d3} instead of using the whole of \textit{d3}. \textit{d3} could have theoretically taken care of updating of scores each round, however I was not extremely familiar with the way in which it updated state. Moreover for this project I wanted to produce something rather than getting stuck in the implementation details of learning a new library, and the more important part of this project was to produce solutions.
+
+For this reason I turned to \textit{Preact.js}\cite{Preact}, which is a smaller and faster version of the currently very popular library \textit{React}\cite{React} from Facebook. I chose \textit{Preact}, as I have experience with React however I did not need the large number of functions that React provides and I needed the state changing to be fast, as there a calculations that need to be done from round to round. Moreover to speed up starting up the visualisation, the code is based of a \textit{Preact} example application.\cite{PreactBoilerplate}.
+
+The visualisation is very simple, the user clicks a button to begin the competition voting and from there the scores are updated and shown on screen. A timer is used so that only one button press is needed to start the voting and from then on around every 1.5 seconds the new scores are shown, until the end of the competition. This provides anyone viewing the voting a simple way to see how close certain teams are to each other and the current leader, and hence why the algorithms may have settled on this order. A further goal of producing this visualisation, which will be explained in Section \ref{FutureWork}, is using this visualisation as a tool for discovering new entertainment functions for this and other problems. 
+
+As with the other code in this project I have attempted to make this as re-usable as possible. It takes the same types of inputs as the algorithms need, and any work to modify the code should only be purely cosmetic, such as changing names of \textit{voters} or \textit{participants}.
+
+The visualisation code is attached in the source code, along with explanations on how to run it to view it locally.
 
 \section{Results and Evaluation}\label{Results}
 % describe to what extent you achieved your goals
@@ -886,10 +890,141 @@ This is further obvious when looking at the controlling file \textit{order.py} i
 % eg. describe how you compare the performance of your algorithm to other algorithms to indicate better performance and why this is a sound approach. then summarise the results of the tests of experiments
 % critically evaluate your results in the light of these tests, describing its strengths and weaknesses. ideas for improvement can be carried over into Future work.
 % present a critical appraisal of the project as a whole, including why the programming language and methodology chosen were appropriate
-\subsection{Solutions}
-talk about solutions found
+\subsection{Overview of goals}
+The main barrier to saying that this project achieved all it's stated goals is the fact that the optimal solution is not know. The goals set out in Section \ref{Introduction} were:
+\begin{enumerate}
+\item a solution that delivers an entertaining competition when the votes are revealed
+\item a way of describing entertainment mathematically
+\item a way of visualising the competition as the votes are revealed.
+\end{enumerate}
 
-\subsection{Partial and Full $\varepsilon$ calculation}\label{eCalc}
+As it is the most important of the three goals, the goal of finding entertaining solutions is explored below in Section \ref{solutions} in more depth.
+
+Describing the entertainment of a given voting order mathematically was explored theoretically in Section \ref{EntertainmentFunction} and their implementations in Section \ref{Imp-eFunctions}. In terms of success in achieving the goal, I think this project has been successful. The main entertainment function (\textbf{refinedMaxMin}) provides a simple and elegant way of enumerating a concept that can be quite difficult to define. The functions not only define an entertaining solution mathematically, but they also allow them to be maximised or minimised easily, so in this regard they are also very accomplished in helping to achieve the first goal. A comparison between the two functions defined during the project and an explanation as to how they were tested against each other and the project can be found in Section \ref{Testing}. Moreover this will also provide more detail as to why I believe this goal has been successfully reached.
+
+It is more difficult to quantify if the goal of creating a way to visualise solutions has been met or not. In my opinion, the visualisation web application does a very good job of allowing another dimension of this project to be shown. The side of the project that the visualisation helps to shed light on, is essentially ignored by the algorithms and only generalised heavily in the entertainment functions. That is how real people would feel when viewing an "entertaining" solution. The visualisation provides that more visual and tactile feedback to the viewer. Furthermore it helps to justify the other goals without having to go into as much detail about the correctness of the algorithms or the entertainment functions, such as in this report.
+
+\subsection{Solutions}\label{solutions}
+This section will discuss both the general solutions found by all the algorithms and compare how they performed in finding an optimal solution. Moreover the methodology for collecting and analysing these solutions will be explored. A table of the best and average solutions along with average times for each of the four algorithms can be found in table \ref{solutionsFound} in the appendix. 
+
+\subsubsection{Methodology}
+% how got results and how analysed them
+% how you designing your experiments to verify hypothesis of more scientifically oriented project
+To find a set of solutions for each algorithm in order to analyse them, the first step was to do some repeated runs. To facilitate some code was added to the main controller \textit{order.py} so that an optional command line parameter could be given which would repeat the running of the given algorithm how ever many times the user input. 
+
+The general method was to run each of the algorithms lots of times and record the $\Phi$ and $\varepsilon$ values for that solution. From this we can be more confident about the performance of each algorithm and make some mathematical comparison between them.
+
+An important point to recognise, before explaining the basic methodology, is that only testing of Greedy search and Simulated Annealing can be done in the exact same way, due to their similarities. Piecemeal and brute force cannot be tested in the same way however the same idea of running them many times to collect many $\Phi$ still stands. Their methods are explained later on.
+
+The experimental method for both Greedy search and Simulated Annealing are the same save changing filenames. It begins with running a command in the terminal similar to that in Figure \ref{makeResults}.
+
+\begin{figure}[H]
+\caption{Running algorithms}
+\label{makeResults}
+\begin{verbatim}
+>> python order.py simAnnealing 140 >> results/simAnnealingResults.txt
+\end{verbatim}
+\end{figure}
+This command needs to be run in the same directory as the controller \textit{order.py} and the algorithm that is being run. In this example this command will run the Simulated Annealing algorithm 140 times and then send the output to a file called \textit{simulatedAnnealingResults.txt} in a \textit{results} subdirectory. The $>>$ part is a \textbf{bash} command that means append the output of the preceding command into the file after it. We append as it was necessary to run this code in smaller chunks to reach 1000 runs, so to not create a new file each time, we append from wherever we left off. This will be used multiple times going forward when running algorithms to save their outputs to files. Saving the output from could have be achieved quite easily from within Python as the algorithms themselves are running in Python. However I felt that it was a sound idea to take the saving of the output away from Python as the terminal commands are usually faster and, in my opinion safer to use. They are also much more simple to write and have very little room for error. Moreover, when doing the timing experiments I wanted the least amount of overhead so that as little external time was spent that could accidentally leak into the times for the algorithms.
+
+% running using same initial solution each time -- randomise?
+
+After doing this I was left with a set of files that contained both a $\Phi$ and an $\varepsilon$ value per line. These can be seen in the attached results files such as \textit{greedyResults.txt}. A snippet of this file is shown in Figure \ref{greedyResFile}.
+
+\begin{figure}[H]
+\caption{Snippet of Greedy results}
+\label{greedyResFile}
+\begin{verbatim}
+...
+(['Russia', 'Portugal', 'Ukraine', 'Poland', 'Sweden', 'Switzerland', 'Montenegro',
+'Romania', 'San Marino', 'Italy', 'Latvia', 'Malta', 'The Netherlands', 'Slovenia', 
+'FYR Macedonia', 'Ireland', 'Hungary', 'Iceland', 'United Kingdom', 'Lithuania', 
+'Georgia', 'Norway', 'Germany', 'Greece', 'Israel', 'Spain', 'Armenia', 'Estonia', 
+'Austria', 'France', 'Finland', 'Belgium', 'Denmark', 'Albania', 'Belarus', 'Moldova', 
+'Azerbaijan'], 3409)
+(['Italy', 'Russia', 'Ukraine', 'San Marino', 'Latvia', 'Norway', 'Israel', 'Belarus', 
+'Slovenia', 'United Kingdom', 'Poland', 'Portugal', 'Romania', 'Georgia', 'Albania', 
+'Denmark', 'Montenegro', 'Lithuania', 'Switzerland', 'Austria', 'The Netherlands', 
+'Germany', 'Azerbaijan', 'Armenia', 'Ireland', 'Spain', 'Greece', 'Moldova', 
+'Hungary', 'Finland', 'Belgium', 'Iceland', 'FYR Macedonia', 'Sweden', 'France', 
+'Malta', 'Estonia'], 3298)
+...
+\end{verbatim}
+\end{figure}
+
+Although the $\Phi$ are very interesting in their own right, for them to make more sense and the find the best, it was necessary to extract the $\varepsilon$ values from this file so that some analysis can be done. To do this I used \textit{ack}\cite{ack}, which "...is written purely in portable Perl 5 and takes advantage of the power of Perl's regular expressions." This allowed me to extract just the scores from the files like \textit{greedyResults.txt} and then send them to a file such as \textit{greedyScores.txt}\footnote{\textit{greedyScores.txt} can be found in the attached code and results.}. The command for this is shown in Figure \ref{greedyScoreFile}.
+
+\begin{figure}[H]
+\caption{Extracting scores from results file}
+\label{greedyScoreFile}
+\begin{verbatim}
+>> ack -o '\d+' algorithmResults.txt > algorithmScores.txt
+\end{verbatim}
+\end{figure}
+
+The \textit{ack} tool uses Perl regular expressions for matching the given expression. In this case the regular expression is very simple \textit{d+} part says match any digit any number of times. This is relatively safe as the other parts of the lines are all strings with country names. The \textit{-o} part is a flag that is used to only print whatever is matched, otherwise the whole line where a match was found would be printed and there would be no difference between the results and score files. Once again we use the \textbf{bash} commands to send the output to a file, however this time we do not append, but create the file and write to it immediately.
+
+Now we have files that contain 1000 $\varepsilon$ values, which we can easily copy into Microsoft Excel for analysis.
+
+When running the two search algorithms there are some setup values that are needed. The main one is \textit{num\_iterations}, which both Simulated Annealing and Greedy Search use. To try and keep the tests as close to each other the same value was used $num\_iterations = 500$.
+
+Specific to Simulated Annealing's case there are some more input values that are needed, and they were discussed in Section \ref{Algorithms} in the pseudocode. The final values are shown in Table \ref{coolingValues} in the appendix. To reach these values I took into account more general wisdom for each one as well as trying to apply more problem specific knowledge to reach the values that give the best solutions. Furthermore, the time taken to find a solution could be heavily effected by the values so a balance was struck so that the algorithm did not take too long, but also produced consistently good $\varepsilon$ values.
+
+% ack -o '(?<=\s)\d{4}' simAnnealingResults.txt > simAnnealingScores.txt - not really needed
+
+% use excel to create chart of greedy and simulatedAnnealing and Piecemeal
+
+% 10808
+
+% method of finding piecemeal different - try every first country
+% methodology of finding brute force
+
+\subsubsection{Solutions found}
+% Pick out interesting values of solutions and talk about which algorithms are better than each other
+% indicate how confident you are about solutions, and also suggest what tests would be required to gain further confidence
+
+% using piecemeal solution as initial solution greedy performs just as well as simAnnealing
+
+\subsubsection{Comparing solutions}
+% order_diff.py
+Throughout the project the same problem kept appearing while trying to compare the intermediate or final $\Phi$. For my piece of mind I wanted to know if similar $\Phi$ were giving similar $\varepsilon$ values and have a quick way to compare two $\Phi$ without having to manually look at country names and compare in what position they were in. Moreover having a way to almost immediately know if two orders were the same was very helpful as separating orders based solely on their $\varepsilon$ values was not good enough as they could be shared by vastly different orders. It was also helpful to find a way to see if there were common groupings or positioning of \textit{voters} in given $\Phi$.
+
+To solve this problem a quick and simple Python script was written which can be see in Figure \ref{orderDiff}. In the full source code that is attached, the code differs slightly as this code is not meant for use during the running of any algorithms so the file has manually hard-coded values for the orders, $order1$ and $order2$.
+
+The idea behind it is very simple, if there are two orders that are different, sum up by how many places the same \textit{voters} are separated in each. This occurs on line 4, where the $dist$ variable is the total sum of the difference between the indexes of the same \textit{voter}. By using the $abs()$ method from the Python standard library it was possible to not worry about which index was higher and hence keep the code simple.
+
+\begin{figure}[H]
+\caption{Finding the difference between two orders}
+\label{orderDiff}
+\begin{lstlisting}
+dist = 0
+for country in (order1):
+  index1, index2 = order1.index(country), order2.index(country)
+  dist = dist + abs(index1 - index2)
+print(dist)
+\end{lstlisting}
+\end{figure}
+
+% big-O
+Comparing Simulated Annealing to Greedy Search in equation \ref{greedyCompSimp}, we see that Simulated Annealing and Greedy Search are broadly similar. They are both polynomial time algorithms which when compared to Brute force explains why they can find solutions in a much shorter time. 
+
+% timing
+% 100 iterations of each
+% [ack -o "(?<=\('greedy took: ',\s)\d.\d+" greedyTiming.txt >> greedyTiming.txt] to get times out of results file
+% make chart in excel
+
+% talk about future work on testing solutions found against people
+
+\subsection{Other Testing}\label{OtherTesting}
+% describe the reasoning behind the tests to evaluate your results, what tests to execute, what results show and why to execute these tests
+
+\subsubsection{Partial and Full $\varepsilon$ calculation}
+% explain methodology of testing
+% running them both side by side - not worrying about the solutions given
+% extract using similar to timing == [ack -o "(?<='reduced: ',\s)\d.\d+" timing.txt > reducedCalculation.txt]
+% 10,000 for reduced and 10,000 for full
+% use excel (/Users/johnsi63/Documents/FinalYearProject/code/misc/reducedvsFullcalc.xlsx) and create avg time graph
+
 A full calculation of the entertainment value, such as in the random swap method involves \{number of voters $\times$ number of participants\}; in the 2014 version of the problem this always involves: $37 * 26 = 962$ score calculations (37 = number of voters, 26 = number of participants).
 
 This means that the partial entertainment calculation will involve:
@@ -909,7 +1044,7 @@ This means that the partial entertainment calculation will involve:
 % talk about how found these values
 % talk about testing full against partial by running them and comparing them
 
-\subsection{maxMin and refinedMaxMin}\label{maxMin}
+\subsubsection{maxMin and refinedMaxMin}
 The effect this has on the minimum value that is used in Equation 1, is shown in Figure \ref{f_maxminDif}. The graph shows the minimum scores that are returned by the two methods as green and blue points, as well as the difference between the two values (red line and red numbers) over a single typical competition. From this graph it can be seen that the maxMin method stays relatively low as in this competition the lowest score at the end was only 2 points. On the other hand, the refinedMaxMin method diverges around round 22. This is when it can start ruling out \textit{performers} from winning the overall crown. By the last few round the difference is quite large as there are only a few countries that could still win so only their scores should be taken into account for entertainment.
 
 \begin{figure}[H]
@@ -918,15 +1053,17 @@ The effect this has on the minimum value that is used in Equation 1, is shown in
 \caption{Difference between $min(scores)$ value found for MaxMin method and RefinedMaxMin}
 \label{f_maxminDif}
 \end{figure}
-
 % do some timing tests for both maxMin methods
 % talk about how big-O complexities of both affect choice
 
+\subsubsection{Unit tests}
+% why need them and how they work
 
-\subsection{Comparison of Big-O Complexities}
-Comparing Simulated Annealing to Greedy Search in equation \ref{greedyCompSimp}, we see that Simulated Annealing and Greedy Search are broadly similar. They are both polynomial time algorithms which when compared to Brute force explains why they can find solutions in a much shorter time. 
-
+\subsection{Critical Evaluation}\label{Eval}
 % talk about Python as a choice
+% critically evaluate your results in the light of these tests, describing its strengths and weaknesses. ideas for improvement can be carried over into Future work.
+% present a critical appraisal of the project as a whole, including why the programming language and methodology chosen were appropriate
+
 
 \section{Future Work}\label{FutureWork}
 % expressing unrealistic ideas, including what you would have liked to have done if only you had not run out of time
@@ -1175,6 +1312,28 @@ def stepByStepSolution(score_board, countries, voters, maxScorePerRound):
   return solution, entertainmentValue
 \end{lstlisting}
 \end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Best and average solutions found by algorithms}
+\label{solutionsFound}
+\begin{tabular}{|l|l|l|}
+\hline
+Algorithm                            & Type of solution & $\varepsilon$ value \\ \hline
+Brute force*                          & Best             & 3125                \\ \hline
+\multirow{2}{*}{Greedy Search}        & Best             & 2908                \\ \cline{2-3} 
+                                     & Average          & 3368                \\ \hline
+\multirow{2}{*}{Simulated Annealing} & Best             & 2426                \\ \cline{2-3}
+                                     & Average          & 2673                \\ \hline
+Piecemeal                            & Best             & 2627                \\ \cline{2-3}
+                                     & Average**          & 2729                \\ \hline
+\end{tabular}
+\end{table}
+Average taken over 1000 solutions unless otherwise stated
+
+* Brute force was only run once so only has 1 solution, it's best.
+
+** Piecemeal was run 37 different times, one for each different starting country.
 
 \clearpage
 \renewcommand{\bibsection}{\section*{References}}

@@ -22,3 +22,12 @@ The two main questions that this project will aim to answer are:
 > cd code
 > python orderTest.py
 ```
+
+# Viewing the visualisation locally
+### You must have Node (and npm) installed locally
+``` bash
+> cd visualisation
+> npm install
+> npm start
+* follow the instruction on-screen
+```
