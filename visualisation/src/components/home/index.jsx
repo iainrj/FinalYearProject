@@ -10,20 +10,29 @@ export default class Home extends Component {
 		this.state.round = 0;
 	}
 
-	incrementRound(sim = false) {
-		if (this.state.round < 37) {
-			if (sim && !this._interval || this._interval !== 0) {
-				this._interval = setInterval(() => (
-					this.setState({round: this.state.round + 1})
-				), 1000);
+	interval(func, wait, times){
+		let interv = function(w, t){
+			return function(){
+				if (typeof t === "undefined" || t-- > 0){
+					setTimeout(interv, w);
+					try {
+						func.call(null);
+					}
+					catch (e){
+						t = 0;
+						throw e.toString();
+					}
+				}
+			};
+		}(wait, times);
 
-			} else {
-				this.setState((prevState) => ({
-					round: prevState.round + 1
-				}));
-			}
+		setTimeout(interv, wait);
+	}
 
-		}
+	incrementRound() {
+		this.interval(() => {
+			this.setState({round: this.state.round + 1});
+		}, 1300, 37);
 	}
 
 	stopSim() {

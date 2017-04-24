@@ -16,8 +16,6 @@ const xScale = (props) => {
 
 export default function (props) {
 	const scales = { xScale: xScale() };
-	// const scores = [0, 6, 1, 4, 0, 0, 10, 0, 7, 2, 20, 5, 19, 0, 4, 0, 0, 6, 7, 1, 3, 10, 3, 8, 0,0];
-	const scores = [113, 43, 33, 58, 88, 72, 174, 37, 62, 35, 290, 39, 218, 2, 89, 33, 9, 72, 74, 64, 143, 32, 74, 238, 14, 40];
 
 	return (
 		<svg class="chart" width={props.width} height={props.height}>
@@ -30,13 +28,13 @@ export default function (props) {
 						country_scores.push(props.data.data[c][i]);
 					}
 
-					const country_index = reveal_order[props.round];
+					const country_index = reveal_order[props.round - 1];
 					const score = country_scores[voters.indexOf(country_index)];
 
 					const countryProps = {
 						countryName: country,
 						id: index,
-						round: props.round,
+						round: props.round - 1,
 						newScore: score,
 						padding: props.padding,
 						xScale: props.xScale

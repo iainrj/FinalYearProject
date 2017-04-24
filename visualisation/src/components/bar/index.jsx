@@ -9,6 +9,7 @@ export default class Bar extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+		console.log(nextProps.newScore);
 		this.setState({score: this.state.score + nextProps.newScore});
 	}
 
@@ -23,6 +24,7 @@ export default class Bar extends Component {
 			<g class={style.bar_bar} transform={transform}>
 				<rect class={style.chart_rect} width={width} height="20"></rect>
 				<text class={style.chart_text} x={width - 5} y="9.5" dy=".35em">{this.state.score}</text>
+				{/*<text class={style.chart_text} x={} y="9.5" dy=".35em">{this.props.countryName}</text>*/}
 			</g>
 		);
 	}

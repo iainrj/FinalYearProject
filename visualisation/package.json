@@ -1,7 +1,7 @@
 {
-  "name": "preact-boilerplate",
-  "version": "5.0.0",
-  "description": "Ready-to-go Preact starter project powered by webpack.",
+  "name": "project-visualisation",
+  "version": "1.0.0",
+  "description": "Visualisation app build from Ready-to-go Preact starter project powered by webpack.",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --inline --hot --progress",
     "start": "serve build -s -c 1",
@@ -17,8 +17,6 @@
     "boilerplate",
     "webpack"
   ],
-  "license": "MIT",
-  "author": "Jason Miller <jason@developit.ca>",
   "devDependencies": {
     "autoprefixer": "^6.4.0",
     "babel": "^6.5.2",
@@ -74,7 +72,6 @@
   "dependencies": {
     "d3-scale": "^1.0.5",
     "preact": "^8.1.0",
-    "preact-compat": "^3.0.0",
     "preact-router": "^2.0.0",
     "promise-polyfill": "^6.0.2",
     "proptypes": "^0.14.3",
