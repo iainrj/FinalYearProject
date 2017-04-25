@@ -12,6 +12,7 @@ def simulatedAnnealing(score_board, performers, voters, maxScorePerRound):
     
     xNow = support.getInitialSolution(performers, score_board, voters, maxScorePerRound)
     entertainmentXNow, distxNow = support.getEntertainment(xNow, performers, score_board, voters, maxScorePerRound)
+    # print(entertainmentXNow)
     
     xBest = xNow[:]
     entertainmentXBest = entertainmentXNow
@@ -25,6 +26,7 @@ def simulatedAnnealing(score_board, performers, voters, maxScorePerRound):
             # otherE, otherD = support.getEntertainment(xPrime, performers, score_board, voters, maxScorePerRound)
             entertainmentXPrime, distXPrime = support.offsetGetEntertainment(xPrime, performers, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound)
             
+            # print(otherE == entertainmentXPrime)
             
             deltaC = entertainmentXPrime - entertainmentXNow
 

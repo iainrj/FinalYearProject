@@ -11,6 +11,8 @@ def greedySearch(score_board, performers, voters, maxScorePerRound):
     oldDistances = distances
     i = 0
     
+    # print(entertainmentXBest)
+    
     while i < num_iterations:
         xNow, key1 = support.getAdjacentNeighbour(xNow)
 
