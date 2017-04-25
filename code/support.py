@@ -2,14 +2,14 @@ import random, numpy
 
 # List<String> -> List<String>
 def getInitialSolution(performers, score_board, voters, maxScorePerRound):
-    # order that this method returns normally
+    # order that this method returns normally = 3824
     # order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Lithuania', 'Norway', 'Sweden', 'Belgium', 'Greece', 'Ireland', 'Portugal', 'Slovenia', 'Spain', 'Switzerland', 'The Netherlands', 'United Kingdom']
     # return order
     # 2014 order
     # real_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia']
     # return real_order
-    # solution piecemeal returns = 2724
-    # piece = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Belgium', 'Lithuania', 'Spain', 'Greece', 'Slovenia', 'Sweden', 'The Netherlands', 'United Kingdom', 'Norway', 'Ireland', 'Portugal', 'Switzerland']
+    # solution piecemeal returns = 2640
+    # piece = ['United Kingdom', 'Armenia', 'Montenegro', 'Albania', 'Poland', 'Belarus', 'Malta', 'FYR Macedonia', 'Moldova', 'Estonia', 'Russia', 'Denmark', 'Azerbaijan', 'France', 'San Marino', 'Sweden', 'Romania', 'Latvia', 'Finland', 'Austria', 'Italy', 'Ukraine', 'Germany', 'Georgia', 'Belgium', 'Greece', 'Hungary', 'Iceland', 'Israel', 'Lithuania', 'Portugal', 'The Netherlands', 'Spain', 'Norway', 'Ireland', 'Slovenia', 'Switzerland']
     # return piece
     v_countries = voters[:]
     order = []
@@ -42,7 +42,7 @@ def refinedMaxMin(scores, solution, j, maxScorePerRound):
     sorted_scores = sorted(scores[:])
     currentTop = sorted_scores[-1]
     minScore = sorted_scores[0]
-    # del sorted_scores[-1] # remove highest score
+    del sorted_scores[-1] # remove highest score
     roundsRemaining = (len(solution) - 1 - j)
 
     for score in sorted_scores:
