@@ -22,7 +22,9 @@ def simulatedAnnealing(score_board, performers, voters, maxScorePerRound):
         for j in range(tl):
             xPrime, key1 = support.getAdjacentNeighbour(xNow)
             
+            # otherE, otherD = support.getEntertainment(xPrime, performers, score_board, voters, maxScorePerRound)
             entertainmentXPrime, distXPrime = support.offsetGetEntertainment(xPrime, performers, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound)
+            
             
             deltaC = entertainmentXPrime - entertainmentXNow
 

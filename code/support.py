@@ -8,9 +8,9 @@ def getInitialSolution(performers, score_board, voters, maxScorePerRound):
     # 2014 order
     # real_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia']
     # return real_order
-    # solution piecemeal returns
-    # piecemeal_order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino','Moldova','Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Ireland','Sweden', 'Lithuania', 'Greece', 'Spain', 'Belgium', 'Portugal', 'The Netherlands', 'United Kingdom', 'Norway', 'Slovenia', 'Switzerland']
-    # return piecemeal_order
+    # solution piecemeal returns = 2724
+    # piece = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Belgium', 'Lithuania', 'Spain', 'Greece', 'Slovenia', 'Sweden', 'The Netherlands', 'United Kingdom', 'Norway', 'Ireland', 'Portugal', 'Switzerland']
+    # return piece
     v_countries = voters[:]
     order = []
     while len(v_countries) > 0:
@@ -42,11 +42,11 @@ def refinedMaxMin(scores, solution, j, maxScorePerRound):
     sorted_scores = sorted(scores[:])
     currentTop = sorted_scores[-1]
     minScore = sorted_scores[0]
-    del sorted_scores[-1] # remove highest score
+    # del sorted_scores[-1] # remove highest score
     roundsRemaining = (len(solution) - 1 - j)
 
     for score in sorted_scores:
-        if score + (maxScorePerRound * roundsRemaining) < currentTop:
+        if score + (maxScorePerRound * roundsRemaining) <= currentTop:
             minScore = score
     return minScore
 
@@ -85,7 +85,7 @@ def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEn
         otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
         l_dist.append(max(scores) - otherMin)
     
-    newDistance1, newDistance2 = l_dist[-2], l_dist[-1]
+    newDistance1, newDistance2 = l_dist[key2], l_dist[key1]
     entertainmentValue = oldEntertainment - (oldDistance1 + oldDistance2) + (newDistance1 + newDistance2)
     
     distances[key1] = newDistance2
@@ -115,6 +115,7 @@ def getEntertainment(solution, countries, score_board, voters, maxScorePerRound)
             scores[i] = scores[i] + score_board[i][v]
         otherMin = refinedMaxMin(scores, solution, j, maxScorePerRound)
         distance = max(scores) - otherMin
+        # distance = max(scores) - min(scores)
         distances.append(distance)
     entertainmentValue = sum(distances)
     

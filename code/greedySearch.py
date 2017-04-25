@@ -13,9 +13,9 @@ def greedySearch(score_board, performers, voters, maxScorePerRound):
     
     while i < num_iterations:
         xNow, key1 = support.getAdjacentNeighbour(xNow)
-        
+
         # start = timer()
-        # otherE , otherD = support.getEntertainment(xNow, performers, score_board, voters)
+        # otherE , otherD = support.getEntertainment(xNow, performers, score_board, voters, maxScorePerRound)
         # end = timer()
         # print('full: ', end - start)
         
