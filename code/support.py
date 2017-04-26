@@ -8,9 +8,11 @@ def getInitialSolution(performers, score_board, voters, maxScorePerRound):
     # 2014 order
     # real_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia']
     # return real_order
-    # solution piecemeal returns = 2640
-    # piece = ['United Kingdom', 'Armenia', 'Montenegro', 'Albania', 'Poland', 'Belarus', 'Malta', 'FYR Macedonia', 'Moldova', 'Estonia', 'Russia', 'Denmark', 'Azerbaijan', 'France', 'San Marino', 'Sweden', 'Romania', 'Latvia', 'Finland', 'Austria', 'Italy', 'Ukraine', 'Germany', 'Georgia', 'Belgium', 'Greece', 'Hungary', 'Iceland', 'Israel', 'Lithuania', 'Portugal', 'The Netherlands', 'Spain', 'Norway', 'Ireland', 'Slovenia', 'Switzerland']
+    # solution piecemeal returns = 2571
+    # piece = ['Austria', 'Armenia', 'Albania', 'Italy', 'Russia', 'San Marino', 'Malta', 'Azerbaijan', 'Poland', 'Belarus', 'United Kingdom', 'FYR Macedonia', 'Moldova', 'Denmark', 'Montenegro', 'Germany', 'Romania', 'Estonia', 'Finland', 'France', 'Ukraine', 'Latvia', 'Hungary', 'Georgia', 'Iceland', 'Belgium', 'Lithuania', 'Norway', 'Ireland', 'Israel', 'Sweden', 'Greece', 'Spain', 'Portugal', 'Slovenia', 'Switzerland', 'The Netherlands']
     # return piece
+    # best = ['Belarus', 'Albania', 'Poland', 'United Kingdom', 'Montenegro', 'Armenia', 'Malta', 'Russia', 'Azerbaijan', 'Germany', 'San Marino', 'Italy', 'FYR Macedonia', 'Moldova', 'Estonia', 'Austria', 'Romania', 'Switzerland', 'Ukraine', 'Latvia', 'Denmark', 'Georgia', 'Hungary', 'Finland', 'Ireland', 'Norway', 'Greece', 'Spain', 'Israel', 'Portugal', 'Lithuania', 'France', 'Belgium', 'Iceland', 'Sweden', 'Slovenia', 'The Netherlands']
+    # return best
     v_countries = voters[:]
     order = []
     while len(v_countries) > 0:
