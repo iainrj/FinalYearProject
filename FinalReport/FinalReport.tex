@@ -71,7 +71,6 @@
 \renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
 \renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
 
-
 % The document content starts below
 
 \title{\textit{Final Report}\\\textbf{Maximising entertainment value in the vote-reveal problem}\\ Final Year Project (CM3203) - 40 Credits}
@@ -83,14 +82,26 @@
 \clearpage
 
 \section*{Abstract}
-\textbf{Notes - remove at end}
-
-- clean up pseudocode (remove some lines that are too specific)
-
-- csv reader
-
+%Motivation:
+%Why do we care about the problem and the results? If the problem isn't obviously "interesting" it might be better to put motivation first; but if your work is incremental progress on a problem that is widely recognized as important, then it is probably better to put the problem statement first to indicate which piece of the larger problem you are breaking off to work on. This section should include the importance of your work, the difficulty of the area, and the impact it might have if successful.
+As yet little research has been undertaken into maximising the "entertainment" of voting competitions, however the appeal of having this ability is immediately obvious.
+%Problem statement:
+%What problem are you trying to solve? What is the scope of your work (a generalized approach, or for a specific situation)? Be careful not to use too much jargon. In some cases it is appropriate to put the problem statement before the motivation, but usually this only works if most readers already understand why the problem is important.
+The problem that this project attempts to solve is, to find the most entertaining order for votes to be revealed in competitions; such as the Eurovision Song Contest.
+%Approach:
+%How did you go about solving or making progress on the problem? Did you use simulation, analytic models, prototype construction, or analysis of field data for an actual product? What was the extent of your work (did you look at one application program or a hundred programs in twenty different programming languages?) What important variables did you control, ignore, or measure?
+The problem was formalised into a framework designed in this project, functions to describe the entertainment were designed and then a range of optimisation algorithms were used to try maximise the entertainment of the voting orders. A full analysis of the entertainment of the solutions as well as their runtimes was then undertaken .
+%Results:
+%What's the answer? Specifically, most good computer architecture papers conclude that something is so many percent faster, cheaper, smaller, or otherwise better than something else. Put the result there, in numbers. Avoid vague, hand-waving results such as "very", "small", or "significant." If you must be vague, you are only given license to do so when you can talk about orders-of-magnitude improvement. There is a tension here in that you should not provide numbers that can be easily misinterpreted, but on the other hand you don't have room for all the caveats.
+An near optimal, if not globally optimal, solution was found for the 2014 Eurovision contest as well as a novel problem specific algorithm.
+%Conclusions:
+%What are the implications of your answer? Is it going to change the world (unlikely), be a significant "win", be a nice hack, or simply serve as a road sign indicating that this path is a waste of time (all of the previous results are useful). Are your results general, potentially generalizable, or specific to a particular case?
+The project forms a framework and generalisable methodology for future work in this field.
 
 \section*{Acknowledgements}
+I would like to thank my supervisor, Richard Booth, for support and insights throughout the project.
+
+Thanks to the European Broadcasting Union (EBU) for releasing the datasets for the Eurovision Song Contest for use in this project.
 
 \tableofcontents %  place a table of contents after the title
 \listoffigures
@@ -245,7 +256,7 @@ We can see that France wins this competition, with 2 points. This cumulative sco
 
 All that is needed to turn this simple example into Eurovision is to add all the \textit{voters} and \textit{participants} and change the scores given out to be $12, 10, 8-1$ instead of just 1 and 0.
 
-\subsection{Entertainment Functions}\label{EntertainmentFunction}
+\subsection{$\varepsilon$ Functions}\label{EntertainmentFunction}
 From the small example, it is quite easy to think of some theoretical reasons why a given order is entertaining. This leads straight into the design of entertainment functions and how they model entertainment. 
 
 It is important to start with the design of the entertainment functions as they are the main workhorse part of finding solutions to the problem. The approach was to analyse the competition and try and identify things in a competition that lead to excitement. From those ideas, it was a case of trying to formalise that theory into a concrete piece of maths that could then be programmed. Furthermore the entertainment functions are quite problem specific and may not transfer well into other problems, whereas the algorithms are entirely agnostic to the problem at hand. This means the entertainment functions follow much more closely from the problem itself than any other part of the project.
@@ -646,7 +657,7 @@ The second entertainment function wrapper is a simpler version than the one show
 
 The points of interest here are found in lines 14, 15 and 16. These lines implement that which can be found in Equations\ref{lambda} and \ref{epsilon} exactly as described. Line 14 finds the difference between the max of the scores and the whatever min was returned by the current $\varepsilon$ function. Line 15 adds the $\Lambda$ value found to an array and then line 16 sums all the $\Lambda$ values found to finally get a $\varepsilon$ value. To allow it to interact with the \textbf{offsetGetEntertainment} method it also keeps track of the array of $\Lambda$ values and returns them so they can be passed to \textbf{offsetGetEntertainment} 
 
-% refer that testing is in results
+Some test that compare and contrast these two methods can be found in Section \ref{OtherTesting}.
 
 \subsection{$\varepsilon$ functions}\label{Imp-eFunctions}
 The \textbf{refinedMaxMin} method is the more interesting of the two $\varepsilon$ functions to look at in depth. The original \textbf{maxMin} method is very simple and uses the Python in-built \textit{min()} \cite{PythonMin} and \textit{max()} \cite{PythonMax} methods.
@@ -667,7 +678,7 @@ def refinedMaxMin(scores, solution, j, maxScorePerRound):
   roundsRemaining = (len(solution) - 1 - j)
 
   for score in sorted_scores:
-    if score + (maxScorePerRound * roundsRemaining) < currentTop:
+    if score + (maxScorePerRound * roundsRemaining) <= currentTop:
       minScore = score
   return minScore
 \end{lstlisting}
@@ -767,7 +778,9 @@ This means that the loops have no knowledge of the problem baked into them. This
 
 This is further obvious when looking at the controlling file \textit{order.py} in the attached source code, and what each algorithm needs to run. There are 4 inputs that all the algorithms need to run. These are a a list of \textit{participants}, a list of \textit{voters}, a scoreboard which is a matrix of scores that \textit{voters} give to \textit{participants} and finally the max score that can be given (12 in Eurovision). If a problem can be formalised into these 4 inputs then these methods and algorithms can quite easily be used for other problems, no matter their complexity or size.
 
-% csv reader
+The Eurovision Song Contest group released spreadsheets for the 2016, 2015 and 2014 semi and Grand Finals. To allow the scoreboard to be taken directly from these results it was necessary to convert these spreadsheets to csv's first. This was done for the 2014 file and is attached. To read this into a matrix scoreboard for use by the algorithms a csv reader was written which can be found in the attached source code as \textit{csvDataReader.py}.
+
+As the spreadsheet and hence csv were not optimised for use by computers there were some modifications to the incoming data that had to be made. One such modification was to change new lines at the end of the row to a score of 0 points as the spreadsheet had left the cell blank; the last cell being the score given by the voter. Another was to track who was currently voting and add an extra 0 points when they would have voted for themselves as the spreadsheet did not include the country that was voting in the list of countries that received votes. Once run it produces a matrix that could then be given to the \textit{order.py} file and then used to solve the problem. Hence allowing the re-use of the algorithms and supporting functions on another Eurovision competition with relative ease.
 
 \subsection{Visualisation}\label{Imp-Vis}
 A part of this project that was within scope, but not directly part of solving the problem, was creating a way to visualise the solutions that the algorithms produced. The main reason for doing this was to have a way to compare solutions that more closely correlates with how the real solutions would be viewed.
@@ -811,19 +824,19 @@ The main barrier to saying that this project achieved all it's stated goals is t
 
 As it is the most important of the three goals, the goal of finding entertaining solutions is explored below in Section \ref{solutions} in more depth.
 
-Describing the entertainment of a given voting order mathematically was explored theoretically in Section \ref{EntertainmentFunction} and their implementations in Section \ref{Imp-eFunctions}. In terms of success in achieving the goal, I think this project has been successful. The main entertainment function (\textbf{refinedMaxMin}) provides a simple and elegant way of enumerating a concept that can be quite difficult to define. The functions not only define an entertaining solution mathematically, but they also allow them to be maximised or minimised easily, so in this regard they are also very accomplished in helping to achieve the first goal. A comparison between the two functions defined during the project and an explanation as to how they were tested against each other and the project can be found in Section \ref{Testing}. Moreover this will also provide more detail as to why I believe this goal has been successfully reached.
+Describing the entertainment of a given voting order mathematically was explored theoretically in Section \ref{EntertainmentFunction} and their implementations in Section \ref{Imp-eFunctions}. In terms of success in achieving the goal, I think this project has been successful. The main entertainment function (\textbf{refinedMaxMin}) provides a simple and elegant way of enumerating a concept that can be quite difficult to define. The functions not only define an entertaining solution mathematically, but they also allow them to be maximised or minimised easily, so in this regard they are also very accomplished in helping to achieve the first goal. A comparison between the two functions defined during the project and an explanation as to how they were tested against each other and the project can be found in Section \ref{OtherTesting}. Moreover this will also provide more detail as to why I believe this goal has been successfully reached.
 
 It is more difficult to quantify if the goal of creating a way to visualise solutions has been met or not. In my opinion, the visualisation web application does a very good job of allowing another dimension of this project to be shown. The side of the project that the visualisation helps to shed light on, is essentially ignored by the algorithms and only generalised heavily in the entertainment functions. That is how real people would feel when viewing an "entertaining" solution. The visualisation provides that more visual and tactile feedback to the viewer. Furthermore it helps to justify the other goals without having to go into as much detail about the correctness of the algorithms or the entertainment functions, such as in this report.
 
 \subsection{Solutions}\label{solutions}
-This section will discuss both the general solutions found by all the algorithms and compare how they performed in finding an optimal solution. Moreover the methodology for collecting and analysing these solutions will be explored. A table of the best and average solutions along with average times for each of the four algorithms can be found in table \ref{solutionsFound} in the appendix. 
+This section will discuss both the general solutions found by all the algorithms and compare how they performed in finding an optimal solution. Moreover the methodology for collecting and analysing these solutions will be explored. A table of the best and average solutions along with average times for each of the four algorithms can be found in table \ref{solutionsFound} and table \ref{timing} in the appendix. 
 
 \subsubsection{Methodology}
 % how got results and how analysed them
 % how you designing your experiments to verify hypothesis of more scientifically oriented project
 To find a set of solutions for each algorithm in order to analyse them, the first step was to do some repeated runs. To facilitate some code was added to the main controller \textit{order.py} so that an optional command line parameter could be given which would repeat the running of the given algorithm how ever many times the user input. 
 
-The general method was to run each of the algorithms lots of times and record the $\Phi$ and $\varepsilon$ values for that solution. From this we can be more confident about the performance of each algorithm and make some mathematical comparison between them. To try and keep the experiment fair all the algorithms that take an initial solution were given the same one, that is the one given by the method \textit{getInitialSolution} in \textit{support.py}.
+The general method was to run each of the algorithms lots of times and record the $\Phi$ and $\varepsilon$ values for that solution. From this we can be more confident about the performance of each algorithm and make some mathematical comparison between them. To try and keep the experiment fair all the algorithms that take an initial solution were given the same one, that is the one given by the method \textit{getInitialSolution()} in \textit{support.py}.
 
 An important point to recognise, before explaining the basic methodology, is that only testing of Greedy search and Simulated Annealing can be done in the exact same way, due to their similarities. Piecemeal and brute force cannot be tested in the same way however the same idea of running them many times to collect many $\Phi$ still stands. Their methods are explained later on.
 
@@ -897,17 +910,24 @@ As the brute force algorithm can not be run in the same way as the other three, 
 \subsubsection{Solutions found}
 % Pick out interesting values of solutions and talk about which algorithms are better than each other
 % indicate how confident you are about solutions, and also suggest what tests would be required to gain further confidence
-The best $\Phi$ for the 2014 Eurovision was found by Simulated Annealing with a $\varepsilon$ value of 2426 (using \textbf{refinedMaxMin}). This is an ordering of the \textit{voters} that keeps the distance between countries that can still win as low as possible for as long as possible.
+The best $\Phi$ for the 2014 Eurovision was found by Simulated Annealing with a $\varepsilon$ value of \textbf{2554} (using \textbf{refinedMaxMin}). This is an ordering of the \textit{voters} that keeps the distance between countries that can still win as low as possible for as long as possible. Although is it difficult to say with certainty if this ordering is the \textit{globally} optimal solution for the 2014 Eurovision competition, I believe that we can say with a high degree of confidence that this solution is at least close to optimal.
 
 \begin{figure}[H]
 \caption{Best solution}
 \label{bestSolution}
 \begin{verbatim}
-
+['Belarus', 'Albania', 'Poland', 'United Kingdom', 'Montenegro', 'Armenia', 'Malta', 
+'Russia', 'Azerbaijan', 'Germany', 'San Marino', 'Italy', 'FYR Macedonia', 
+'Moldova', 'Estonia', 'Austria', 'Romania', 'Switzerland', 'Ukraine', 'Latvia', 
+'Denmark', 'Georgia', 'Hungary', 'Finland', 'Ireland', 'Norway', 'Greece', 
+'Spain', 'Israel', 'Portugal', 'Lithuania', 'France', 'Belgium', 'Iceland', 
+'Sweden', 'Slovenia', 'The Netherlands']
 \end{verbatim}
 \end{figure}
 
-Table \ref{solutionsFound} in the appendix shows some of the interesting $\varepsilon$ values found for all the algorithms used. The $\Phi$ corresponding to those values is not shown as they are very long, however finding them is a case of searching the results file for the $\varepsilon$ value as they are saved together.
+To try and verify if this was the most optimal solution that could be found, this $\Phi$ was given to both Greedy and Simulated Annealing as the initial solution, and they were run around 10 times. They both returned this same solution, which gives good confidence that this is the best possible $\Phi$.
+
+Table \ref{solutionsFound} in the appendix shows some of the other interesting $\varepsilon$ values found for all the algorithms used. The $\Phi$ corresponding to those values is not shown as they are very long, however finding them is a case of searching the results file for the $\varepsilon$ value as they are saved together.
 
 Figure \ref{eScreenshot} shows the 3 algorithms so far discussed with the minimum, average and maximum $\varepsilon$ values so they can be compared.
 
@@ -918,14 +938,13 @@ Figure \ref{eScreenshot} shows the 3 algorithms so far discussed with the minimu
 \label{eScreenshot}
 \end{figure}
 
-In terms of comparing the algorithms the first point is that Simulated Annealing is clearly the best algorithm as is has found the best $\varepsilon$ value and hence solution as discussed above. This is in terms of $\varepsilon$ value found, and not with respect to any other measure of quality such as speed. How they compare in other regards is discussed in Section \ref{OtherTesting}.
+In terms of comparing the algorithms the first point is that Simulated Annealing is the best algorithm as is has found the best $\varepsilon$ value and hence solution as discussed above. This is in terms of $\varepsilon$ value found, and not with respect to any other measure of quality such as speed. How they compare in other regards is discussed in Section \ref{OtherTesting}.
 
-The Greedy algorithm does not perform particularly well as it's average $\varepsilon$ is much higher than the other two. Moreover the best $\Phi$ it found has a $\varepsilon$ of 2908, which is only about 100 better than the worst $\varepsilon$ that Simulated Annealing found. The large range of values as seen from the large difference between the max and min means that Greedy is not a consistent algorithm when given consistent input, as in this problem. This backs up the idea that lead to the development and use of Simulated Annealing and Piecemeal for this project. If the results produced by Greedy were better then there would have been little gained from the rest of the project. 
+The Greedy algorithm does not perform particularly well as it's average $\varepsilon$ is much higher than the other two. Moreover the best $\Phi$ it found has a $\varepsilon$ of $3196$, which is about 150 worse than the worst $\varepsilon$ that Simulated Annealing found. The large range of values as seen from the large difference between the max and min means that Greedy is not a consistent algorithm when given consistent input, as in this problem. This backs up the idea that lead to the development and use of Simulated Annealing and Piecemeal for this project as Greedy has not found very optimal solutions. If the results produced by Greedy were better then there would have been little gained from the rest of the project. 
 
 One interesting point that is not shown in Figure \ref{eScreenshot} is that if we use a solution given by the Piecemeal algorithm as the initial solution, then Greedy can perform as well as Simulated Annealing (if it is given the same initial solution as before). This increase in quality when given an already good $\Phi$ is shared by Simulated Annealing. This leads to the conclusion that Greedy is getting stuck in local optima and as it cannot escape, returns the best $\Phi$ that it has.
-% using piecemeal solution as initial solution greedy performs just as well as simAnnealing
 
-The piecemeal method was a major success for this problem, especially as it is not a general algorithm which have been proven and tested on many problems. Referring to Figure \ref{eScreenshot} the chart shows that the piecemeal method held it's own against a much more complex and established algorithm in Simulated Annealing. The lowest $\varepsilon$ value that it found was $2519$ which less than 100 away from the globally best solution. Moreover as can be seen from the range of values, this method is consistent in returning good solutions. This may be because the only difference between the attempts is the first voter, however that is the only part that is changeable.
+The piecemeal method was a major success for this problem, especially as it is not a general algorithm liek the others, which have been proven and tested on many problems. Referring to Figure \ref{eScreenshot} the chart shows that the piecemeal method held it's own against a much more complex and established algorithm in Simulated Annealing. The lowest $\varepsilon$ value that it found was $2690$ which is only 17 away from the globally best solution. Moreover as can be seen from the range of values, this method is consistent in returning good solutions, when varying the first \textit{voter}. This may be because the only difference between the attempts is the first voter, however that is the only part that is changeable between runs. As the averages of both Simulated Annealing and Piecemeal as very similar we can say that Piecemeal is almost as good as Simulated Annealing at finding consistently good solutions.
 
 % talk about future work on testing solutions found against people
 
@@ -1040,27 +1059,54 @@ Although these tests are not strictly necessary for the completeness of the proj
 % critically evaluate your results in the light of these tests, describing its strengths and weaknesses. ideas for improvement can be carried over into Future work.
 %  -- running using same initial solution each time -- randomise?
 % present a critical appraisal of the project as a whole, including why the programming language and methodology chosen were appropriate
+The main strength of the results lies in the analysis and the methodology for collecting and analysing the results. These results, and the tests that were run to verify them, point to the fact that the project's results are correct and that they can hold up to scrutiny. The analysis has also shown that the results are significant in terms of reaching the goals set out at the start of the project. 
 
-% 12859
+On the other hand, a weakness of the results is the small amount of testing of the overall system as it runs. This could be seen as problematic as there are many moving parts that allow an algorithm to be run and produce solutions. Although some of these have been mitigated through the computational testing, it is always possible that there are still mistakes. Furthermore even though the manual testing attempted to reduce the likelihood of any problems showing up, as always with manual testing, human error can be a factor.
+
+Another strength of this project was the scientifically-minded method in which each stage was undertaken. Each decision, such as writing a new algorithm or method, was based on intermediate experiments and experimental data. By doing this at every stage throughout the project, a higher level of confidence is gained in the final results, as there are simply explainable reasons for all the decisions made, and data to support them.
+
+One important point to evaluate is the use of Python as the programming language for this project. Overall the biggest strength that Python brought to the project was it's ease of use. This manifested itself not only in the actual writing of code for the project, but also the supporting overheads that any programming language brings with it. For example, the good quality and reliable standard libraries, helped to reduce workload for the more complex parts of the code. Moreover running the algorithms was simple, allowing manual testing to be done with little hassle, where another language would have added extra setup and time. 
+
+A common weakness that is levelled at Python is it's lack of complex data structures and types. For this project, this was not a problem as although the algorithms may be complex, they did not rely on anything more complex than an array (list in Python). Having experience with Python also helped to mitigate any problems before they cropped up, such as stopping the global amendment of lists through copying them instead of passing the same list between functions. This can be seen in many places in the code as there is heavy use of the $newList = oldList[:]$, which sets $newList$ equal to a copy of $oldList$ instead of $oldList$ itself. In other languages such as Java this would not be problem, however they would bring their own quirks. Overall it is fair to say that Python performed extremely well for this project.
 
 \section{Future Work}\label{FutureWork}
 % expressing unrealistic ideas, including what you would have liked to have done if only you had not run out of time
 % provide a good starting point for someone else to continue the work which you have begun
+The first and most obvious point for future work would be finding out if the best $\Phi$ found is globally optimal and if it is not, then finding the globally optimal solution. Although the brute force method had to be abandoned due to it's computational infeasibility, it may be possible that by using meta-heuristics with the brute force algorithm to cut down the search space, the globally optimal solution could be found.
 
-% is the solution optimal
-% evaluating the entertainment function using real world people
-% more entertainment functions
-% enhance code for performance
+Another thought for future work relates to testing the entertaining solutions that were produced; using people, taking a more Psychological or Sociological approach to the project instead of just mathematical. This testing could take place as a sort of mock version of Eurovision where different groups of spectators are shown the voting in different orders and then must rank them in term of excitement and entertainment. Moreover, by using questionnaires of those who undertake the study, it could be possible to uncover new entertainment functions that were as yet unrealised.
+
+This could lead to new entertainment functions being developed, but new functions could also be developed separately. In this project we have concentrated only on who can win the competition, however entertainment will contain many more parts. For example, maximising the entertainment for as many spectators as possible who are rooting for each country, possibly taking into account population and engagement of the viewers. Other functions could be ones that maximise those who can reach a certain position, in competitions that involve multiple prizes such as finishing above a certain place; or in competitions with relegations, keeping as many participants in the fight to stay up for as long as possible.
+
+A final piece of future work would be to try and optimise the code for performance. This would take a little more of a deeper understanding and investigation into Python as although I was experienced in using it, never for high performance code. Moreover there are likely places in the code for the system that is not optimised as I prioritised getting correct results over the code being the most performant.
 
 \section{Conclusions}\label{Conclusions}
 % summary of the aims of the project and a restatement of the main results, i.e. what has been learnt and acheived
 % an effective set of conclusions should not introduce new material. Instead it should briefly draw out, summarise, combind and reiterate the main points that have been made in the body of the project report and present opinions based on them
+The main aims of the project were to find an ordering of voters that maximises entertainment, to develop some functions that could codify entertainment mathematically and to produce a way of visualising an ordering.
+
+In terms of these goals, I believe all of them have been achieved to a high degree of quality. The algorithms produced found a solution to the problem that successfully maximised the entertainment. The functions that were produced to find that entertainment were very successful in taking the intuitive feelings of entertaining and turning them into mathematical functions that return values with a high level of confidence. Finally the visualisation produced can clearly be shown to aid in the understanding of what makes these good solutions better than the bad ones. Moreover the experimental results outlined in Section \ref{Results} help to support the idea that these goals have been achieved.
+
+From this report it should be possible to see that some novel implementations for use in these types of problems has been produced. Moreover these novel methods have been properly backed up with experimental results in order that their correctness is not in doubt. Also the upmost has been done so that this project does not stand alone with no use for any future work in this area. I think it is fair to say that this project could lay some groundwork for solving more problems from this specific set of optimisation problems, albeit with some additions or modifications.
+
+As can be seen from the context of this project in Section \ref{Project Context}, there has not been a large amount of research into maximising problems for entertainment, especially in the field of Computer Science and specifically Combinatorial Optimisation. This means that although this project began with concrete goals, there was no real context to give an insight into how to best approach the problem, or how simple or complex finding a solution would be. In that respect, reaching the stated goals shows the success of the project. 
+
+Furthermore it can be said that due to the lack of current research, this project has added a good amount to the research area of optimising competitions for entertainment, by providing a good base for other similar projects, and some useful insights into how to approach these types of problems.
 
 \section{Reflection on Learning}\label{Reflection}
 % identify the impact of what we have done on the assumptions, concepts and ideas we used to make decisions about our work
 % try to identify the characteristics of the problem that has been addressed , and consider whether assumptions of decisions about the relevant approach to solving the problem had been appropriate, in order to make a better decision in relation to problems that might be encountered in the future.
 
-\section*{Glossary of Terms}
+I think that by assuming that the problem we were undertaking would be complex, we avoided a range of problems that could have arisen. This way of approaching problems that have a undefined solution is extremely transferable. From this project I have learnt that not underestimating the complexity of problems will also mean that you are more open to pivoting when problems do arise. The idea to continually look at data and use that to make decisions, could only be achieved if the problems complexity is thoroughly thought through.
+
+Giving myself the freedom to change tact based on changing results also relied on having a solid plan. For this plan to be useful whilst also heading the learning from above, it was sufficiently detailed so that I was never lost, but also allowed me the freedom to swap task out depending on how things were going. In that respect I learnt a lot about planning complex projects in more Agile fashion.
+
+On the point of planning in the project, another new skill gained from this project is being very industrious with my time. Even thought throughout I had the aid of my supervisor, the majority of the time spent had to be decided by me. Especially for such a long project with many parts to it, this could be complicated. I believe that I gained a deeper understanding of managing my time for a large and complex problem by splitting it up and attacking specific areas. This again is an extremely useful skill to have gained by virtue of this project. 
+
+Another major skill I have learnt from this project, is to always be sceptical of results until after analysis. On a couple of occasions during the project I was faced with results that did not match my hypothesis. When faced with this data, I did not immediately throw away the hypothesis and formulate a one, but I used that initial data to start a deeper investigation. From this I learnt that in problems like this one there can be hidden phenomena that do not necessarily match up with your first thoughts. These hidden things can be causing side affects, that are the observed problems, however the problems lay deeper. I learnt that a deeper investigation is never a bad thing, and will always lead to a deeper understanding of the system.
+
+\clearpage
+\section*{Glossary of Terms}\label{glossary}
 \addcontentsline{toc}{section}{Glossary}
 \begin{enumerate}
 \item \textbf{Voters ($V$)}: All countries that are in the Eurovision song contest who vote in the final. The voters is a list of countries. It looks like ["Ukraine", "Austria", "France",....]
@@ -1071,12 +1117,12 @@ Although these tests are not strictly necessary for the completeness of the proj
 		\item An entertainment value found by an entertainment function
 	\end{itemize}
 \item \textbf{Entertainment Value ($\varepsilon$)}: A value given to a solution that describes how entertaining it is. Calculated using an entertainment function given a solution.
-\item \textbf{Round ($R$)}: One round is when one \textit{voter} has given all the \textit{participants} a score. The competition is made up of $n_R$ rounds where $n_R = length of V$.
+\item \textbf{Round ($R$)}: One round is when one \textit{voter} has given all the \textit{participants} a score. The competition is made up of $n_R$ rounds where $n_R = $ length of V.
 \item \textbf{Scores ($S$)}: How many points each country has received per round. The scores are an array of the same length as the number of \textit{participants}. It looks like [0,0,2,12,7,4,0,0,3,2,10,....]. When referring to it in the report along with \textbf{rounds} it is most likely cumulative so that after the final round the scores are the total scores for each country.
 \end{enumerate}
 
-\section*{Table of Abbreviations}
-\addcontentsline{toc}{section}{Table of Abbreviations}
+%\section*{Table of Abbreviations}
+%\addcontentsline{toc}{section}{Table of Abbreviations}
 
 \section*{Appendices}
 \addcontentsline{toc}{section}{Appendices}
