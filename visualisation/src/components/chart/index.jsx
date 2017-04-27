@@ -3,7 +3,7 @@ import BarPlot from '../bar-plot';
 import ScoreBoard from './scoreboard';
 
 const styles = {
-	width   : 1000,
+	width   : 1200,
 	height  : 800,
 	padding : 25
 };
