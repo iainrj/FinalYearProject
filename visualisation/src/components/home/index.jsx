@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import style from './style';
 
 import Chart from '../chart';
+let int;
 
 export default class Home extends Component {
 	constructor(props) {
@@ -10,34 +11,16 @@ export default class Home extends Component {
 		this.state.round = 0;
 	}
 
-	interval(func, wait, times){
-		let interv = function(w, t){
-			return function(){
-				if (typeof t === "undefined" || t-- > 0){
-					setTimeout(interv, w);
-					try {
-						func.call(null);
-					}
-					catch (e){
-						t = 0;
-						throw e.toString();
-					}
-				}
-			};
-		}(wait, times);
-
-		setTimeout(interv, wait);
-	}
-
 	incrementRound() {
-		this.interval(() => {
-			this.setState({round: this.state.round + 1});
-		}, 1300, 37);
+		int = setInterval(() => {
+			if (this.state.round < 37) {
+				this.setState({round: this.state.round + 1});
+			}
+		}, 1300);
 	}
 
 	stopSim() {
-		clearInterval(this._interval);
-		this._interval = 0;
+		clearInterval(int);
 	}
 
 	componentWillUnmount() {
