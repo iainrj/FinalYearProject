@@ -6,7 +6,10 @@ const performers = ['Ukraine','Belarus','Azerbaijan','Iceland','Norway','Romania
 
 const voters = ['Albania', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', 'Denmark', 'Estonia', 'FYR Macedonia', 'Finland', 'France','Georgia', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Italy', 'Latvia', 'Lithuania', 'Malta', 'Moldova', 'Montenegro', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'The Netherlands', 'Ukraine', 'United Kingdom'];
 
-const reveal_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia'];
+// const bad_reveal_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia'];
+const good_reveal_order = ['Belarus', 'Albania', 'Poland', 'United Kingdom', 'Montenegro', 'Armenia', 'Malta', 'Russia', 'Azerbaijan', 'Germany', 'San Marino', 'Italy', 'FYR Macedonia', 'Moldova', 'Estonia', 'Austria', 'Romania', 'Switzerland', 'Ukraine', 'Latvia', 'Denmark', 'Georgia', 'Hungary', 'Finland', 'Ireland', 'Norway', 'Greece', 'Spain', 'Israel', 'Portugal', 'Lithuania', 'France', 'Belgium', 'Iceland', 'Sweden','Slovenia', 'The Netherlands'];
+
+let reveal_order = good_reveal_order;
 // Returns a function that "scales" X coordinates from the data to fit the chart
 const xScale = (props) => {
 	return scaleLinear()
