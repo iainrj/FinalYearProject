@@ -20,10 +20,13 @@ export default class Bar extends Component {
 		const transformBar = `translate(0, ${this.props.id * this.props.padding})`;
 		const width = `${+this.props.xScale(this.state.score) + 10}`;
 		const transformName = `translate(${+width+5}, ${this.props.id * this.props.padding})`;
+		const roundsRem = (36 - this.props.round);
+		const barStyle = (this.state.score + (12 * roundsRem)) < this.props.highestScore ? style.chart_rect_out : style.chart_rect;
+
 		return (
 			<g>
 				<g transform={transformBar}>
-					<rect class={style.chart_rect} width={width} height="20"></rect>
+					<rect class={barStyle} width={width} height="20"></rect>
 					<text class={style.chart_text} x={width - 5} y="9.5" dy=".35em">{this.state.score}</text>
 				</g>
 				<g transform={transformName}>
