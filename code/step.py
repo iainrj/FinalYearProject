@@ -12,7 +12,7 @@ def stepByStepSolution(score_board, countries, voters, maxScorePerRound):
         bestScores = [row[p] for row in score_board]
         solution.append(voting_countries[p])
         ignoredIndexes.append(p)
-        distances.append(12)
+        distances.append(maxScorePerRound)
 
         for k in range(1, len(voting_countries)): # go through and add to solution
             scores = bestScores[:]

@@ -6,7 +6,8 @@ import bruteForce as bf
 import simulatedAnnealing as sa
 import step
 
-if __name__ == '__main__':            
+if __name__ == '__main__':
+    MAX_SCORE_PER_ROUND = 12        
     PERFORMING_COUNTRIES = ['Ukraine','Belarus','Azerbaijan','Iceland','Norway','Romania','Armenia','Montenegro','Poland','Greece','Austria', 'Germany','Sweden','France','Russia', 'Italy','Slovenia','Finland','Spain','Switzerland','Hungary','Malta','Denmark','The Netherlands','San Marino','United Kingdom']
     # Eurovision 2014 scoreboard. 1st column is Albania's vote, 2nd column is Armenia's vote, etc.
     VOTING_COUNTRIES = ['Albania', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', 'Denmark', 'Estonia', 'FYR Macedonia', 'Finland', 'France', 'Georgia', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Italy', 'Latvia', 'Lithuania', 'Malta', 'Moldova', 'Montenegro', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'The Netherlands', 'Ukraine', 'United Kingdom']
@@ -44,7 +45,14 @@ if __name__ == '__main__':
     #     [ 0, 0, 0, 0, 1],
     #     [ 1, 1, 1, 1, 0]
     # ]
-    #     PERFORMING_COUNTRIES = ['Federer', 'Murray', 'Federer', 'Murray', 'Federer', 'Murray', 'Federer']
+    # MAX_SCORE_PER_ROUND = 1
+    # PERFORMING_COUNTRIES = ['Austria', 'France']
+    # VOTING_COUNTRIES = ['Germany', 'France', 'Spain', 'Austria']
+    # SCOREBOARD = [
+    #     [ 1, 1, 1, 0],
+    #     [ 0, 0, 0, 1]
+    # ]
+    # PERFORMING_COUNTRIES = ['Federer', 'Murray', 'Federer', 'Murray', 'Federer', 'Murray', 'Federer']
     # VOTING_COUNTRIES = ['Set 1', 'Set 2', 'Set 3', 'Set 4', 'Set 5', 'Set 6', 'Set 7', 'Set 8', 'Set 9']
     # SCOREBOARD = [
     #     [ 0, 0, 2, 0, 6, 1, 0, 0, 0],
@@ -62,20 +70,20 @@ if __name__ == '__main__':
     for i in range(num_loops):
         print('iterations', i, 'of', num_loops)
         if algo == 'brute':
-            print(bf.bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
+            print(bf.bruteForce(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, MAX_SCORE_PER_ROUND))
         elif algo == 'greedy':
             start = timer()
-            print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
+            print(gs.greedySearch(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, MAX_SCORE_PER_ROUND))
             end = timer()
             print('algorithm took: ', end - start)
         elif algo == 'simAnnealing':
             start = timer()
-            print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
+            print(sa.simulatedAnnealing(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, MAX_SCORE_PER_ROUND))
             end = timer()
             print('algorithm took: ', end - start)
         elif algo == 'step':
             start = timer()
-            print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, 12))
+            print(step.stepByStepSolution(SCOREBOARD, PERFORMING_COUNTRIES, VOTING_COUNTRIES, MAX_SCORE_PER_ROUND))
             end = timer()
             print('algorithm took: ', end - start)
         else:
