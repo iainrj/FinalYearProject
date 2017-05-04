@@ -39,6 +39,7 @@ if __name__ == '__main__':
         [ 3,  3,  0,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         [ 0,  0,  0,  0,  0,  1,  7,  0,  0,  0,  0,  3,  0,  0,  0,  4,  8,  0,  0,  0,  0,  4,  0,  0,  3,  0,  0,  0,  0,  5,  0,  5,  0,  0,  0,  0,  0]
     ]
+    # MAX_SCORE_PER_ROUND = 1
     # PERFORMING_COUNTRIES = ['Federer', 'Murray']
     # VOTING_COUNTRIES = ['Set 1', 'Set 2', 'Set 3', 'Set 4', 'Set 5']
     # SCOREBOARD = [
@@ -52,16 +53,17 @@ if __name__ == '__main__':
     #     [ 1, 1, 1, 0],
     #     [ 0, 0, 0, 1]
     # ]
-    # PERFORMING_COUNTRIES = ['Federer', 'Murray', 'Federer', 'Murray', 'Federer', 'Murray', 'Federer']
-    # VOTING_COUNTRIES = ['Set 1', 'Set 2', 'Set 3', 'Set 4', 'Set 5', 'Set 6', 'Set 7', 'Set 8', 'Set 9']
+    # MAX_SCORE_PER_ROUND = 6
+    # PERFORMING_COUNTRIES = ['Federer', 'Murray', 'Djokovic', 'Nadal', 'Borg', 'Cash', 'Henman']
+    # VOTING_COUNTRIES = ['1', '2', '3', '4', '5']
     # SCOREBOARD = [
-    #     [ 0, 0, 2, 0, 6, 1, 0, 0, 0],
-    #     [ 1, 1, 3, 6, 5, 6, 2, 1, 1],
-    #     [ 2, 2, 4, 4, 4, 4, 1, 2, 2],
-    #     [ 3, 3, 5, 5, 3, 3, 3, 3, 3],
-    #     [ 4, 4, 6, 2, 2, 5, 6, 4, 4],
-    #     [ 5, 5, 1, 3, 1, 1, 4, 5, 5],
-    #     [ 6, 6, 0, 1, 0, 0, 5, 6, 6]
+    #     [ 0, 0, 2, 0, 6],
+    #     [ 1, 1, 3, 6, 5],
+    #     [ 2, 2, 4, 4, 4],
+    #     [ 3, 3, 5, 5, 3],
+    #     [ 4, 4, 6, 2, 2],
+    #     [ 5, 5, 1, 3, 1],
+    #     [ 6, 6, 0, 1, 0]
     # ]
 
     algo = sys.argv[1] if len(sys.argv) > 1 else None
