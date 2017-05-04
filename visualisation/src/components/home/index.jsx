@@ -30,7 +30,7 @@ export default class Home extends Component {
 	resetCounter() {
 		this.stopSim();
 
-		this.setState({round: 0});
+		location.reload();
 	}
 
 	render() {
