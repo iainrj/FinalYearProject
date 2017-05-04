@@ -1,7 +1,7 @@
 import support
 
 def stepByStepSolution(score_board, countries, voters, maxScorePerRound):
-    for p in range(37): # used for testing all solutions
+    for p in range(len(voters)): # used for testing all solutions
         entertainmentValue = 0
         performing_countries = countries[:]
         solution = []
