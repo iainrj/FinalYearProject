@@ -5,7 +5,7 @@ def getInitialSolution(performers, score_board, voters, maxScorePerRound):
     # order that this method returns normally = 3824
     # order = ['Albania', 'Belarus', 'Poland', 'Russia', 'Armenia', 'Israel', 'Malta', 'FYR Macedonia', 'Denmark', 'Azerbaijan', 'Germany', 'San Marino', 'Moldova', 'Latvia', 'Finland', 'Montenegro', 'Hungary', 'Estonia', 'France', 'Romania', 'Iceland', 'Austria', 'Italy', 'Ukraine', 'Georgia', 'Lithuania', 'Norway', 'Sweden', 'Belgium', 'Greece', 'Ireland', 'Portugal', 'Slovenia', 'Spain', 'Switzerland', 'The Netherlands', 'United Kingdom']
     # return order
-    # 2014 order
+    # 2014 order = 3104
     # real_order = ['Azerbaijan','Greece','Poland','Albania','San Marino','Denmark','Montenegro','Romania','Russia','The Netherlands','Malta','France','United Kingdom','Latvia','Armenia','Iceland','FYR Macedonia','Sweden','Belarus','Germany','Israel','Portugal','Norway','Estonia','Hungary','Moldova','Ireland','Finland','Lithuania','Austria','Spain','Belgium','Italy','Ukraine','Switzerland','Georgia','Slovenia']
     # return real_order
     # solution piecemeal returns = 2571
@@ -51,22 +51,6 @@ def refinedMaxMin(scores, solution, j, maxScorePerRound):
         if score + (maxScorePerRound * roundsRemaining) <= currentTop:
             minScore = score
     return minScore
-
-# List<String> -> List<String> -> Integer -> List<List<Integers>> -> Integer
-# UNUSED
-# def calculateDistances(solution, voters, no_performers, score_board, maxScorePerRound):
-#     distances = []
-#     num_rows = len(voters)
-#     num_columns = no_performers
-#     scores = [0] * num_rows
-    
-#     for j in range(num_rows):
-#         for i in range(num_columns):
-#             scores[i] = score_board[i][voters.index(solution[j])] + scores[i]
-#         minimumScore = refinedMaxMin(scores, solution, j, maxScorePerRound)
-#         distances.append(max(scores) - minimumScore)
-    
-#     return distances
 
 # List -> List -> List -> List -> Integer -> Integer -> List
 def offsetGetEntertainment(solution, countries, score_board, voters, key1, oldEntertainment, oldDistances, maxScorePerRound):
@@ -122,19 +106,3 @@ def getEntertainment(solution, countries, score_board, voters, maxScorePerRound)
     entertainmentValue = sum(distances)
     
     return entertainmentValue, distances
-
-# List<List<Integer>> -> List<String> -> List<String> -> null
-def printScoreboard(board, voting, performing):
-    print(' ', ' '.join(voting))
-    for i in range(len(board)):
-        print(performing[i])
-        for j in range(board[i]):
-            if (board[i][j] == 0):
-                print('-')
-            else:
-                print(board[i][j])
-                
-        print()
-
-# PERFORMING_COUNTRIES_SHORT = ['UA','BY','AZ','IS','NO','RO','ME','PL','GR','AT','DE', 'SE','FR','RU','IT','SI','FI','ES','CH','HU','MT','DK','NL','SM','UK']
-# VOTING_COUNTRIES_SHORT = ['AL', 'AM', 'AT', 'AZ', 'BY', 'BE', 'DK', 'EE', 'MK', 'FI', 'FR', 'GE', 'DE', 'GR', 'HU', 'IS', 'IE', 'IL', 'IT', 'LV', 'LT', 'MT', 'MD','ME', 'NO', 'PL', 'PT', 'RO', 'RU', 'SM', 'SI', 'ES', 'SE', 'CH','NL', 'UA', 'UK']
