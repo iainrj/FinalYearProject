@@ -78,7 +78,13 @@
 \date{} % Activate to display a given date or no date (if empty),  otherwise the current date is printed
 
 \begin{document}
+
+\begin{figure}[H]
 \maketitle
+\centering
+\includegraphics[]{./CUlogo}
+\end{figure}
+
 \clearpage
 
 \section*{Abstract}
@@ -95,7 +101,7 @@
 
 %Word count: 16,366
 
-As yet very little research has been undertaken into maximising the "entertainment" of voting competitions, however the appeal of having this ability is immediately obvious. This project attempts to find the most entertaining order for votes to be revealed in competitions; such as the Eurovision Song Contest. The problem was first formalised into a framework designed in this project for solving optimisation problems, functions to describe the entertainment were designed and then a range of optimisation algorithms were used to try to maximise the entertainment of the voting orders. A full analysis of the \textit{entertainment} of the solutions and properties of the algorithms was undertaken. A near optimal, if not globally optimal, solution was found for the 2014 Eurovision contest; and a novel problem specific algorithm was designed. The project also introduces a framework and generalisable methodology for future work in this field.
+As yet very little research has been undertaken into maximising the "entertainment" of voting competitions, however the appeal of having this ability is immediately obvious. This project attempts to find the most entertaining order for votes to be revealed in competitions; such as the Eurovision Song Contest. The problem was first formalised into a framework designed in this project for solving optimisation problems, then functions to describe the entertainment were designed and then a range of optimisation algorithms were used to try to maximise the entertainment of the voting orders. A full analysis of the \textit{entertainment} of the solutions and the properties of the algorithms was undertaken. A near optimal, if not globally optimal solution was found for the 2014 Eurovision Song Contest; and a novel problem specific algorithm was designed. The project also introduces a framework and generalisable methodology for future work in this field.
 
 \section*{Acknowledgements}
 I would like to thank my supervisor, Richard Booth, for support and insights throughout the project.
@@ -120,7 +126,7 @@ Thanks to the European Broadcasting Union (EBU) for releasing the datasets for t
 % the approach used in carrying out the project,
 % assumptions on which the work is based and
 % a broad summary of important outcomes.
-In many elections and competitions, a set of voters will rank a set of participants from best to worst, or will give scores to some of the candidates, with the winner then being the candidate that gets the highest total number of points. When it comes to revealing the result after all the votes have been cast but not revealed, some competitions proceed by having a roll-call of all the voters in which each announces their own scores. This is often done for entertainment purposes such as in the Eurovision Song Contest.\cite{EurovisionVoting}
+In many elections and competitions, a set of voters will rank a set of participants from best to worst, or will give scores to some of the candidates, with the winner then being the candidate that gets the highest total number of points. When it comes to revealing the result after all the votes have been cast but not revealed, some competitions proceed by having a roll-call of all the voters in which each voter announces their own scores. This is often done for entertainment purposes such as in the Eurovision Song Contest.\cite{EurovisionVoting}
 
 The concept of \textit{entertainment}, especially with respect to competition, is a heavily subjective matter and as such is difficult to quantify in simple terms. There are intuitive constituent parts to an \textit{entertaining} competition (like Eurovision) such as, if the winner is known early or late, and how many teams are in the running to win. This project will attempt to find ways to translate these slightly nebulous concepts into more concrete mathematical functions.  
 
@@ -131,13 +137,13 @@ This leads to the two main questions that this project will aim to answer:
 \item  In which order should the votes be revealed in order to maximise that entertainment value?
 \end{enumerate}
 
-To try and answer these questions the Eurovision Song Contest will be used as an example as it has good quality datasets and the scoring rules of Eurovision are well documented and relatively simple (see \ref{Background}).
+To try and answer these questions the Eurovision Song Contest will be used as an example as it has a good quality datasets and the scoring rules of Eurovision are well documented and relatively simple (see Section \ref{Background}).
 
-The changes to the voting rules over the years show that the motivation behind this project is a current problem and there have been attempts to try and solve this problem already, at least by the Eurovision organisers.
+Changes to the voting rules over the years show that the motivation behind this project is a current problem and there have been attempts to try and solve this problem already, at least by the Eurovision organisers.
 
-There is no specific intended audience of this project, Eurovision is a test competition as it fits well with the more general optimisation problem that this project is trying to solve. The success of the project could be of interest to the organisers of the Eurovision Song Contest as they generally want a exciting competition. In a more general sense though it could be said that the beneficiaries of the project would be those who would also attempt to solve this problem for other datasets or competitions. This project can help set out a framework for approaching these problems and many parts could even be re-used as long as the problem can be formulated in a specific way (see Section \ref{Imp-Reuse} for details)
+There is no specific intended audience for this project, Eurovision is a test competition as it fits well with the more general optimisation problem that this project is trying to solve. The success of the project could be of interest to the organisers of the Eurovision Song Contest as they generally want a exciting competition. In a more general sense though it could be said that the beneficiaries of the project would be those who would also attempt to solve this problem for other datasets or competitions. This project can help set out a framework for approaching these problems and many parts could even be re-used as long as the problem can be formulated in a specific way (see Section \ref{Imp-Reuse} for details)
 
-The scope of this project is to try and solve the optimisation problem by finding a globally optimum solution, or by finding a near optimal solution and hence have a voting order that is the most entertaining. Also within scope is to produce a way of visualising the solutions found and from this gaining better insight into why they are entertaining. This project does not try and influence other parts of the voting that could also lead to more entertainment (such as who delivers the votes or  how the votes are delivered, only the order itself)
+The scope of this project is to try and solve the optimisation problem by finding a globally optimum solution, or by finding a near optimal solution and hence have a voting order that is the most entertaining. Also within scope is to produce a way of visualising the solutions found and from this gaining a better insight into why they are entertaining. This project does not try and influence other parts of the voting that could also lead to more entertainment (such as who delivers the votes or  how the votes are delivered, only the order itself)
 
 The approach used to tackle this problem is a scientifically minded one. There are three main sections to the project. Firstly, designing and implementing functions that quantify the entertainment of a given voting order. Secondly, solving the optimisation problem of maximising the entertainment value given by those functions; using optimisation algorithms. Finally, analysing the solutions given and comparing and contrasting why there are entertaining and how well the algorithms performed. This approach involves iteration on theoretical ideas whilst feeding back in results as the project goes along.
 
@@ -145,7 +151,7 @@ The important outcomes of this project are, a solution that delivers an entertai
 
 The attached files include the algorithms used in this project; Brute force: \textit{bruteForce.py}, Greedy: \textit{greedySearch.py}, Simulated Annealing: \textit{simulatedAnnealing.py} and Piecemeal: \textit{step.py}. The main file that controls the problem: \textit{order.py}, the problem specific supporting methods: \textit{support.py}, and the full set of results. This full project can also been found and cloned from Github here: \url{https://github.com/iainrj/FinalYearProject}.
 
-This report will first give some background to the problem and the Eurovision Song Contest as a dataset. Then the algorithms used to solve the problem will be introduced and their theory and necessity explained, as well as explaining the problem specific methods designed and why they are needed. How those methods are implemented is then explained with reference to the code produced. The results collected by running the algorithms are then analysed and the method to collect the results are justified, and interesting comparisons are made between their results. Finally more general testing of the system as a whole is explained and a critical evaluation of the project is undertaken.
+This report will first give some background to the problem and the Eurovision Song Contest as a dataset. Then the algorithms used to solve the problem will be introduced and their theory and necessity explained, as well as explaining the problem specific methods designed and why they are needed. How those methods are implemented is then explained with reference to the code produced. The results collected by running the algorithms are then analysed and the method to collect the results is justified, and interesting comparisons are made between the results. Finally more general testing of the system as a whole is explained and a critical evaluation of the project is undertaken.
 
 \section{Background}\label{Background}
 % give reader info that they can't be expected to know, but which they need in order to fully understand and appreciate the report
@@ -175,7 +181,7 @@ Eurovision has been a topic of research for many years now. The main focus of th
 
 There has also been some research in more computational areas such as \textit{"Using the Clustering Coefficient to Guide a Genetic-Based Communities Finding Algorithm"}\cite{Bello2011} which attempts to find communities within the voting patterns.
 
-The particular problem this project is addressing has not yet been published in a scientific setting. It does seem to have been at least tackled by those that run Eurovision. Moreover as they are a private company they have never published any methodology on how they pick voting orders. They usually state on their website\cite{votingOrderQuote} when revealing the voting order to media that:
+The particular problem this project is addressing has not yet been published in a scientific setting. It does seem to have been at least tackled by those that run Eurovision, however as they are a private company they have never published any methodology on how they pick voting orders. They usually state on their website\cite{votingOrderQuote} when revealing the voting order to media that:
 \begin{verbatim}"The voting order has been determined by the results from last night's Jury Final.
 An algorithm has been created to try and make the voting as exciting as possible."
 \end{verbatim}
@@ -185,7 +191,7 @@ The biggest drawback that can be said about the current Eurovision algorithm, wi
 
 This project's method attempts to take into account \textit{both} the sets of votes and hence could give a more correct picture of what will happen, entertainment wise, for any given voting order. One main constraint on this method is exactly that fact, as it is necessary to wait for all the votes to be cast before the voting order can be found. In real world terms this may not be feasible for the Eurovision Song Contest as they may have commitments that require that the voting order is known in advance. The voting order is usually announced early on the day of the Grand Final, which the method set out in this project could not do.\cite{votingOrderQuote}
 
-Another drawback for the current Eurovision "algorithm" as mentioned above, is the fact that there is no explanation as to why their algorithm believes a given order to be more exciting than any other. This project will attempt to standardise mathematically a function for entertainment, which could in future be compared through human tests (see Section  \ref{FutureWork}). By describing a concept mathematically not only can it be used by algorithms but it can also form part of a proof.
+Another drawback for the current Eurovision "algorithm" as mentioned above, is the fact that there is no explanation as to why their algorithm believes a given order to be more exciting than any other. This project will attempt to standardise mathematically a function for entertainment, which could in future be compared through human tests (see Section  \ref{FutureWork}). By describing a concept mathematically not only can it be used by algorithms but it could also form part of a proof.
 
 This project only looks at one specific area of the competition to describe and codify entertainment. This can be seen as a drawback of the solutions found, however the way this project has been undertaken leaves the opportunity for further work in the area of defining entertainment functions as described in Section \ref{FutureWork}.
 
@@ -194,7 +200,7 @@ The techniques used and implemented in this project have applications outside th
 \subsection{Background Theory}\label{BackgroundTheory}
 Understanding how the Eurovision Song Contest voting works is key to this project, as this affects many parts of the design and implementation of the system. Furthermore the system for voting has been changed over many years and so to try and standardise the project I will be using the system that was in use during the 2014\cite{Eurovision2014} running of the competition, and the main dataset also comes from that year.\footnote{2014 voting system is the system that had been in use from 2009 until changed in 2016}
 
-In this system, each country awards two sets of 12, 10, 8 – 1 points to their 10 favourite songs: one from their professional jury and the other from tele-voting. Moreover as voting is done by both the jury and by people voting by phone, both constituent parts count 50\% towards the final score. The \textit{scores} used during the project will be those final composite scores.
+In this system, each country awards two sets of 12, 10, 8 – 1 points to their 10 favourite songs: one from their professional jury and the other from tele-voting. Moreover both constituent parts count 50\% towards the final score. The \textit{scores} used during the project will be those final composite scores.
 
 In the 2014 contest, there were 37 countries that participated and of those 26 reached the final. All 37 countries vote in the final. From this point on in this report, the countries that vote are referred to as \textit{voters} and those 26 competing in the final are referred to as \textit{participants}. There is overlap between the two groups i.e the \textit{participants} set is a subset of the \textit{voters}; but it should be obvious from the context to whom is being referred.
 
@@ -207,7 +213,7 @@ In the 2014 contest, there were 37 countries that participated and of those 26 r
 
 This voting system creates a matrix of scores as seen in Figure \ref{f_2014Scores}\cite{EurovisionScoreboard}. The \textit{voters} are arranged along the top alphabetically, while the \textit{participants} are along the left hand side. Points refers to the final total of all the scores received at the end of all voting, and rank is their final position in the competition. 
 
-This is important to look at as it can help clarify what this project's aim is. A solution to the problem is found by swapping the \textit{voters} column along the top into different positions and then analysing the scores after each country has voted, to reach an \textit{entertaining} order for those countries to reveal their votes.
+This is important to look at as it can help clarify what this project's aim is. A solution to the problem is found by swapping a \textit{voter's} column along the top into different positions and then analysing the scores after each country has voted, to reach an \textit{entertaining} order for those countries to reveal their votes.
 
 % Your background section should end with a clear statement of the research questions problem your project is trying to answer. 
 %These will reflect the aim of your project, but will be different in that they explain the problem you are attempting to solve
@@ -222,7 +228,7 @@ Hence the problem that this project is trying to solve is about ordering who vot
 % Later in results and evaluations describe how to design experiments to test how well the algorithms solve the problem and present experimental results with an evaluation of your suggested solutions
 % big-O
 % reasoning behind writing each algorithm
-This section should give an understanding of the main parts that are needed to solve this problem, before implementation can be explained. This will include some pseudocode of the algorithms used, explanations of the neighbourhoods tried and the entertainment functions designed. It is intended to give an introduction to the why and how these parts of the project exists, before Section \ref{Implementation} goes into implementation details with code and explanations using Python.
+This section should give an explanation of the main parts that are needed to solve this problem. This will include some pseudocode of the algorithms used, explanations of the neighbourhoods tried and the entertainment functions designed. It is intended to give an introduction to the why and how these parts of the project exists, before Section \ref{Implementation} goes into implementation details with code and explanations using Python.
 
 Firstly to help clarify the problem it is easier to view a much smaller competition and then run through the main points of theory, that are then used in the full Eurovision system.
 
@@ -240,7 +246,7 @@ France  & 0       & 0     & 0      & 1       \\ \hline
 \end{tabular}
 \end{table}
 
-From Table \ref{t_simpleMatrix} we can see how the scores will be calculated in this type of competition. For simplicity, the order that the teams vote is the order from left to right in Table \ref{t_simpleMatrix}. This means that after Germany has voted the scores are $Austria: 1, France: 0$, the rest of the competition is shown in Table \ref{t_simpleScores}
+From Table \ref{t_simpleMatrix} we can see how the scores will be calculated in this type of competition. For simplicity, the order that the teams vote is the order from left to right in Table \ref{t_simpleMatrix}. This means that after Germany has voted the scores are $Austria: 1, France: 0$, the competition is shown in Table \ref{t_simpleScores}
 
 \begin{table}[H]
 \centering
@@ -287,10 +293,10 @@ Difference & 1                    & 0                  & 1                   & 2
 \end{tabular}
 \end{table}
 
-Any entertainment functions ($\varepsilon$ functions) talked about in this section share some characteristics that need to be explained. The first is that they take a \textbf{solution ($\Phi$)} to the problem (see Glossary-3) as input and they return a single \textbf{entertainment value} ($\varepsilon$) (see Glossary-4). Moreover they calculate the \textbf{scores}($S$) (see Glossary-6) for each \textit{participant} country every \textbf{round} ($R$)(see Glossary-5).
+Any entertainment functions ($\varepsilon$ functions) talked about in this section share some characteristics that need to be explained. The first is that they take a \textbf{solution ($\Phi$)} to the problem (see Glossary-3) as input and they return a single \textbf{entertainment value} ($\varepsilon$) (see Glossary-4). Moreover they calculate the \textbf{scores} ($S$) (see Glossary-6) for each \textit{participant} country every \textbf{round} ($R$) (see Glossary-5).
 
 \subsubsection{MaxMin}
-The first entertainment function that was designed is the one described in the small example at the start of this section, named \textbf{MaxMin}. As it's name suggests it works by finding the difference between the highest score (max) and the lowest score (min) after each voting round. It then sums the value which is the $\varepsilon$ value for that solution. This function follows quite naturally from watching and analysing the Eurovision competition as the way roll-call style voting works, everything is building towards the later end of the voting order. Hence it seems to be a innate part of the competition that you would want every country to be in with a chance of winning as often as possible. Moreover as there is only one prize, for first place, it is even less important to worry about positioning other than the top.
+The first entertainment function that was designed is the one described in the small example at the start of this section, named \textbf{MaxMin}. As it's name suggests it works by finding the difference between the highest score (max) and the lowest score (min) after each voting round. It then sums these values which is the $\varepsilon$ value for that solution. This function follows quite naturally from watching and analysing the Eurovision competition as the way roll-call style voting works, everything is building towards the later end of the voting order. Hence it seems to be a innate part of the competition that you would want every country to be in with a chance of winning as often as possible. Moreover as there is only one prize, for first place, it is even less important to worry about positions other than the top.
 
 So each round the distance ($\Lambda$) for a set of scores, $S$ is calculated as such:
 \begin{equation}\label{lambda}
@@ -361,9 +367,7 @@ The questions about the efficacy of the random method leads to another method fo
 
 This method works by finding a random value between 0 and length of solution - 1. Then swapping the element at that index with its immediate neighbour to the right i.e. index + 1. It can be expressed in the same way as in equation \ref{random}, except that in this case index $i$ is a random number and index $j = i + 1$.
 
-Another difference between this method and the random method is how it can actually be calculated. After finding a neighbour of a given solution, the $\varepsilon$ value of that solution must be found. By swapping 2 adjacent countries in the solution a \textit{partial re-calculation} of the entertainment value can be done using the entertainment value of the previous solution. 
-
-As the previous solution and the new solution only differ by one position it is possible to only partially re-calculate the $\varepsilon$ value. This idea is implemented separately to the \textbf{MaxMin} and \textbf{refinedMaxMin} methods in the code, and explanation as to how can be found in Section \ref{Imp-Ewrappers}.
+Another difference between this method and the random method is how it can actually be calculated. After finding a neighbour of a given solution, the $\varepsilon$ value of that solution must be found. By swapping 2 adjacent countries in the solution a \textit{partial re-calculation} of the entertainment value can be done using the entertainment value of the previous solution. As the previous solution and the new solution only differ by one position it is possible to only partially re-calculate the $\varepsilon$ value. This idea is implemented separately to the \textbf{MaxMin} and \textbf{refinedMaxMin} methods in the code, and explanation as to how can be found in Section \ref{Imp-Ewrappers}.
 
 Re-calculation involves removing the distances of the swapped countries in the old solution and adding them back in their new positions in the new solution. The equation for this is shown in \ref{Recalc}.
 
@@ -371,9 +375,9 @@ Re-calculation involves removing the distances of the swapped countries in the o
 	\varepsilon_{new} = \varepsilon_{old} - \Lambda_{ij_{old}} + \Lambda_{ij_{new}}
 \end{equation}
 
-The $\varepsilon_{new}$ and $\Lambda_{ij_{old}}$ values can be found by keeping them from the old solution and passing them into the next $\varepsilon$ calculation function. The $\Lambda_{ij_{new}}$ must still be re-calculated however only up to the higher of the two indexes.
+The $\varepsilon_{new}$ and $\Lambda_{ij_{old}}$ values can be found by keeping them from the old solution and passing them into the next $\varepsilon$ calculation. The $\Lambda_{ij_{new}}$ must still be re-calculated however only up to the higher of the two indexes.
 
-The efficacy of this neighbourhood can be see when calculating the $\varepsilon$ values. A full calculation, such as is used in the random swap method involves \{number of voters $\times$ number of participants\} or $V \times P$. 
+The efficacy of this neighbourhood in reducing the number of calculations needed can be see when calculating the $\varepsilon$ values. A full calculation, such as is used in the random swap method involves \{number of voters $\times$ number of participants\} or $V \times P$. 
 
 However due to the adjacency of the swaps Table \ref{scoreCalcsAdj} shows what this method needs to calculate.
 
@@ -407,20 +411,20 @@ Average & 468                    \\ \hline
 A deeper comparison and evaluation between the two methods can be found in Section \ref{OtherTesting}
 
 \subsection{Optimisation Algorithms}\label{Algorithms}
-In the previous section the necessary first steps to solve the problem were outlined. Namely calculate an entertainment value ($\varepsilon$) which can be optimised. To do this optimisation it is necessary to use a set of optimisation algorithms which maximise or minimise a value in order to settle on an optimal solution.
+In the previous section the necessary first steps to solve the problem were outlined. Namely calculating an entertainment value ($\varepsilon$) which can be optimised. To do this optimisation it is necessary to use a set of optimisation algorithms which maximise or minimise a value in order to settle on an optimal solution.
 
 \subsubsection{Greedy Search}
 The first algorithm that was posited was a simple Greedy search algorithm. Greedy search works on the idea that by selecting the optimal choice at every possible stage, it will lead to a globally optimal solution.\cite{GreedySearch}
 
-At first glance it is not obvious to see if the problem we are attempting is simple or complex. This lead to Greedy search as a good first try as it is sufficiently simple so that the code is easy to write and more importantly it will likely find the optimal solution if the solution space is simple. If the solution space \textit{is} in fact too complex then Greedy may still find a good approximate solution.
+At first glance it is not obvious to see if the problem is simple or complex. This lead to Greedy search as a good first try as it is sufficiently simple so that the code is easy to write, and more importantly it will likely find the optimal solution if the solution space is simple. If the solution space \textit{is} in fact too complex then Greedy may still find a good approximate solution.
 
 An important point to re-iterate, as mentioned when talking about the $\varepsilon$ functions, is that even though in the report it may be mentioned that the algorithms are \textbf{maximising} entertainment to do this in the code, we have to \textbf{minimise} the $\varepsilon$ value produced by the $\varepsilon$ functions. All algorithms described in this report follow this methodology.
 
 The pseudocode for Greedy is shown in Algorithm \ref{greedyPseuodocode} in the appendix.
 
-As can be seen, it is a very simple algorithm that takes possible solutions and compares them to the already found best solution. It's simplicity is, unfortunately, also it's downfall in this problem. Although it can find a good approximate solution it is not able to find optimal solutions that other algorithms do find.
+As can be seen, it is a very simple algorithm that takes possible solutions and compares them to the already found best solution. It's simplicity is, unfortunately, also it's downfall in this problem. Although it can find a good approximate solution it is not able to find the higher entertainment solutions that other algorithms find.
 
-The stopping criterion is part of both Simulated Annealing's and Greedy search's algorithm. The stopping criterion defines when the algorithms should stop. To maintain parity between the algorithms, the stopping criterion chosen was to stop when a certain number of iterations had passed without a new solution being found. The value of the stopping criterion is given by the variable $num\_iterations$ in both algorithms implementations and pseudocode, and to achieve this idea it is necessary to reset the value of $i$ when a new solution is found. This can be seen on line 10 of Algorithm \ref{greedyPseuodocode}
+The stopping criterion defines when the algorithms should stop. To maintain parity between the algorithms, the stopping criterion chosen was to stop when a certain number of iterations had passed without a new solution being found. The value of the stopping criterion is given by the variable $num\_iterations$ in all algorithms that use it. To achieve this idea it is necessary to reset the value of $i$ when a new solution is found. This can be seen on line 10 of Algorithm \ref{greedyPseuodocode}
 
 Looking at the pseudocode, and with some simplifying assumptions the worst case time complexity for this Greedy search algorithm can be found.
 
@@ -474,9 +478,9 @@ where $P <= V \ll m$. This can be further simplified in terms of \textit{voters}
 A discussion and comparison with the other algorithms can be found in Section \ref{OtherTesting}.\footnote{A full table of Big-O complexity for all algorithms can be found in the appendix in table \ref{bigO}}
 
 \subsubsection{Brute force}
-After running the Greedy algorithm and collecting some initial results it became clear that it would be difficult to know by just looking at the problem, what a good $\varepsilon$ value would be. This lead to the discussion about using a Brute force algorithm to try and enumerate all the solutions.
+After running the Greedy algorithm and collecting some initial results it became clear that it would be difficult to know by just looking at the problem, what a good $\varepsilon$ value would be. This lead to the decision about using a Brute force algorithm to try and enumerate all the solutions.
 
-The idea is extremely simple, try all possible solutions and keep track of the best found. Even though the pseudocode and the real code will differ, the pseudocode help understand the algorithm so is shown in Algorithm \ref{bruteForcePseudocode}
+The idea is extremely simple, try all possible solutions and keep track of the best found. Even though the pseudocode and the real code will differ, the pseudocode help understand the algorithm so is shown in Algorithm \ref{bruteForcePseudocode}. The obvious difference with Brute force is the fact that it does not have to find neighbours of current solutions as it will try every one possible.
 
 When some simple calculations are made about the solution space it is clear as to why the Brute force method is not ever going to feasible for this problem. Searching all solutions, is not a simple task. As it must look at all permutations of solutions which are of length $V$, the complexity of Brute force follows the number of permutations for n distinct objects.\cite{Permutation}. This is shown in equation \ref{bruteComp}.
 
@@ -491,7 +495,7 @@ This means that in all cases Brute force will run in $\approx V!$ time. Comparis
 For example in the 2014 running of Eurovision this would be $37!$ which, after approximating the time to look at one single solution, would take about $1.2\times10^{40}$ seconds, which is quite obviously computationally infeasible with the time and resources for this project.
 
 \subsubsection{Simulated Annealing}
-The performance of Greedy and Brute force reveal the fact that this problem is not a simple one at all and hence another, more capable algorithm is needed to find more optimal solutions. To do this the Simulated Annealing algorithm\cite{Kirkpatrick} was used.
+The performance of Greedy and Brute force suggests the fact that this problem is not a simple one at all and hence another, more capable algorithm is needed to find more optimal solutions. To do this the Simulated Annealing algorithm was used. First introduced by Kirkpatrick et al\cite{Kirkpatrick} it is a metaheuristic that as well as accepting better solutions, also occasionally accepts worse ones.
 
 The pseudocode for Simulated Annealing can be found in Algorithm \ref{simAnnealingPseudocode} in the appendix. It is quite a lot more complex than either Brute force or Greedy search.
 
@@ -576,9 +580,7 @@ A full comparison between the algorithms and their complexities is undertaken in
 \subsubsection{Piecemeal}
 Part way through the project a slightly different approach to building a solution was suggested. The three algorithms discussed above all have a major thing in common, that they move from a \textbf{full} solution to another. It was suggested that another methodology for finding a solution could be used. The development of this algorithm was not directly due to the performance of the other algorithms. At this time in the project Simulated Annealing was performing very well; the decision to design this algorithm was more influenced by gaining a deeper understanding of the problem and the entertainment functions that had been designed. The Piecemeal method shares some of its theory with Constraint Satisfaction Problems (CSP's)\cite{CSP} and more specifically backtracking algorithms used within them\cite{backtracking}. Backtracking algorithms contain the idea to incrementally build a full solution by trying different partial solutions.
 
-This method begins with just one \textit{voter} instead of a full solution. This \textit{voter} can be found randomly or just be the first in the list. Then to pick the next \textit{voter} to add to the solution, the algorithm looks at all the available \textit{voters} it could add and it picks the one that gives the lowest overall $\Lambda$ value. The $\Lambda$ value is the distance between the best and worst who can still win. At the end this value is summed to get the solution's $\varepsilon$ value.
-
-It adds the best next \textit{voter} to it's current solution until it reaches a full solution. Whereas the search methods, such as Greedy and Simulated Annealing, keep track of a set of possible \textbf{full} solutions, this method named the \textit{Piecemeal} method, builds a solution by doing a greedy search of the available next \textit{voters} that could be added.
+This method begins with just one \textit{voter} instead of a full solution. Then to pick the next \textit{voter} to add to the solution, the algorithm looks at all the available \textit{voters} it could add and it picks the one that gives the lowest overall $\Lambda$ value if it were to be added. The $\Lambda$ value is the distance between the best and worst who can still win. At the end this value is summed to get the solution's $\varepsilon$ value.
 
 This method hopes that by picking the best possible next choice this will lead to a good approximation or globally optimal solution. It acts very much like Greedy search that has been discussed, and the pseudocode supports that, however by working on partial solutions instead of full solutions, the idea is that it will at least approximate a good solution without having the need to check many full solutions, hence increasing performance, especially for large solution problems.
 
@@ -603,7 +605,58 @@ which can then be simplified for Big-O notation into equation \ref{bigOPiecemeal
 
 Looking at the Big-O complexity in equation \ref{bigOPiecemeal} and comparing it to the others is done it Section \ref{OtherTesting}.
 
-% piecemeal example failing
+One thing to note about this algorithm is that when the number of solutions to search is relatively low, this method is very good at finding the best solution. Moreover in smaller examples, this method tends to perform better than Simulated Annealing and Greedy. If the number of possible first choices is relatively low then this algorithm can try them all, hence it can always find the best solution that it could possibly find. This is shown by the fact that running against the small example introduced at the beginning of this section this algorithm will always find the best solution whereas the others find near best solutions. Table \ref{smallExampleEs} shows the values found by the three main algorithms for the small example. As was discussed in Section \ref{EntertainmentFunction} the optimal solution has a $\varepsilon$ value of 4.
+
+\begin{table}[H]
+\centering
+\caption{$\varepsilon$ values found for small example game}
+\label{smallExampleEs}
+\begin{tabular}{|l|l|}
+\hline
+                    & $\varepsilon$ value \\ \hline
+Greedy              & 5                   \\ \hline
+Simulated Annealing & 5                   \\ \hline
+Piecemeal           & 4, 4, 4, 4                   \\ \hline
+\end{tabular}
+\end{table}
+
+Piecemeal produced 4 solutions (one with each \textit{voter} as first choice) all with $\varepsilon$ values of 4, whilst the other algorithms found a near optimal solution of 5 from a random initial solution.
+
+However if the search space is increased to 5 \textit{voters} and 7 \textit{participants} such as in the game described by table \ref{biggerExampleGame}, we find that Piecemeal begins to show signs of failures.
+
+\begin{table}[H]
+\centering
+\caption{Scores for simple example game}
+\label{biggerExampleGame}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+         & Round 1 & Round 2 & Round 3 & Round 4 & Round 5 \\ \hline
+Federer  & 0 & 0 & 2 & 0 & 6 \\ \hline
+Murray   & 1 & 1 & 3 & 6 & 5 \\ \hline
+Djokovic & 2 & 2 & 4 & 4 & 4 \\ \hline
+Nadal    & 3 & 3 & 5 & 5 & 3 \\ \hline
+Borg     & 4 & 4 & 6 & 2 & 2 \\ \hline
+Cash     & 5 & 5 & 1 & 3 & 1 \\ \hline
+Henman   & 6 & 6 & 0 & 1 & 0 \\ \hline
+\end{tabular}
+\end{table}
+
+The $\varepsilon$ values found by the algorithms are shown in table \ref{biggerExampleEs}, and we can begin to see that, even though Piecemeal is still beating Greedy and Simulated Annealing, it is also finding solutions similar to the other algorithms. It is not too difficult to see that for a competition as large as Eurovision, with 37 \textit{voters} and 26 \textit{participants}, Piecemeal could begin to fail to find the best solution.
+
+\begin{table}[H]
+\centering
+\caption{$\varepsilon$ values found for bigger example game}
+\label{biggerExampleEs}
+\begin{tabular}{|l|l|}
+\hline
+                    & $\varepsilon$ value \\ \hline
+Greedy              & 31                  \\ \hline
+Simulated Annealing & 31                  \\ \hline
+Piecemeal           & 19, 19, 27, 27, 19  \\ \hline
+\end{tabular}
+\end{table}
+
+The hypothesis behind this theory is that as the number of choices this algorithm has to make increases, there is more opportunities for it to fail to choose the best next \textit{voter}, hence making it fail to find the overall best solution.
 
 \section{Implementation of System}\label{Implementation}
 % describes system but does so at finer level of detail, down to code level
@@ -618,7 +671,7 @@ Looking at the Big-O complexity in equation \ref{bigOPiecemeal} and comparing it
 % lack of suitable supporting framework
 % over ambitious project aims
 % A seemingly disproportionate amount of project time can be taken up in dealing with such problems. The Implementation section gives you the opportunity to show where that time has gone.
-In this section, the main parts of the project's code will be explored. This will take the theory and pseudocode described in Section \ref{AlgorithmDesigns} and discuss the actual code implemented as part of the project. It will both discuss some specific code as well as a discussion as to why parts of the system were implemented in certain ways. All code referenced in this section can be found in the attached source code files, submitted along with this report.
+In this section, the main important parts of the project's code will be explored. This will take the theory and pseudocode described in Section \ref{AlgorithmDesigns} and discuss the actual code implemented as part of the project. It will both discuss some specific code as well as a discussion as to why parts of the system were implemented in certain ways. All code referenced in this section can be found in the attached source code files, submitted along with this report.
 
 \subsection{$\varepsilon$ function wrappers}\label{Imp-Ewrappers}
 The $\varepsilon$ functions form one of the most important parts of this project, however for them to be implemented they need some contextual data. The functions described below are larger functions that wrap around and allow the $\varepsilon$ functions to do their work. The $\varepsilon$ functions actually form just the $min(S)$ part of equation \ref{lambda}. 
@@ -639,17 +692,17 @@ for j in range(len(solution)):
 
 The main point of interest is the two nested \textit{for} loops and specifically lines 3 and 4.
 
-As the distance ($\Lambda$) is found as the difference between max and min scores in each round, it is necessary to go through and cumulatively add the scores given to each \textit{participant} in every round. This is stored in the array $scores$ at the index for that \textit{participant}: $scores[i]$. The $score\_board$ is the matrix of all scores given, as discussed in Section \ref{Background}. 
+As the distance ($\Lambda$) is found as the difference between the max and min scores in each round, it is necessary to go through and cumulatively add the scores given to each \textit{participant} in every round. This is stored in the array $scores$ at the index for that \textit{participant}: $scores[i]$. The $score\_board$ is the matrix of all scores given, as discussed in Section \ref{Background}. 
 
 These lines are interesting to highlight as they are likely the most critical lines in all the system. Every algorithm must use them at some point and all $\varepsilon$ functions will need them to calculate the $\varepsilon$ value.
 
 As the score lookup is done against a matrix of scores, it is necessary to find the correct column to look in. The row is the current \textit{participant}: $i$, however finding the column is a little more complex. 
 
-The columns in the matrix are in a certain order, alphabetical in the case of the 2014 Eurovision dataset. This, along with the fact that each solution is a permutation of that order, means that the currently voting country in the solution, $solution[j]$, must be found in the original order to correctly retrieve the score it gives. By keeping track of the original order as it corresponds to the scoreboard, the system only ever has to keep one matrix in memory, along with 2 list (of \textit{voters} and \textit{participants}). Any other method would include shuffling the scoreboard into the order of the current solution. As the scoreboard grows i.e in other, larger problems, this method would become untenable and possibly begin adversely affecting the algorithm's runtimes and complexities.
+The columns in the matrix are in a certain order, alphabetical in the case of the 2014 Eurovision dataset. This, along with the fact that each solution is a permutation of that order, means that the currently voting country in the solution, $solution[j]$, must be found in the original order to correctly retrieve the score it gives. By keeping track of the original order as it corresponds to the scoreboard, the system only ever has to keep one matrix in memory, along with 2 lists (of \textit{voters} and \textit{participants}). Any other method would include shuffling the scoreboard into the order of the current solution. As the scoreboard grows i.e in other, larger problems, this method would become untenable and possibly begin adversely affecting the algorithm's runtimes and complexities.
 
 The method $array.index(element)$ returns the index in the given $array$ of the given $element$. In this case $solution[j]$, would be a country name such as "Germany", and the value of $v$ will be an integer corresponding to the column.
 
-Looking at the full code listings there are actually two methods that wrap around $\varepsilon$ calculation functions to provide them with context and data. These are called \textbf{offsetGetEntertainment} and \textbf{getEntertainment}, and they both share the code shown in Figure \ref{findScores}. They are also fully independent of the \textit{maxMin} and \textit{refinedMaxMin} functions which are the actual $\varepsilon$ functions. These methods differ because of when and why they can be used.
+Looking at the full code listings there are actually two methods that wrap around $\varepsilon$ calculation functions to provide them with context and data. These are called \textbf{offsetGetEntertainment} and \textbf{getEntertainment}, and they both share the code shown in Figure \ref{findScores}. They are also fully independent of the \textbf{maxMin} and \textbf{refinedMaxMin} functions which are the actual $\varepsilon$ functions. These methods differ because of when and why they can be used.
 
 The main reason for these differences is shown in Section \ref{Neighbours}, as using different neighbourhood methods leads to different ways to calculate the entertainment. 
 
@@ -662,7 +715,7 @@ The important parts to understand about this implementation are, that for it to 
 
 One obvious point of difference is between the \textit{for} loops in Figure \ref{offsetGetEntertainment} and Figure \ref{findScores}. In the \textbf{offsetGetEntertainment} method the \textit{for} loops only need to calculate the scores up to the higher of the two keys as the scores after the swaps are unchanged.
 
-There are some further parts that need explanation. The actual recalculation described in Equation \ref{Recalc} is implemented in line 20. On lines 3 and 4, a copy of $countries$ and $solution$ are taken using Pythons array copy syntax. This is most likely not really necessary but during implementation there was a couple of times where after amending one of the lists locally inside a method, the global version of that list that should have stayed the same, was also changed. This is a little hack that means that any local version of the lists that are amended will not override the original. This small problem is further discussed in \ref{Eval}.
+The actual recalculation described in Equation \ref{Recalc} is implemented in line 20. On lines 3 and 4, a copy of $countries$ and $solution$ are taken using Pythons array copy syntax. This is most likely not really necessary but during implementation there was a couple of times where after amending one of the lists locally inside a method, the global version of that list that should have stayed the same, was also changed. This small problem is further discussed in \ref{Eval}.
 
 Lines 22 and 23 are necessary so that the new distance values can be passed to this function again, with the distances in the correct positions. Essentially what this does is constantly pass around a list of distances, amending it by swapping values before passing it on.
 
@@ -702,9 +755,9 @@ def refinedMaxMin(scores, solution, j, maxScorePerRound):
 
 The theory behind this method was described in Section \ref{EntertainmentFunction}. Some of the implementation points to pick up on are, line 1 where the in-built Python function $sorted()$\cite{PythonSorted} is used to take the list of scores and sort them in ascending order. This does slow the method slightly, taking the method's complexity to $n \log n$ but it also simplifies the logic later on as the method does not need to keep track of anything other than the minimum found and also only needs to update it.
 
-This implementation is likely not the most efficient way of finding the refined version of the minimum, however it is quite a simple method. 
+This implementation is likely not the most efficient way of finding the refined version of the minimum, however it is quite a simple method. Refinements to the performance are discussed in Section \ref{FutureWork}.
 
-An important part of the two methods is their Big-O complexity. The complexities are shown in Table \ref{maxMinComp}. The main point to recognise is that the methods are different in terms of complexity which can help in evaluation such as in Section \ref{Results}. The refined method is actually very similar to \textbf{maxMin} except for the sorting step which increases the complexity.
+An important part of the two methods is their Big-O complexity. The complexities are shown in Table \ref{maxMinComp}. The main point to recognise is that the methods are different in terms of complexity which can help in the evaluation such as in Section \ref{Results}. The refined method is actually very similar to \textbf{maxMin} except for the sorting step which increases the complexity.
 
 \begin{table}[H]
 \centering
@@ -721,14 +774,14 @@ refinedMaxMin & O(n log n)               \\ \hline
 
 More in depth comparisons between the two methods can be found in Section \ref{OtherTesting}, which take into account the complexity and the minimum scores that the methods produce.
 
-\subsection{Neighbourhood Functions}\label{Imp-Neighbours}
-The random and adjacent neighbourhood methods, \textbf{getNeighbour} and \textbf{getAdjacentNeighbour} are very similar to each other as can be understood from the theory in Section \ref{Neighbours}. Both can be found in \textit{support.py}  in the attached source code. This does mean they could be written as one single method which are supplied the keys needed to perform the swaps. This approach \textit{was} given some thought during their implementation however in the end it was decided to favour duplication over complexity in the system. This means that there \textit{are} two methods that are for all intents and purposes exactly the same, but are named differently.
+\subsection{Neighbourhood functions}\label{Imp-Neighbours}
+The random and adjacent neighbourhood methods, \textbf{getNeighbour} and \textbf{getAdjacentNeighbour} are very similar to each other as can be understood from the theory in Section \ref{Neighbours}. Both can be found in \textit{support.py}  in the attached source code. This does mean they could be written as one single method which are supplied the keys needed to perform the swaps. This approach \textit{was} given some thought during their implementation however in the end it was decided to favour duplication over complexity in the system. This means that there are two methods that are for all intents and purposes exactly the same, but are named differently.
 
 The methods are shown in Figures \ref{adjacentNeighbour} and \ref{randomNeighbour}.
 
-The only difference occurs on lines 3 and 4 in the methods. Firstly in the adjacent neighbour method the first key is found by getting a random integer between 0 and 2 elements from the end of the list. It must be 2 elements from the end as the second key is taken as the first key + 1. In terms of a list this means the element directly to key1's right. The $len(neighbour)$ part is using Python's in-built length function to calculate the length of the list and hence the last index it can return for correct swapping.\cite{PythonLen}.
+The only difference occurs on lines 3 and 4 in the methods. Firstly in the adjacent neighbour method (figure \ref{adjacentNeighbour}) the first key is found by getting a random integer between 0 and 2 elements from the end of the list. It must be 2 elements from the end as the second key is taken as the first key + 1. In terms of a list this means the element directly to key1's right. The $len(neighbour)$ part is using Python's in-built length function to calculate the length of the list and hence the last index it can return for correct swapping.\cite{PythonLen}.
 
-The random neighbour method uses the Python \textit{random} library in line 3 of Figure \ref{randomNeighbour} to sample the given order and get two random elements back.\cite{PythonSample}. As this method actually returns the elements and not indexes of those elements, like in the adjacent method, it is necessary to change them back into indexes (line 4) for efficient swapping in line 5.
+The random neighbour method uses the Python \textit{random} library in line 3 of Figure \ref{randomNeighbour} to sample the given order and get two random elements back.\cite{PythonSample}. As this method actually returns the elements and not indexes of those elements, like in the adjacent method, it is necessary to change them back into indexes (line 4) for simple swapping in line 5.
 
 \begin{figure}[H]
 \caption{getAdjacentNeighbour method}
@@ -758,7 +811,7 @@ def getNeighbour(xNow):
 \end{lstlisting}
 \end{figure}
 
-\subsection{Simulated Annealing and Greedy Search}\label{Imp-searchAlgos}
+\subsection{Simulated Annealing and Greedy search}\label{Imp-searchAlgos}
 The implementation of the search algorithms is not the most interesting part of this project and hence only a little time will be spent explaining their implementation. Both Simulated Annealing and Greedy Search can be found in the appendices, and in the attached source code in the files \textit{simulatedAnnealing.py} and \textit{greedySearch.py}.
 
 The main reason for not going into depth about their implementations is that both algorithms are essentially general search algorithms that receive the problem specific input from the other functions already described such as \textbf{getEntertainment} and \textbf{getAdjacentNeighbour}.
@@ -767,11 +820,11 @@ A point that is shared across both implementations is the increasing while loop 
 
 Another implementation point that is shared is the fact that both algorithms must pass the $oldEntertainment$ and $oldDistances$ into the \textbf{offsetGetEntertainment} method. The reason for this is explained in Section \ref{Imp-Ewrappers}. This also explains the need for the variable $key1$ to be returned from the \textbf{getAdjacentNeighbour} method. 
 
-A minor point that is related to Python as a language is the ability to return multiple values from a function in a tuple by default. This hugely simplifies the code as methods can then return both a neighbour and the first key used to find it (\textbf{getAdjacentNeighbour}) or a possible solution and the individual distances that make up that solution (\textbf{offsetGetEntertainment}). In other languages there are ways to work around this problem, but this solution is one simple way in Python.
+A minor point that is related to Python as a language is the ability to return multiple values from a function in a tuple by default. This hugely simplifies the code as methods can then for example return both a neighbour and the first key used to find it (\textbf{getAdjacentNeighbour}) or a possible solution and the individual distances that make up that solution (\textbf{offsetGetEntertainment}). In other languages there are ways to work around this problem, but this solution is one simple way in Python.
 
 Specifically looking at the Simulated Annealing code in Figure \ref{simAnnealingCode}, the main lines of interest in terms of implementation are line 32 and 34. Line 32 uses the Python \textit{random}\cite{PythonRandom} library to get a random number between 0 and 1. It then uses the Python \textit{math}\cite{PythonMath} library to do the $e^{-deltaC/t}$ part that is necessary for Simulated Annealing to work. These again, are two examples of the Python libraries making implementation very simple for this project.
 
-The general cooling ratio values which were explained in Section \ref{Algorithms} on Simulated Annealing, were experimented with throughout the project. The final values are shown in Table \ref{coolingValues} in the appendix and the implementation details are quite self explanatory.
+The general cooling ratio values which were explained in Section \ref{Algorithms} on Simulated Annealing, were experimented with throughout the project. The final values are shown in Table \ref{coolingValues} in the appendix and how they are implemented is quite self explanatory.
 
 \subsection{Brute force}\label{Imp-Brute}
 The implementation for the Brute force\footnote{Can be found in \textit{bruteForce.py} in the attached source code} algorithm was one of the most simple, and this has much to do with the libraries that Python provides. The library used for the Brute force implementation is \textit{itertools}\cite{PythonItertools}, which provides a set of common methods such as \textit{permutations}\cite{PythonPermutations}. This makes this implementation extremely simple as I did not have to write any code to correctly permute through the possible solutions without repetitions, as the library handled it for me. It can be seen on line 5 of Figure \ref{bruteForce}.
@@ -797,23 +850,21 @@ def bruteForce(score_board, countries, voters):
 
 The implementation shares many similarities with the other algorithms described so far. Namely, the if block on line 8 - 10 that checks if the current solution is better than the best found so far. Furthermore it uses the same \textbf{getEntertainment} method that is used by both the other search algorithms described so far. One small but important point is that, in contrast to Greedy and Simulated Annealing, during the main for loop (lines 5 - 10) in Figure \ref{bruteForce}, Brute force cannot use the \textbf{offsetGetEntertainment} method. This is the one drawback of using the \textit{itertools} library. As it controls getting a new solution to try, the key needed for \textbf{offsetGetEntertainment} to work cannot be passed around. This further slows this Brute force implementation.
 
-\subsection{Piecemeal algorithm}\label{Imp-Piecemeal}
+\subsection{Piecemeal}\label{Imp-Piecemeal}
 The Piecemeal algorithm is the only break from the traditional style of search algorithms that have so far been discussed. Moreover it is the most novel approach to solving this problem in this project.
 
 The theoretical differences were discussed in detail in Section \ref{Algorithms}. The code for this algorithm is shown in Figure \ref{piecemealCode} in the appendix and can be found in \textit{step.py} in the attached source code.
 
-Firstly looking at the similarities between this algorithm and the full-solution searches, Piecemeal follows the method of checking if a value is less than the best value already seen. At first glance the code at lines 31 - 34 are exactly the same as for the other algorithms. The difference only becomes clear when looking at the larger \textit{for} loop in which it sits (lines 19 - 35). Whereas the other search algorithms are comparing the $\varepsilon$ value of two $\Phi$, the Piecemeal method is comparing the distance that the current \textit{voter} would add to the current solutions $\varepsilon$ value.
+The subtle difference in terms of comparing $\Lambda$ values instead of $\varepsilon$ values that was discussed in the design of this algorithm can be seen on lines 31 - 34.
 
 Secondly, the concept of $ignoreIndexes$ in lines 23, 24 and 35 is necessary so that the correct score is taken from the scoreboard. As the value of $j$ is used as an index in the scoreboard matrix, it is necessary to ignore those indexes of countries that have already been added to the solution. As was discussed in Section \ref{Imp-Brute}, in the Brute force method Python took care of not having repeats, however in this method as the algorithm is slightly more complex and Python in-built methods cannot be used, this must be done manually.
-
-One thing to note about this algorithm is that when the number of solutions to search is relatively low, this method is very good at finding the best solution. Moreover in smaller examples, this method tends to perform better than Simulated Annealing and Greedy. This is shown by the fact that running against the small example introduced in Section \ref{AlgorithmDesigns} this algorithm will always find the best solution whereas the others are only successful some of the time. This is most likely because, as the number of choices this algorithm has to make increases, there is more opportunities for it to fail to choose the best next \textit{voter}. This loss of quality as the search space increases is shown in the results section (\ref{solutions}) as the Eurovision competition is an example of such a search space.
 
 \subsection{Re-Use of Code for future work}\label{Imp-Reuse}
 One of the more general points that relates to how this project was implemented is the possibility of re-use of the work. Quite early in the project, when discussing other problems that are similar in type to Eurovision, it became clear that the code that was being written would be quite general to all of these problems. Furthermore there was no established framework for this sort of problem which meant this implementation would have to do that job anyway. This lead to the attempts to make all the implementations as re-usable as possible.
 
 This can mainly be seen in that all loops have an upper bound that depends on the length of the lists given and do not use magic numbers that may change. For example Figure \ref{getEntertainment} on lines 8 and 9. 
 
-This is further obvious when looking at the controlling file \textit{order.py} in the attached source code. There are 4 inputs that all the algorithms need to run. These are: a list of \textit{participants}, a list of \textit{voters}, a scoreboard (which is a matrix of scores that \textit{voters} give to \textit{participants}) and finally the max score that can be given by each \textit{voter} (12 in Eurovision). If a problem can be formalised into these 4 inputs then these methods and algorithms can quite easily be used for other problems, no matter their complexity or size. The supporting files that implement the entertainment and neighbourhood functions could also simply be swapped out for problem specific ones if needed.
+This is also be seen when looking at the controlling file \textit{order.py} in the attached source code. There are 4 inputs that all the algorithms need to run. These are: a list of \textit{participants}, a list of \textit{voters}, a scoreboard (which is a matrix of scores that \textit{voters} give to \textit{participants}) and finally the max score that can be given by each \textit{voter} (12 in Eurovision). If a problem can be formalised into these 4 inputs then these methods and algorithms can quite easily be used for other problems, no matter their complexity or size. The supporting files that implement the entertainment and neighbourhood functions could also simply be swapped out for problem specific ones if needed.
 
 The Eurovision Song Contest group released spreadsheets for the 2016, 2015 and 2014 Semi and Grand Finals. To allow the scoreboard to be taken directly from these results it was necessary to convert these spreadsheets to csv's first. This was done for the 2014 file and is attached. To read this into a matrix scoreboard for use by the algorithms a csv reader was written which can be found in the attached source code as \textit{csvDataReader.py}.
 
@@ -985,7 +1036,7 @@ One interesting point that is not shown in Figure \ref{eScreenshot} is that if w
 
 The Piecemeal method was a major success for this problem, especially as it is not a general algorithm like the others, which have been proven and tested on many problems. Referring to Figure \ref{eScreenshot} the chart shows that the Piecemeal method held it's own against a much more complex and established algorithm in Simulated Annealing. The lowest $\varepsilon$ value that it found was \textbf{2690} which is only 17 worse than the globally best solution found. Moreover as can be seen from the range of values, this method is consistent in returning good solutions, when varying the first \textit{voter}. This may be because the only difference between the attempts is the first voter, however that is the only part that is changeable between runs. As the averages of both Simulated Annealing and Piecemeal are very similar we can say that Piecemeal is almost as good as Simulated Annealing at finding consistently good solutions.
 
-% talk about future work on testing solutions found against people
+The results in this section provide evidence for the theory that was put forward in Section \ref{Imp-Piecemeal}, where it was suggested that the Piecemeal method would fail to find the best solution for larger problems. It was shown in that section that Piecemeal handily beats the other two search algorithms on small examples but begins to deteriorate as the problem space grows. The Eurovision dataset is a large problem, and Piecemeal did indeed fail to keep up it's high quality results.
 
 \subsection{Testing}\label{OtherTesting}
 % describe the reasoning behind the tests to evaluate your results, what tests to execute, what results show and why to execute these tests
@@ -1027,7 +1078,7 @@ The first thing to notice is that Simulated Annealing is the slowest, taking an 
 
 So compared to Simulated Annealing, Greedy is $\approx 25$ times faster $(4 s.f)$ and Piecemeal is $\approx 1606$ times faster $(4 s.f)$. Moreover Piecemeal is $\approx 63$ times faster than Greedy.
 
-When these timing results are taken with the $\varepsilon$ values that each algorithm found, we can make judgments as to why some algorithms are better than others. For example, even though Greedy returns solutions in less than a second the quality of those solutions are not very good. This is especially obvious when comparing Greedy to Piecemeal as the later is faster, and also returns solutions with a better $\varepsilon$ value. This leads to the conclusion that Piecemeal should always be used over Greedy. When looking at Simulated Annealing, a large point in it's favour is the fact that it found the globally best solution. However a major point to it's detriment is the fact that it does so over $1600$ times slower than Piecemeal, which finds a near to best solution. When deciding between Piecemeal and Simulated Annealing, a value judgment would have to be made in regards to what is more important speed or finding the best result. If speed is the main factor, and a close to best solution is good enough then Piecemeal is the obvious choice. If waiting $\approx 15$ seconds for a solution but having a good chance of finding the best is the overriding goal then Simulated Annealing is the better choice.
+When these timing results are taken with the $\varepsilon$ values that each algorithm found, we can make judgments as to why some algorithms are better than others. For example, even though Greedy returns solutions in less than a second the quality of those solutions are not very good. This is especially obvious when comparing Greedy to Piecemeal as the later is faster, and also returns solutions with a better $\varepsilon$ value. This leads to the conclusion that Piecemeal should always be used over Greedy. When looking at Simulated Annealing, a large point in it's favour is the fact that it found the globally best solution. However a major point to it's detriment is the fact that it does so over $1600$ times slower than Piecemeal, which finds a near to best solution. When deciding between Piecemeal and Simulated Annealing, a value judgment would have to be made in regards to what is more important speed or finding the best result. If speed is the main factor, and a close to best solution is good enough then Piecemeal is the obvious choice. If waiting $\approx 15$ seconds for a solution but having a good chance of finding the best is the overriding goal then Simulated Annealing is the better choice. As was described previously Piecemeal performs better when the search space is smaller so that must also be taken into account when deciding on which algorithm to use.
 
 Another inherent part of the algorithms is their Big-O complexity. This describes how the algorithms will scale to different size inputs. Explanation of each algorithms complexity in turn can be found in Section \ref{Algorithms} and Table \ref{bigO} summarises them. The complexity has a large effect of the runtime of the algorithms so it is useful to look at the theorised complexities and see if they compare to experimental runtimes. Although the algorithms have not been run against various sizes of input it can still be interesting to compare between the algorithms.
 
@@ -1128,6 +1179,8 @@ A final piece of future work would be to try and optimise the code for performan
 % summary of the aims of the project and a restatement of the main results, i.e. what has been learnt and achieved
 % an effective set of conclusions should not introduce new material. Instead it should briefly draw out, summarise, combined and reiterate the main points that have been made in the body of the project report and present opinions based on them
 The main aims of the project were to find an ordering of voters that maximises entertainment, to develop some functions that could codify entertainment mathematically and to produce a way of visualising an ordering.
+
+The order that was actually used by the Eurovision Song Contest in 2014 has a $\varepsilon$ value of \textbf{3104}. This \textit{is} a relatively entertaining value however this project has shown that there are significantly more entertaining orders, using the same definition of entertainment. Therefore it can be said that this project has at least reached the same level of quality as the current "algorithm" in use by the contest.
 
 In terms of these goals, I believe all of them have been achieved to a high degree of quality. The algorithms produced found a solution to the problem that successfully maximised the entertainment. The functions that were produced to describe entertainment were very successful in taking the intuitive feelings of entertainment and turning them into mathematical functions. Finally the visualisation produced can clearly be shown to aid in the understanding of what makes these good solutions better than the bad ones. Moreover the experimental results outlined in Section \ref{Results} help to support the idea that these goals have been achieved.
 
