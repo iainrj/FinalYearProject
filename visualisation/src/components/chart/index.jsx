@@ -17,7 +17,7 @@ export default class Chart extends Component {
 
 	render() {
 		return (
-			<BarPlot round={this.props.round} {...this.state} {...styles}/>
+			<BarPlot round={this.props.round} order={this.props.order} {...this.state} {...styles}/>
 		);
 	}
 }

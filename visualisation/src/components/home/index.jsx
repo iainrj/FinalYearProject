@@ -9,6 +9,7 @@ export default class Home extends Component {
 		super(props);
 
 		this.state.round = 0;
+		this.state.order = 'good';
 	}
 
 	incrementRound() {
@@ -29,8 +30,11 @@ export default class Home extends Component {
 
 	resetCounter() {
 		this.stopSim();
-
 		location.reload();
+	}
+
+	handleChange(event) {
+		this.setState({order: event.target.value});
 	}
 
 	render() {
@@ -38,8 +42,13 @@ export default class Home extends Component {
 			<div class={style.home}>
 				<div class={style.sim_controls}>
 					<h2>Round in voting: {this.state.round}</h2>
-					<button class={style.sim_controls__item} onClick={e => this.incrementRound(true)}>Start Sim</button>
+					<button class={style.sim_controls__item} onClick={e => this.incrementRound()}>Start Sim</button>
 					<button class={style.sim_controls__item} onClick={e => this.stopSim()}>Stop Sim</button>
+					<select class={style.sim_controls__item} value={this.state.order} onChange={e => this.handleChange(e)}>
+						<option value="real">2014 Order</option>
+						<option value="bad">Bad Order</option>
+						<option value="good" selected>Good order</option>
+					</select>
 					<button class={style.sim_controls__item} onClick={e => this.resetCounter()}>Reset</button>
 				</div>
 
