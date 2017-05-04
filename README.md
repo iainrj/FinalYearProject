@@ -11,6 +11,7 @@ The two main questions that this project will aim to answer are:
 - In which order should the votes be revealed in order to maximise that entertainment value?
 
 # Running the code
+## Code was run using Python 2.7.10 however should also work with other Python versions
 ## Will run either Greedy Search, Simulated Annealing, Brute Force or Step-by-step algorithm and return an order of voting and a value for entertainment
 ``` bash
 > cd code
